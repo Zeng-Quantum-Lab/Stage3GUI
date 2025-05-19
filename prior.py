@@ -8,6 +8,7 @@ class prior():
     def __init__(self, port_num, sdk_path):
         self.port_num = port_num
         self.path = sdk_path
+        self.velocity = 0
         if os.path.exists(self.path):
             global SDKPrior
             SDKPrior = WinDLL(self.path, winmode=0)
@@ -72,13 +73,19 @@ class prior():
 
     def set_velocity(self, velocity):
         self.check_busy()
-        self.cmd("controller.stage.move-at-velocity {velocity} {velocity}")
+        self.velocity = velocity
+        self.cmd(f"controller.stage.velocity.set {velocity} {velocity}")
+
+    def set_acceleration(self, acceleration):
+        self.check_busy()
+        self.cmd(f"controller.stage.acc.set {acceleration}")
 
     def go_to_pos(self, new_x, new_y):
         self.x = new_x
         self.y = new_y
         self.check_busy()
-        self.cmd("controller.stage.goto-position {self.x} {self.y}")
+        self.cmd(f"controller.stage.goto-position {self.x} {self.y}")
+        self.cmd(f"controller.stage.move-at-velocity {self.velocity} {self.velocity}")
 
     def get_curr_pos(self):
         self.check_busy()

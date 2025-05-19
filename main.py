@@ -616,12 +616,12 @@ Prior_Im_Z_pos_string.set(0)
 root.title("PriorThorLab")
 root.columnconfigure(0, weight=1)
 root.columnconfigure(1, weight=1)
-root.columnconfigure(2, weight=1)
+root.columnconfigure(2, weight=0)
 root.columnconfigure(3, weight=1)
 root.columnconfigure(4, weight=1)
-root.columnconfigure(5, weight=1)
-root.columnconfigure(6, weight=1)
-root.columnconfigure(7, weight=1)
+# root.columnconfigure(5, weight=1)
+# root.columnconfigure(6, weight=1)
+# root.columnconfigure(7, weight=1)
 
 root.rowconfigure(0, weight=1)
 root.rowconfigure(1, weight=1)
@@ -632,7 +632,7 @@ root.rowconfigure(5, weight=1)
 root.rowconfigure(6, weight=1)
 root.rowconfigure(7, weight=1)
 root.rowconfigure(8, weight=1)
-root.rowconfigure(9, weight=1)
+root.rowconfigure(9, weight=2)
 root.rowconfigure(10, weight=1)
 root.rowconfigure(11, weight=1)
 root.rowconfigure(12, weight=1)
@@ -749,8 +749,8 @@ Angle_control_label = Label(root, text="ANGLE CONTROL")
 Angle_label = Label(root, text="Angle Degree")
 Angle_textblock = Label(root, textvariable=Angle_string, borderwidth=1, relief="groove")
 
-Angle_Up_button = Button(root, text="^", command=up_Angle)
-Angle_Down_button = Button(root, text="v", command=down_Angle)
+Angle_Up_button = Button(root, text=">", command=up_Angle)
+Angle_Down_button = Button(root, text="<", command=down_Angle)
 
 Angle_Step_size_label = Label(root, text="Step Size (um)")
 Angle_Step_size_spinbox = Spinbox(root, textvariable=Angle_Step_size_string, from_=Step_size_min, to=Step_size_max, command=update_Angle_Step_size)
@@ -836,179 +836,177 @@ Prior_Go_to_Z_button = Button(root, text="Go to determined position", command=Pr
 root.grid_propagate(True)
 
 ##TC200
-T_title.grid(column=0, row=0, columnspan=2, sticky="nsew")
+T_title.grid(column=0, row=0, columnspan=5, sticky="nsew")
 
-canvas.get_tk_widget().grid(column=0, row=1, columnspan=2, sticky="nsew")
+canvas.get_tk_widget().grid(column=0, row=1, columnspan=5, sticky="nsew")
 # canvas.get_tk_widget().grid_propagate(False)
 
-T_current_label.grid(column=0, row=2, sticky="ew")
-T_current_textblock.grid(column=1, row=2,sticky="ew")
+T_current_label.grid(column=0, row=2, columnspan=2, sticky="ew")
+T_current_textblock.grid(column=3, columnspan=2,row=2,sticky="ew")
 
-T_set_label.grid(column=0, row=3, sticky="nsew")
-T_set_text.grid(column=1, row=3, sticky="nsew")
-T_set_slider.grid(columnspan=2, column=0, row=4)
+T_set_label.grid(column=0, columnspan=2, row=3, sticky="nsew")
+T_set_text.grid(column=3, columnspan=2, row=3, sticky="nsew")
+T_set_slider.grid(columnspan=5, column=0, row=4)
 
-P_value_label.grid(column=0, row=5, sticky="nsew")
-P_value_spinbox.grid(column=1, row=5, sticky="nsew")
+P_value_label.grid(column=0, columnspan=2,row=5, sticky="nsew")
+P_value_spinbox.grid(column=3, columnspan=2, row=5, sticky="nsew")
 
-I_value_label.grid(column=0, row=6, sticky="nsew")
-I_value_spinbox.grid(column=1, row=6, sticky="nsew")
+I_value_label.grid(column=0, columnspan=2, row=6, sticky="nsew")
+I_value_spinbox.grid(column=3, columnspan=2, row=6, sticky="nsew")
 
-D_value_label.grid(column=0, row=7, sticky="nsew")
-D_value_spinbox.grid(column=1, row=7, sticky="nsew")
+D_value_label.grid(column=0, columnspan=2, row=7, sticky="nsew")
+D_value_spinbox.grid(column=3, columnspan=2,row=7, sticky="nsew")
 
-Start_plot_button.grid(column=0, row=8, sticky="nsew")
-Stop_plot_button.grid(column=1, row=8, sticky="nsew")
+Start_plot_button.grid(column=0, columnspan=2, row=8, sticky="nsew")
+Stop_plot_button.grid(column=3, columnspan=2, row=8, sticky="nsew")
 # Reset_plot_button.grid(column=0, columnspan=2, row=9, sticky="nsew")
 
-temp_KIM_seperator.grid(column=2, row=0, padx=5, rowspan=30, sticky="ns")
+# temp_KIM_seperator.grid(column=2, row=0, padx=5, rowspan=30, sticky="ns")
 
 ##KIM101
-KIM_title.grid(column=3, row=0, columnspan=2, sticky="nsew")
+KIM_title.grid(column=0, row=9, columnspan=2, sticky="nsew")
 
-XY_control_label.grid(column=3, row=1, columnspan=2, sticky="ew")
+XY_control_label.grid(column=0, row=10, columnspan=2, sticky="ew")
 
-X_pos_label.grid(column=3, row=2, sticky="nsew")
-X_pos_textblock.grid(column=4, row=2, sticky="nsew")
+X_pos_label.grid(column=0, row=11, sticky="nsew")
+X_pos_textblock.grid(column=1, row=11, sticky="nsew")
 
-Y_pos_label.grid(column=3, row=3, sticky="ew")
-Y_pos_textblock.grid(column=4, row=3, sticky="ew")
+Y_pos_label.grid(column=0, row=12, sticky="ew")
+Y_pos_textblock.grid(column=1, row=12, sticky="ew")
 
-Im_X_pos_label.grid(column=3, row=4, sticky="nsew")
-Im_X_pos_spinbox.grid(column=4, row=4, sticky="nsew")
+# Im_X_pos_label.grid(column=3, row=4, sticky="nsew")
+# Im_X_pos_spinbox.grid(column=4, row=4, sticky="nsew")
 
-Im_Y_pos_label.grid(column=3, row=5, sticky="nsew")
-Im_Y_pos_spinbox.grid(column=4, row=5, sticky="nsew")
+# Im_Y_pos_label.grid(column=3, row=5, sticky="nsew")
+# Im_Y_pos_spinbox.grid(column=4, row=5, sticky="nsew")
 
-Go_to_XY_button.grid(column=3, row=6, columnspan=2, sticky="nsew")
+# Go_to_XY_button.grid(column=3, row=6, columnspan=2, sticky="nsew")
 
-Up_button.grid(column=3, row=7, sticky="nsew")
-Down_button.grid(column=3, row=8, sticky="nsew")
-Right_button.grid(column=4, row=7, sticky="nsew")
-Left_button.grid(column=4, row=8, sticky="nsew")
+Up_button.grid(column=0, row=13, sticky="nsew")
+Down_button.grid(column=0, row=14, sticky="nsew")
+Right_button.grid(column=1, row=13, sticky="nsew")
+Left_button.grid(column=1, row=14, sticky="nsew")
 
-XY_Step_size_label.grid(column=3, row=9, sticky="nsew")
-XY_Step_size_spinbox.grid(column=4, row=9, sticky="nsew")
+XY_Step_size_label.grid(column=0, row=15, sticky="nsew")
+XY_Step_size_spinbox.grid(column=1, row=15, sticky="nsew")
 
-XY_Speed_label.grid(column=3, row=10, sticky="nsew")
-XY_Speed_spinbox.grid(column=4, row=10, sticky="nsew")
+XY_Speed_label.grid(column=0, row=16, sticky="nsew")
+XY_Speed_spinbox.grid(column=1, row=16, sticky="nsew")
 
-XY_Acceleration_label.grid(column=3, row=11, sticky="nsew")
-XY_Acceleration_spinbox.grid(column=4, row=11, sticky="nsew")
+XY_Acceleration_label.grid(column=0, row=17, sticky="nsew")
+XY_Acceleration_spinbox.grid(column=1, row=17, sticky="nsew")
 
-Z_control_label.grid(column=3, row=12, columnspan=2, sticky="nsew")
+Z_control_label.grid(column=0, row=18, columnspan=2, sticky="nsew")
 
-Z_pos_label.grid(column=3, row=13, sticky="nsew")
-Z_pos_textblock.grid(column=4, row=13, sticky="nsew")
+Z_pos_label.grid(column=0, row=19, sticky="nsew")
+Z_pos_textblock.grid(column=1, row=19, sticky="nsew")
 
-Im_Z_pos_label.grid(column=3, row=14, sticky="nsew")
-Im_Z_pos_spinbox.grid(column=4, row=14, sticky="nsew")
+# Im_Z_pos_label.grid(column=3, row=14, sticky="nsew")
+# Im_Z_pos_spinbox.grid(column=4, row=14, sticky="nsew")
 
-Go_to_Z_button.grid(column=3, row=15, columnspan=2, sticky="nsew")
+# Go_to_Z_button.grid(column=3, row=15, columnspan=2, sticky="nsew")
 
-Z_Up_button.grid(column=3, row=16, columnspan=2, sticky="nsew")
-Z_Down_button.grid(column=3, row=17, columnspan=2, sticky="nsew")
+Z_Up_button.grid(column=0, row=20, columnspan=2, sticky="nsew")
+Z_Down_button.grid(column=0, row=21, columnspan=2, sticky="nsew")
 
-Z_Step_size_label.grid(column=3, row=18, sticky="nsew")
-Z_Step_size_spinbox.grid(column=4, row=18, sticky="nsew")
+Z_Step_size_label.grid(column=0, row=22, sticky="nsew")
+Z_Step_size_spinbox.grid(column=1, row=22, sticky="nsew")
 
-Z_Speed_label.grid(column=3, row=19, sticky="nsew")
-Z_Speed_spinbox.grid(column=4, row=19, sticky="nsew")
+Z_Speed_label.grid(column=0, row=23, sticky="nsew")
+Z_Speed_spinbox.grid(column=1, row=23, sticky="nsew")
 
-Z_Acceleration_label.grid(column=3, row=20, sticky="nsew")
-Z_Acceleration_spinbox.grid(column=4, row=20, sticky="nsew")
+Z_Acceleration_label.grid(column=0, row=24, sticky="nsew")
+Z_Acceleration_spinbox.grid(column=1, row=24, sticky="nsew")
 
-Angle_control_label.grid(column=3, row=21, columnspan=2, sticky="nsew")
+Angle_control_label.grid(column=0, row=25, columnspan=2, sticky="nsew")
 
-Angle_label.grid(column=3, row=22, sticky="nsew")
-Angle_textblock.grid(column=4, row=22, sticky="nsew")
+Angle_label.grid(column=0, row=26, sticky="nsew")
+Angle_textblock.grid(column=1, row=26, sticky="nsew")
 
-Im_Angle_label.grid(column=3, row=23, sticky="nsew")
-Im_Angle_spinbox.grid(column=4, row=23, sticky="nsew")
+# Im_Angle_label.grid(column=3, row=23, sticky="nsew")
+# Im_Angle_spinbox.grid(column=4, row=23, sticky="nsew")
 
-Go_to_Angle_button.grid(column=3, row=24, columnspan=2, sticky="nsew")
+# Go_to_Angle_button.grid(column=3, row=24, columnspan=2, sticky="nsew")
 
-Angle_Up_button.grid(column=3, row=25, columnspan=2, sticky="nsew")
-Angle_Down_button.grid(column=3, row=26, columnspan=2, sticky="nsew")
+Angle_Up_button.grid(column=1, row=27, sticky="nsew")
+Angle_Down_button.grid(column=0, row=27, sticky="nsew")
 
-Angle_Step_size_label.grid(column=3, row=27, sticky="nsew")
-Angle_Step_size_spinbox.grid(column=4, row=27, sticky="nsew")
+Angle_Step_size_label.grid(column=0, row=28, sticky="nsew")
+Angle_Step_size_spinbox.grid(column=1, row=28, sticky="nsew")
 
-Angle_Speed_label.grid(column=3, row=28, sticky="nsew")
-Angle_Speed_spinbox.grid(column=4, row=28, sticky="nsew")
+Angle_Speed_label.grid(column=0, row=29, sticky="nsew")
+Angle_Speed_spinbox.grid(column=1, row=29, sticky="nsew")
 
-Angle_Acceleration_label.grid(column=3, row=29, sticky="nsew")
-Angle_Acceleration_spinbox.grid(column=4, row=29, sticky="nsew")
+Angle_Acceleration_label.grid(column=0, row=30, sticky="nsew")
+Angle_Acceleration_spinbox.grid(column=1, row=30, sticky="nsew")
 
-Filler1.grid(column=3, row=30)
-Filler2.grid(column=3, row=31)
+# Filler1.grid(column=3, row=30)
+# Filler2.grid(column=3, row=31)
 
-KIM_Prior_seperator.grid(column=5, row=0, padx=5, rowspan=30, sticky="ns")
+KIM_Prior_seperator.grid(column=2, row=9, padx=5, rowspan=31, sticky="ns")
 
 ##Prior
-Prior_title.grid(column=6, row=0, columnspan=2, sticky="nsew")
+Prior_title.grid(column=3, row=9, columnspan=2, sticky="nsew")
 
-Prior_XY_control_label.grid(column=6, row=1, columnspan=2, sticky="nsew")
-Prior_XY_control_label.grid_propagate(False)
+Prior_XY_control_label.grid(column=3, row=10, columnspan=2, sticky="nsew")
 
-Prior_X_pos_label.grid(column=6, row=2, sticky="nsew")
-Prior_X_pos_textblock.grid(column=7, row=2, sticky="nsew")
+Prior_X_pos_label.grid(column=3, row=11, sticky="nsew")
+Prior_X_pos_textblock.grid(column=4, row=11, sticky="nsew")
 
-Prior_Y_pos_label.grid(column=6, row=3, sticky="ew")
-Prior_Y_pos_textblock.grid(column=7, row=3, sticky="ew")
+Prior_Y_pos_label.grid(column=3, row=12, sticky="ew")
+Prior_Y_pos_textblock.grid(column=4, row=12, sticky="ew")
 
-Prior_Im_X_pos_label.grid(column=6, row=4, sticky="nsew")
-Prior_Im_X_pos_spinbox.grid(column=7, row=4, sticky="nsew")
+# Prior_Im_X_pos_label.grid(column=3, row=4, sticky="nsew")
+# Prior_Im_X_pos_spinbox.grid(column=4, row=4, sticky="nsew")
 
-Prior_Im_Y_pos_label.grid(column=6, row=5, sticky="nsew")
-Prior_Im_Y_pos_spinbox.grid(column=7, row=5, sticky="nsew")
+# Prior_Im_Y_pos_label.grid(column=3, row=5, sticky="nsew")
+# Prior_Im_Y_pos_spinbox.grid(column=4, row=5, sticky="nsew")
 
-Prior_Go_to_XY_button.grid(column=6, row=6, columnspan=2, sticky="nsew")
+# Prior_Go_to_XY_button.grid(column=3, row=3, columnspan=2, sticky="nsew")
 
-Prior_Up_button.grid(column=6, row=7, sticky="nsew")
-Prior_Down_button.grid(column=6, row=8, sticky="nsew")
-Prior_Right_button.grid(column=7, row=7, sticky="nsew")
-Prior_Left_button.grid(column=7, row=8, sticky="nsew")
+Prior_Up_button.grid(column=3, row=13, sticky="nsew")
+Prior_Down_button.grid(column=3, row=14, sticky="nsew")
+Prior_Right_button.grid(column=4, row=13, sticky="nsew")
+Prior_Left_button.grid(column=4, row=14, sticky="nsew")
 
-Prior_XY_Step_size_label.grid(column=6, row=9, sticky="nsew")
-Prior_XY_Step_size_spinbox.grid(column=7, row=9, sticky="nsew")
+Prior_XY_Step_size_label.grid(column=3, row=15, sticky="nsew")
+Prior_XY_Step_size_spinbox.grid(column=4, row=15, sticky="nsew")
 
-Prior_XY_Speed_label.grid(column=6, row=10, sticky="nsew")
-Prior_XY_Speed_spinbox.grid(column=7, row=10, sticky="nsew")
+Prior_XY_Speed_label.grid(column=3, row=16, sticky="nsew")
+Prior_XY_Speed_spinbox.grid(column=4, row=16, sticky="nsew")
 
-Prior_XY_Acceleration_label.grid(column=6, row=11, sticky="nsew")
-Prior_XY_Acceleration_spinbox.grid(column=7, row=11, sticky="nsew")
+Prior_XY_Acceleration_label.grid(column=3, row=17, sticky="nsew")
+Prior_XY_Acceleration_spinbox.grid(column=4, row=17, sticky="nsew")
 
-Prior_Z_control_label.grid(column=6, row=12, columnspan=2, sticky="nsew")
+Prior_Z_control_label.grid(column=3, row=18, columnspan=2, sticky="nsew")
 
-Prior_Z_pos_label.grid(column=6, row=13, sticky="nsew")
-Prior_Z_pos_textblock.grid(column=7, row=13, sticky="nsew")
+Prior_Z_pos_label.grid(column=3, row=19, sticky="nsew")
+Prior_Z_pos_textblock.grid(column=4, row=19, sticky="nsew")
 
-Prior_Im_Z_pos_label.grid(column=6, row=14, sticky="nsew")
-Prior_Im_Z_pos_spinbox.grid(column=7, row=14, sticky="nsew")
+# Prior_Im_Z_pos_label.grid(column=3, row=14, sticky="nsew")
+# Prior_Im_Z_pos_spinbox.grid(column=4, row=14, sticky="nsew")
 
-Prior_Go_to_Z_button.grid(column=6, row=15, columnspan=2, sticky="nsew")
+# Prior_Go_to_Z_button.grid(column=3, row=15, columnspan=2, sticky="nsew")
 
-Prior_Z_Up_button.grid(column=6, row=16, columnspan=2, sticky="nsew")
-Prior_Z_Down_button.grid(column=6, row=17, columnspan=2, sticky="nsew")
+Prior_Z_Up_button.grid(column=3, row=20, columnspan=2, sticky="nsew")
+Prior_Z_Down_button.grid(column=3, row=21, columnspan=2, sticky="nsew")
 
-Prior_Z_Step_size_label.grid(column=6, row=18, sticky="nsew")
-Prior_Z_Step_size_spinbox.grid(column=7, row=18, sticky="nsew")
+Prior_Z_Step_size_label.grid(column=3, row=22, sticky="nsew")
+Prior_Z_Step_size_spinbox.grid(column=4, row=22, sticky="nsew")
 
-Prior_Z_Speed_label.grid(column=6, row=19, sticky="nsew")
-Prior_Z_Speed_spinbox.grid(column=7, row=19, sticky="nsew")
+Prior_Z_Speed_label.grid(column=3, row=23, sticky="nsew")
+Prior_Z_Speed_spinbox.grid(column=4, row=23, sticky="nsew")
 
-Prior_Z_Acceleration_label.grid(column=6, row=20, sticky="nsew")
-Prior_Z_Acceleration_spinbox.grid(column=7, row=20, sticky="nsew")
+Prior_Z_Acceleration_label.grid(column=3, row=24, sticky="nsew")
+Prior_Z_Acceleration_spinbox.grid(column=4, row=24, sticky="nsew")
 
-#Variable update call 
+#Variable update call
 root.after(1000, update_T_current)
 
 root.after(250, update_X_pos_string)
 root.after(250, update_Y_pos_string)
 root.after(250, update_Z_pos_string)
 root.after(250, update_Angle_string)
-
 
 root.after(250, Prior_update_X_pos_string)
 root.after(250, Prior_update_Y_pos_string)

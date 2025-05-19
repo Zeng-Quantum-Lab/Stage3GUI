@@ -77,20 +77,35 @@ class kim:
             print(e)
 
     def go_to_Xpos(self, new_x):
-        self.device.MoveTo(self.x_motor, new_x, 1000)
-    
+        try:
+            self.device.MoveTo(self.x_motor, new_x, 1000)
+        except Exception as e:
+            print(e)
+
     def go_to_Ypos(self, new_y):
-        self.device.MoveTo(self.y_motor, new_y, 1000)
-    
+        try:
+            self.device.MoveTo(self.y_motor, new_y, 1000)
+        except Exception as e:
+            print(e)
+
     def go_to_Zpos(self, new_z):
-        self.device.MoveTo(self.z_motor, new_z, 1000)
-    
+        try:
+            self.device.MoveTo(self.z_motor, new_z, 1000)
+        except Exception as e:
+            print(e)
+
     def go_to_Angle(self, new_angle):
-        self.device.MoveTo(self.angle_motor, new_angle, 1000)
+        try:
+            self.device.MoveTo(self.angle_motor, new_angle, 1000)
+        except Exception as e:
+            print(e)
 
     def disconnect(self):
-        self.device.StopPolling()
-        self.device.Disconnect()
+        try:
+            self.device.StopPolling()
+            self.device.Disconnect()
+        except Exception as e:
+            print(e)
 
 
         
