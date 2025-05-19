@@ -1,5 +1,3 @@
-import instruments as ik
-import instruments.units as u
 from ctypes import WinDLL, create_string_buffer
 import clr
 import os
@@ -10,11 +8,15 @@ from tkinter import ttk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import random #debug
-import prior
+from prior import prior
+from kim import kim
+import instruments as ik
+import instruments.units as u
 
 #Machine variable initialization (Change COM port here)
 # tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
 # pr = prior(5, r"D:\Projects\App\PriorThorLabGUI\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\x64\PriorScientificSDK.dll")
+
 
 #Constant declaration
 Temperature_PID_Max = 100
@@ -34,7 +36,7 @@ Speed_min = -10000
 
 # Window declaration
 root = Tk() 
-fig = Figure(figsize=(5,2), dpi = 70)
+fig = Figure(figsize=(3,5), dpi = 55)
 
 #Variable declaration ##################################
 ##TC200
@@ -45,10 +47,12 @@ curr_time = 0
 time_list = [0]
 T_current_list = [T_current]
 plot1 = fig.add_subplot(111)
-plot1.plot(time_list, T_current_list)
+plot1.plot(time_list, T_current_list, "red")
 
 T_set = IntVar()
 T_set.set(20)
+
+T_set_List = [T_set.get()]
 
 P_value = 0
 I_value = 0
@@ -98,7 +102,9 @@ def update_T_current(*args):
         curr_time += 1
         time_list.append(curr_time)
         T_current_list.append(T_current)
-        plot1.plot(time_list, T_current_list)
+        T_set_List.append(T_set.get())
+        plot1.plot(time_list, T_current_list, "red")
+        plot1.plot(time_list, T_set_List, "blue")
         canvas.draw()
     else:
         T_current_list[-1] = T_current
@@ -614,14 +620,11 @@ Prior_Im_Z_pos_string = StringVar()
 Prior_Im_Z_pos_string.set(0)
 # GUI Setting ###################################################
 root.title("PriorThorLab")
-root.columnconfigure(0, weight=1)
-root.columnconfigure(1, weight=1)
+root.columnconfigure(0, weight=3)
+root.columnconfigure(1, weight=3)
 root.columnconfigure(2, weight=0)
 root.columnconfigure(3, weight=1)
-root.columnconfigure(4, weight=1)
-# root.columnconfigure(5, weight=1)
-# root.columnconfigure(6, weight=1)
-# root.columnconfigure(7, weight=1)
+root.columnconfigure(4, weight=3)
 
 root.rowconfigure(0, weight=1)
 root.rowconfigure(1, weight=1)
@@ -657,30 +660,45 @@ root.rowconfigure(30, weight=1)
 root.rowconfigure(31, weight=1)
 
 ##TC200
-T_title = Label(root, text="TC200 CONTROLLER", font=5)
 
-T_current_label = Label(root, text="T_Current")
-T_current_textblock = Label(root, textvariable=T_current_string, borderwidth=1, relief="groove")
+TC_frame = Frame(root)
 
-T_set_label = Label(root, text="T_Set")
-T_set_text = Entry(root, textvariable=T_set_string, validate="focusout", validatecommand=update_T_set_text)
+TC_frame.columnconfigure(0, weight=1)
+TC_frame.columnconfigure(1, weight=1)
+
+TC_frame.rowconfigure(0, weight=1)
+TC_frame.rowconfigure(1, weight=1)
+TC_frame.rowconfigure(2, weight=1)
+TC_frame.rowconfigure(3, weight=1)
+TC_frame.rowconfigure(4, weight=1)
+TC_frame.rowconfigure(5, weight=1)
+TC_frame.rowconfigure(6, weight=1)
+TC_frame.rowconfigure(7, weight=1)
+
+T_title = Label(TC_frame, text="TC200 CONTROLLER", font=5)
+
+T_current_label = Label(TC_frame, text="T_Current")
+T_current_textblock = Label(TC_frame, textvariable=T_current_string, borderwidth=1, relief="groove")
+
+T_set_label = Label(TC_frame, text="T_Set")
+T_set_text = Entry(TC_frame, textvariable=T_set_string, validate="focusout", validatecommand=update_T_set_text)
 T_set_string.trace_add("write", update_T_set_text)
-T_set_slider = Scale(root, from_=20, to=150, orient="horizontal", variable=T_set, command=update_T_set, length=300)
+T_set_slider = Scale(TC_frame, from_=20, to=150, orient="horizontal", variable=T_set, command=update_T_set)
 
-P_value_label = Label(root, text="P")
-P_value_spinbox = Spinbox(root, textvariable=P_value_string, from_=Temperature_PID_Min, to=Temperature_PID_Max, command=update_P_value)
+P_value_label = Label(TC_frame, text="P")
+P_value_spinbox = Spinbox(TC_frame, textvariable=P_value_string, from_=Temperature_PID_Min, to=Temperature_PID_Max, command=update_P_value)
 P_value_string.trace_add("write", update_P_value_text)
 
-I_value_label = Label(root, text="I")
-I_value_spinbox = Spinbox(root, textvariable=I_value_string, from_=Temperature_PID_Min, to=Temperature_PID_Max, command=update_I_value)
+I_value_label = Label(TC_frame, text="I")
+I_value_spinbox = Spinbox(TC_frame, textvariable=I_value_string, from_=Temperature_PID_Min, to=Temperature_PID_Max, command=update_I_value)
 I_value_string.trace_add("write", update_I_value_text)
 
-D_value_label = Label(root, text="D")
-D_value_spinbox = Spinbox(root, textvariable=D_value_string, from_=Temperature_PID_Min, to=Temperature_PID_Max, command=update_D_value)
+D_value_label = Label(TC_frame, text="D")
+D_value_spinbox = Spinbox(TC_frame, textvariable=D_value_string, from_=Temperature_PID_Min, to=Temperature_PID_Max, command=update_D_value)
 D_value_string.trace_add("write", update_D_value_text)
 
-Start_plot_button = Button(root, text="Start Plot", command=start_temp)
-Stop_plot_button = Button(root, text="Stop Plot", command=stop_temp)
+Start_plot_button = Button(TC_frame, text="Start Plot", command=start_temp)
+Stop_plot_button = Button(TC_frame, text="Stop Plot", command=stop_temp)
 # Reset_plot_button = Button(root, text="Reset Plot", command=reset_plot)
 
 temp_KIM_seperator = ttk.Separator(root, orient="vertical")
@@ -707,10 +725,12 @@ XY_Acceleration_label = Label(root, text="Acceleration (um/s2)")
 XY_Acceleration_spinbox = Spinbox(root, textvariable=XY_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=update_XY_Acceleration)
 XY_Acceleration_string.trace_add("write", update_XY_Acceleration_text)
 
-Left_button = Button(root, text="<", command=left_X_pos)
-Right_button = Button(root, text=">", command=right_X_pos)
-Up_button = Button(root, text="^", command=up_Y_pos)
-Down_button = Button(root, text="v", command=down_Y_pos)
+TC_button_frame = Frame(root)
+
+Left_button = Button(TC_button_frame, text="←", command=left_X_pos, font=5, width=2)
+Right_button = Button(TC_button_frame, text="→", command=right_X_pos, font=5,width=2)
+Up_button = Button(TC_button_frame, text="↑", command=up_Y_pos, font=5, width=2)
+Down_button = Button(TC_button_frame, text="↓", command=down_Y_pos, font=5, width=2)
 
 Im_X_pos_label = Label(root, text="Go to X pos (um)")
 Im_X_pos_spinbox = Spinbox(root, textvariable=Im_X_pos_string, from_=Pos_min, to=Pos_max)
@@ -724,8 +744,8 @@ Z_control_label = Label(root, text="Z AXIS CONTROL", height=2)
 Z_pos_label = Label(root, text="Z Position")
 Z_pos_textblock = Label(root, textvariable=Z_pos_string, borderwidth=1, relief="groove")
 
-Z_Up_button = Button(root, text="^", command=up_Z_pos)
-Z_Down_button = Button(root, text="v", command=down_Z_pos)
+Z_Up_button = Button(root, text="↑", command=up_Z_pos)
+Z_Down_button = Button(root, text="↓", command=down_Z_pos)
 
 Z_Step_size_label = Label(root, text="Step Size (um)")
 Z_Step_size_spinbox = Spinbox(root, textvariable=Z_Step_size_string, from_=Step_size_min, to=Step_size_max, command=update_Z_Step_size)
@@ -749,8 +769,8 @@ Angle_control_label = Label(root, text="ANGLE CONTROL")
 Angle_label = Label(root, text="Angle Degree")
 Angle_textblock = Label(root, textvariable=Angle_string, borderwidth=1, relief="groove")
 
-Angle_Up_button = Button(root, text=">", command=up_Angle)
-Angle_Down_button = Button(root, text="<", command=down_Angle)
+Angle_Up_button = Button(root, text="↷", command=up_Angle)
+Angle_Down_button = Button(root, text="↶", command=down_Angle)
 
 Angle_Step_size_label = Label(root, text="Step Size (um)")
 Angle_Step_size_spinbox = Spinbox(root, textvariable=Angle_Step_size_string, from_=Step_size_min, to=Step_size_max, command=update_Angle_Step_size)
@@ -776,12 +796,12 @@ KIM_Prior_seperator = ttk.Separator(root, orient="vertical")
 ##Prior
 Prior_title = Label(root, text="PRIOR CONTROLLER", font=5)
 
-Prior_XY_control_label = Label(root, text="XY AXIS CONTROL", height=2)
+Prior_XY_control_label = Label(root, text="XY AXIS CONTROL")
 Prior_X_pos_label = Label(root, text="X Position")
-Prior_X_pos_textblock = Label(root, textvariable=Prior_X_pos_string, borderwidth=1, relief="groove")
+Prior_X_pos_textblock = Label(root, borderwidth=1,textvariable=Prior_X_pos_string, relief="groove")
 
 Prior_Y_pos_label = Label(root, text="Y Position")
-Prior_Y_pos_textblock = Label(root, textvariable=Prior_Y_pos_string, borderwidth=1, relief="groove")
+Prior_Y_pos_textblock = Label(root, borderwidth=1,textvariable=Prior_Y_pos_string, relief="groove")
 
 Prior_XY_Step_size_label = Label(root, text="Step Size (um)")
 Prior_XY_Step_size_spinbox = Spinbox(root, textvariable=Prior_XY_Step_size_string, from_=Step_size_min, to=Step_size_max, command=Prior_update_XY_Step_size)
@@ -795,10 +815,12 @@ Prior_XY_Acceleration_label = Label(root, text="Acceleration (um/s2)")
 Prior_XY_Acceleration_spinbox = Spinbox(root, textvariable=Prior_XY_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=Prior_update_XY_Acceleration)
 Prior_XY_Acceleration_string.trace_add("write", Prior_update_XY_Acceleration_text)
 
-Prior_Left_button = Button(root, text="<", command=Prior_left_X_pos)
-Prior_Right_button = Button(root, text=">", command=Prior_right_X_pos)
-Prior_Up_button = Button(root, text="^", command=Prior_up_Y_pos)
-Prior_Down_button = Button(root, text="v", command=Prior_down_Y_pos)
+Prior_button_frame = Frame(root)
+
+Prior_Left_button = Button(Prior_button_frame, text="←", command=left_X_pos, font=5)
+Prior_Right_button = Button(Prior_button_frame, text="→", command=right_X_pos, font=5)
+Prior_Up_button = Button(Prior_button_frame, text="↑", command=up_Y_pos, font=5, width=2)
+Prior_Down_button = Button(Prior_button_frame, text="↓", command=down_Y_pos, font=5, width=2)
 
 Prior_Im_X_pos_label = Label(root, text="Go to X pos (um)")
 Prior_Im_X_pos_spinbox = Spinbox(root, textvariable=Prior_Im_X_pos_string, from_=Pos_min, to=Pos_max)
@@ -808,12 +830,12 @@ Prior_Im_Y_pos_spinbox = Spinbox(root, textvariable=Prior_Im_Y_pos_string, from_
 
 Prior_Go_to_XY_button = Button(root, text="Go to determined position", command=Prior_update_XY_pos)
 
-Prior_Z_control_label = Label(root, text="Z AXIS CONTROL", height=2)
+Prior_Z_control_label = Label(root, text="Z AXIS CONTROL")
 Prior_Z_pos_label = Label(root, text="Z Position")
-Prior_Z_pos_textblock = Label(root, textvariable=Prior_Z_pos_string, borderwidth=1, relief="groove")
+Prior_Z_pos_textblock = Label(root, borderwidth=1, textvariable=Prior_Z_pos_string, relief="groove")
 
-Prior_Z_Up_button = Button(root, text="^", command=Prior_up_Z_pos)
-Prior_Z_Down_button = Button(root, text="v", command=Prior_down_Z_pos)
+Prior_Z_Up_button = Button(root, text="↑", command=Prior_up_Z_pos)
+Prior_Z_Down_button = Button(root, text="↓", command=Prior_down_Z_pos)
 
 Prior_Z_Step_size_label = Label(root, text="Step Size (um)")
 Prior_Z_Step_size_spinbox = Spinbox(root, textvariable=Prior_Z_Step_size_string, from_=Step_size_min, to=Step_size_max, command=Prior_update_Z_Step_size)
@@ -836,29 +858,33 @@ Prior_Go_to_Z_button = Button(root, text="Go to determined position", command=Pr
 root.grid_propagate(True)
 
 ##TC200
-T_title.grid(column=0, row=0, columnspan=5, sticky="nsew")
 
-canvas.get_tk_widget().grid(column=0, row=1, columnspan=5, sticky="nsew")
+
+canvas.get_tk_widget().grid(column=0, row=1, columnspan=4, rowspan=6, sticky="nsew")
 # canvas.get_tk_widget().grid_propagate(False)
 
-T_current_label.grid(column=0, row=2, columnspan=2, sticky="ew")
-T_current_textblock.grid(column=3, columnspan=2,row=2,sticky="ew")
+TC_frame.grid(column=4,row=0, sticky="nsew", rowspan=7)
 
-T_set_label.grid(column=0, columnspan=2, row=3, sticky="nsew")
-T_set_text.grid(column=3, columnspan=2, row=3, sticky="nsew")
-T_set_slider.grid(columnspan=5, column=0, row=4)
+T_title.grid(column=0, row=0, columnspan=2, sticky="nsew")
 
-P_value_label.grid(column=0, columnspan=2,row=5, sticky="nsew")
-P_value_spinbox.grid(column=3, columnspan=2, row=5, sticky="nsew")
+T_current_label.grid(column=0, row=1, sticky="nsew")
+T_current_textblock.grid(column=1,row=1,sticky="nsew")
 
-I_value_label.grid(column=0, columnspan=2, row=6, sticky="nsew")
-I_value_spinbox.grid(column=3, columnspan=2, row=6, sticky="nsew")
+T_set_label.grid(column=0, row=2, sticky="nsew")
+T_set_text.grid(column=1, row=2, sticky="nsew")
+T_set_slider.grid(columnspan=2, column=0, row=3)
 
-D_value_label.grid(column=0, columnspan=2, row=7, sticky="nsew")
-D_value_spinbox.grid(column=3, columnspan=2,row=7, sticky="nsew")
+P_value_label.grid(column=0, row=4, sticky="nsew")
+P_value_spinbox.grid(column=1, row=4, sticky="nsew")
 
-Start_plot_button.grid(column=0, columnspan=2, row=8, sticky="nsew")
-Stop_plot_button.grid(column=3, columnspan=2, row=8, sticky="nsew")
+I_value_label.grid(column=0, row=5, sticky="nsew")
+I_value_spinbox.grid(column=1, row=5, sticky="nsew")
+
+D_value_label.grid(column=0, row=6, sticky="nsew")
+D_value_spinbox.grid(column=1, row=6, sticky="nsew")
+
+Start_plot_button.grid(column=0, row=7, sticky="nsew")
+Stop_plot_button.grid(column=1, row=7, sticky="nsew")
 # Reset_plot_button.grid(column=0, columnspan=2, row=9, sticky="nsew")
 
 # temp_KIM_seperator.grid(column=2, row=0, padx=5, rowspan=30, sticky="ns")
@@ -882,10 +908,12 @@ Y_pos_textblock.grid(column=1, row=12, sticky="ew")
 
 # Go_to_XY_button.grid(column=3, row=6, columnspan=2, sticky="nsew")
 
-Up_button.grid(column=0, row=13, sticky="nsew")
-Down_button.grid(column=0, row=14, sticky="nsew")
-Right_button.grid(column=1, row=13, sticky="nsew")
-Left_button.grid(column=1, row=14, sticky="nsew")
+TC_button_frame.grid(column=0, row=13, rowspan=2, columnspan=2)
+
+Up_button.grid(column=1, row=0, sticky="nsew")
+Down_button.grid(column=1, row=2, sticky="nsew")
+Right_button.grid(column=2, row=1, sticky="nsew")
+Left_button.grid(column=0, row=1, sticky="nsew")
 
 XY_Step_size_label.grid(column=0, row=15, sticky="nsew")
 XY_Step_size_spinbox.grid(column=1, row=15, sticky="nsew")
@@ -953,8 +981,8 @@ Prior_XY_control_label.grid(column=3, row=10, columnspan=2, sticky="nsew")
 Prior_X_pos_label.grid(column=3, row=11, sticky="nsew")
 Prior_X_pos_textblock.grid(column=4, row=11, sticky="nsew")
 
-Prior_Y_pos_label.grid(column=3, row=12, sticky="ew")
-Prior_Y_pos_textblock.grid(column=4, row=12, sticky="ew")
+Prior_Y_pos_label.grid(column=3, row=12, sticky="nsew")
+Prior_Y_pos_textblock.grid(column=4, row=12, sticky="nsew")
 
 # Prior_Im_X_pos_label.grid(column=3, row=4, sticky="nsew")
 # Prior_Im_X_pos_spinbox.grid(column=4, row=4, sticky="nsew")
@@ -964,10 +992,20 @@ Prior_Y_pos_textblock.grid(column=4, row=12, sticky="ew")
 
 # Prior_Go_to_XY_button.grid(column=3, row=3, columnspan=2, sticky="nsew")
 
-Prior_Up_button.grid(column=3, row=13, sticky="nsew")
-Prior_Down_button.grid(column=3, row=14, sticky="nsew")
-Prior_Right_button.grid(column=4, row=13, sticky="nsew")
-Prior_Left_button.grid(column=4, row=14, sticky="nsew")
+Prior_button_frame.rowconfigure(0, weight=1)
+Prior_button_frame.rowconfigure(1, weight=1)
+Prior_button_frame.rowconfigure(2, weight=1)
+
+Prior_button_frame.columnconfigure(0, weight=1)
+Prior_button_frame.columnconfigure(1, weight=1)
+Prior_button_frame.columnconfigure(2, weight=1)
+
+Prior_button_frame.grid(column=3, row=13, rowspan=2, columnspan=2)
+
+Prior_Up_button.grid(column=1, row=0, sticky="nsew")
+Prior_Down_button.grid(column=1, row=2, sticky="nsew")
+Prior_Right_button.grid(column=2, row=1, sticky="nsew")
+Prior_Left_button.grid(column=0, row=1, sticky="nsew")
 
 Prior_XY_Step_size_label.grid(column=3, row=15, sticky="nsew")
 Prior_XY_Step_size_spinbox.grid(column=4, row=15, sticky="nsew")
