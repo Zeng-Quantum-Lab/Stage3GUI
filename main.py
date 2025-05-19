@@ -13,8 +13,8 @@ import random #debug
 import prior
 
 #Machine variable initialization (Change COM port here)
-tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
-pr = prior(5, r"D:\Projects\App\PriorThorLabGUI\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\x64\PriorScientificSDK.dll")
+# tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
+# pr = prior(5, r"D:\Projects\App\PriorThorLabGUI\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\x64\PriorScientificSDK.dll")
 
 #Constant declaration
 Temperature_PID_Max = 100
