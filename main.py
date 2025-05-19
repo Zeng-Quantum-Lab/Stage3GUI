@@ -9,7 +9,12 @@ from tkinter import *
 from tkinter import ttk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-import random
+import random #debug
+import prior
+
+#Machine variable initialization (Change COM port here)
+tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
+pr = prior(5, r"D:\Projects\App\PriorThorLabGUI\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\x64\PriorScientificSDK.dll")
 
 #Constant declaration
 Temperature_PID_Max = 100
@@ -648,6 +653,8 @@ root.rowconfigure(26, weight=1)
 root.rowconfigure(27, weight=1)
 root.rowconfigure(28, weight=1)
 root.rowconfigure(29, weight=1)
+root.rowconfigure(30, weight=1)
+root.rowconfigure(31, weight=1)
 
 ##TC200
 T_title = Label(root, text="TC200 CONTROLLER", font=5)
@@ -762,6 +769,9 @@ Im_Angle_spinbox = Spinbox(root, textvariable=Im_Angle_string, from_=Pos_min, to
 
 Go_to_Angle_button = Button(root, text="Go to determined position", command=update_Angle)
 
+Filler1 = Label(root, text="")
+Filler2 = Label(root, text="")
+
 KIM_Prior_seperator = ttk.Separator(root, orient="vertical")
 ##Prior
 Prior_title = Label(root, text="PRIOR CONTROLLER", font=5)
@@ -823,10 +833,13 @@ Prior_Im_Z_pos_spinbox = Spinbox(root, textvariable=Prior_Im_Z_pos_string, from_
 Prior_Go_to_Z_button = Button(root, text="Go to determined position", command=Prior_update_Z_pos)
 
 #GUI Placement ######################################################
+root.grid_propagate(True)
+
 ##TC200
 T_title.grid(column=0, row=0, columnspan=2, sticky="nsew")
 
-canvas.get_tk_widget().grid(column=0, row=1, columnspan=2)
+canvas.get_tk_widget().grid(column=0, row=1, columnspan=2, sticky="nsew")
+# canvas.get_tk_widget().grid_propagate(False)
 
 T_current_label.grid(column=0, row=2, sticky="ew")
 T_current_textblock.grid(column=1, row=2,sticky="ew")
@@ -854,7 +867,6 @@ temp_KIM_seperator.grid(column=2, row=0, padx=5, rowspan=30, sticky="ns")
 KIM_title.grid(column=3, row=0, columnspan=2, sticky="nsew")
 
 XY_control_label.grid(column=3, row=1, columnspan=2, sticky="ew")
-XY_control_label.grid_propagate(False)
 
 X_pos_label.grid(column=3, row=2, sticky="nsew")
 X_pos_textblock.grid(column=4, row=2, sticky="nsew")
@@ -927,6 +939,9 @@ Angle_Speed_spinbox.grid(column=4, row=28, sticky="nsew")
 
 Angle_Acceleration_label.grid(column=3, row=29, sticky="nsew")
 Angle_Acceleration_spinbox.grid(column=4, row=29, sticky="nsew")
+
+Filler1.grid(column=3, row=30)
+Filler2.grid(column=3, row=31)
 
 KIM_Prior_seperator.grid(column=5, row=0, padx=5, rowspan=30, sticky="ns")
 
