@@ -9,6 +9,7 @@ class prior():
         self.port_num = port_num
         self.path = sdk_path
         self.velocity = 0
+
         if os.path.exists(self.path):
             global SDKPrior
             SDKPrior = WinDLL(self.path, winmode=0)
@@ -45,17 +46,16 @@ class prior():
         print(f"api response {ret}, rx = {rx.value.decode()}")
 
         print("controller.connect ", self.port_num)
-        self.cmd("controller.connect ", self.port_num)
+        self.cmd(f"controller.connect {self.port_num}")
 
         self.check_busy()
         position = self.cmd("controller.stage.position.get")
-        position.split(" ")
         
         self.x = int(position[0])
         self.y = int(position[1])
 
 
-    def cmd(msg):
+    def cmd(self, msg):
         print(msg)
         ret = SDKPrior.PriorScientificSDK_cmd(
             sessionID, create_string_buffer(msg.encode()), rx
@@ -90,7 +90,6 @@ class prior():
     def get_curr_pos(self):
         self.check_busy()
         position = self.cmd("controller.stage.position.get")
-        position.split(" ")
         self.x = position[0]
         self.y = position[1]
 

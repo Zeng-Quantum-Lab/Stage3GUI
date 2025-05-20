@@ -38,4 +38,5 @@ print("The current max temperature setting is: ", tc.max_temperature)
 tc.max_power = 1000 * u.mW
 print("The current max power setting is: ", tc.max_power)
 
-tc.mode()
+tc.mode
+print("The current mode is: ", tc.mode)
