@@ -194,7 +194,6 @@ def reset_plot(*args):
     plot1.plot(time_list, T_current_list, "red")
     plot1.plot(time_list, T_set_List, "blue")
     canvas.draw()
-    
 
 ## KIM101
 def update_X_pos_string(*args): #Check with KIM101 API, not global variable (i.e unfinished)
@@ -390,6 +389,32 @@ def update_Angle(*args):
     global Angle
     if (Im_Angle_string.get() != ""):
         Angle = int(Im_Angle_string.get())
+
+def XY_hide_Setting(*args):
+    global XY_More_Setting_displacement
+    XY_More_Setting_displacement = 2
+    XY_More_Setting_frame.grid_forget()
+
+def XY_show_Setting(*args):
+    global XY_More_Setting_displacement
+    XY_More_Setting_displacement = 0
+    XY_More_Setting_frame.grid(column=0, row=16, columnspan=2, rowspan=2, sticky="ns")
+
+def Z_hide_Setting(*args):
+    global Z_More_Setting_displacement
+    Z_More_Setting_displacement = 2
+    Z_More_Setting_frame.grid_forget()
+
+def Z_show_Setting(*args):
+    global Z_More_Setting_displacement
+    Z_More_Setting_displacement = 0
+    Z_More_Setting_frame.grid(column=0, row=23, columnspan=2, rowspan=2, sticky="ns")
+
+def Angle_hide_Setting(*args):
+    global Angle_More_Setting_displacement
+    Angle_More_Setting_displacement = 2
+    Angle_More_Setting_frame.grid_forget()
+
 
 ##Prior
 def Prior_update_X_pos_string(*args): #Check with Prior API, not global variable (i.e unfinished)
