@@ -63,18 +63,25 @@ X_pos = 0 #debug variable
 Y_pos = 0 #debug variable
 
 XY_Step_size = 1
+XY_More_Setting_displacement = 2
+
 XY_Speed = 1
 XY_Acceleration = 1
 
 Z_pos = 0 #debug variable
 
 Z_Step_size = 1
+Z_More_Setting_displacement = 2
+
 Z_Speed = 1
 Z_Acceleration = 1
+
 
 Angle = 0 #debug variable
 
 Angle_Step_size = 1
+Angle_More_Setting_displacement = 2
+
 Angle_Speed = 1
 Angle_Acceleration = 1
 
@@ -83,10 +90,12 @@ Prior_X_pos = 0 #debug variable
 Prior_Y_pos = 0 #debug variable
 
 Prior_XY_Step_size = 1
+Prior_XY_More_Setting_displacement = 2
 Prior_XY_Speed = 1
 Prior_XY_Acceleration = 1
 
 Prior_Z_Step_size = 1
+Prior_Z_More_Setting_displacement = 2
 Prior_Z_Speed = 1
 Prior_Z_Acceleration = 1
 
@@ -623,11 +632,11 @@ Prior_Im_Z_pos_string = StringVar()
 Prior_Im_Z_pos_string.set(0)
 # GUI Setting ###################################################
 root.title("PriorThorLab")
-root.columnconfigure(0, weight=3)
+root.columnconfigure(0, weight=1)
 root.columnconfigure(1, weight=3)
 root.columnconfigure(2, weight=0)
 root.columnconfigure(3, weight=1)
-root.columnconfigure(4, weight=3)
+root.columnconfigure(4, weight=4)
 
 root.rowconfigure(0, weight=1)
 root.rowconfigure(1, weight=1)
@@ -638,7 +647,7 @@ root.rowconfigure(5, weight=1)
 root.rowconfigure(6, weight=1)
 root.rowconfigure(7, weight=1)
 root.rowconfigure(8, weight=1)
-root.rowconfigure(9, weight=2)
+root.rowconfigure(9, weight=1)
 root.rowconfigure(10, weight=1)
 root.rowconfigure(11, weight=1)
 root.rowconfigure(12, weight=1)
@@ -661,6 +670,7 @@ root.rowconfigure(28, weight=1)
 root.rowconfigure(29, weight=1)
 root.rowconfigure(30, weight=1)
 root.rowconfigure(31, weight=1)
+root.rowconfigure(32, weight=1)
 
 ##TC200
 
@@ -732,12 +742,12 @@ XY_Acceleration_label = Label(XY_More_Setting_frame, text="Accel (μm/s²)")
 XY_Acceleration_spinbox = Spinbox(XY_More_Setting_frame, textvariable=XY_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=update_XY_Acceleration)
 XY_Acceleration_string.trace_add("write", update_XY_Acceleration_text)
 
-TC_button_frame = Frame(root)
+KIM_button_frame = Frame(root)
 
-Left_button = Button(TC_button_frame, text="←", command=left_X_pos, font=5, width=2)
-Right_button = Button(TC_button_frame, text="→", command=right_X_pos, font=5,width=2)
-Up_button = Button(TC_button_frame, text="↑", command=up_Y_pos, font=5, width=2)
-Down_button = Button(TC_button_frame, text="↓", command=down_Y_pos, font=5, width=2)
+Left_button = Button(KIM_button_frame, text="←", command=left_X_pos, font=5, width=2)
+Right_button = Button(KIM_button_frame, text="→", command=right_X_pos, font=5,width=2)
+Up_button = Button(KIM_button_frame, text="↑", command=up_Y_pos, font=5, width=2)
+Down_button = Button(KIM_button_frame, text="↓", command=down_Y_pos, font=5, width=2)
 
 Z_control_label = Label(root, text="Z AXIS CONTROL", height=2)
 Z_pos_label = Label(root, text="Z Position")
@@ -746,22 +756,24 @@ Z_pos_textblock = Label(root, textvariable=Z_pos_string, borderwidth=1, relief="
 Z_Up_button = Button(root, text="↑", command=up_Z_pos)
 Z_Down_button = Button(root, text="↓", command=down_Z_pos)
 
-Z_Step_size_label = Label(root, text="Step Size (μm)")
-Z_Step_size_spinbox = Spinbox(root, textvariable=Z_Step_size_string, from_=Step_size_min, to=Step_size_max, command=update_Z_Step_size)
+Z_Setting_frame = Frame(root)
+
+Z_Step_size_label = Label(Z_Setting_frame, text="Size (μm)")
+Z_Step_size_spinbox = Spinbox(Z_Setting_frame, textvariable=Z_Step_size_string, from_=Step_size_min, to=Step_size_max, command=update_Z_Step_size, width=10)
 Z_Step_size_string.trace_add("write", update_Z_Step_size_text)
 
-Z_Speed_label = Label(root, text="Speed (μm/s)")
-Z_Speed_spinbox = Spinbox(root, textvariable=Z_Speed_string, from_=Speed_min, to=Speed_max, command=update_Z_Speed)
+Z_Setting_button = Button(Z_Setting_frame, text="More setting")
+
+Z_More_Setting_frame = Frame(root)
+
+Z_Speed_label = Label(Z_More_Setting_frame, text="Speed (μm/s)")
+Z_Speed_spinbox = Spinbox(Z_More_Setting_frame, textvariable=Z_Speed_string, from_=Speed_min, to=Speed_max, command=update_Z_Speed)
 Z_Speed_string.trace_add("write", update_Z_Speed_text)
 
-Z_Acceleration_label = Label(root, text="Accel (μm/s2)")
-Z_Acceleration_spinbox = Spinbox(root, textvariable=Z_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=update_Z_Acceleration)
+Z_Acceleration_label = Label(Z_More_Setting_frame, text="Accel (μm/s2)")
+Z_Acceleration_spinbox = Spinbox(Z_More_Setting_frame, textvariable=Z_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=update_Z_Acceleration)
 Z_Acceleration_string.trace_add("write", update_Z_Acceleration_text)
 
-Im_Z_pos_label = Label(root, text="Go to Z pos (μm)")
-Im_Z_pos_spinbox = Spinbox(root, textvariable=Im_Z_pos_string, from_=Pos_min, to=Pos_max)
-
-Go_to_Z_button = Button(root, text="Go to determined position", command=update_Z_pos)
 
 Angle_control_label = Label(root, text="ANGLE CONTROL")
 
@@ -771,22 +783,23 @@ Angle_textblock = Label(root, textvariable=Angle_string, borderwidth=1, relief="
 Angle_Up_button = Button(root, text="↷", command=up_Angle)
 Angle_Down_button = Button(root, text="↶", command=down_Angle)
 
-Angle_Step_size_label = Label(root, text="Step Size (μm)")
-Angle_Step_size_spinbox = Spinbox(root, textvariable=Angle_Step_size_string, from_=Step_size_min, to=Step_size_max, command=update_Angle_Step_size)
+Angle_Setting_frame = Frame(root)
+
+Angle_Step_size_label = Label(Angle_Setting_frame, text="Size (μm)")
+Angle_Step_size_spinbox = Spinbox(Angle_Setting_frame, textvariable=Angle_Step_size_string, from_=Step_size_min, to=Step_size_max, command=update_Angle_Step_size, width=10)
 Angle_Step_size_string.trace_add("write", update_Angle_Step_size_text)
 
-Angle_Speed_label = Label(root, text="Speed (μm/s)")
-Angle_Speed_spinbox = Spinbox(root, textvariable=Angle_Speed_string, from_=Speed_min, to=Speed_max, command=update_Angle_Speed)
+Angle_Setting_button = Button(Angle_Setting_frame, text="More setting")
+
+Angle_More_Setting_frame = Frame(root)
+
+Angle_Speed_label = Label(Angle_More_Setting_frame, text="Speed (μm/s)")
+Angle_Speed_spinbox = Spinbox(Angle_More_Setting_frame, textvariable=Angle_Speed_string, from_=Speed_min, to=Speed_max, command=update_Angle_Speed)
 Angle_Speed_string.trace_add("write", update_Angle_Speed_text)
 
-Angle_Acceleration_label = Label(root, text="Accel (μm/s2)")
-Angle_Acceleration_spinbox = Spinbox(root, textvariable=Angle_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=update_Angle_Acceleration)
+Angle_Acceleration_label = Label(Angle_More_Setting_frame, text="Accel (μm/s2)")
+Angle_Acceleration_spinbox = Spinbox(Angle_More_Setting_frame, textvariable=Angle_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=update_Angle_Acceleration)
 Angle_Acceleration_string.trace_add("write", update_Angle_Acceleration_text)
-
-Im_Angle_label = Label(root, text="Go to Angle (degree)")
-Im_Angle_spinbox = Spinbox(root, textvariable=Im_Angle_string, from_=Pos_min, to=Pos_max)
-
-Go_to_Angle_button = Button(root, text="Go to determined position", command=update_Angle)
 
 Filler1 = Label(root, text="")
 Filler2 = Label(root, text="")
@@ -803,17 +816,20 @@ Prior_Y_pos_label = Label(root, text="Y Position")
 Prior_Y_pos_textblock = Label(root, borderwidth=1,textvariable=Prior_Y_pos_string, relief="groove")
 
 Prior_XY_Setting_frame = Frame(root)
+
 Prior_Setting_button = Button(Prior_XY_Setting_frame, text="More setting")
-Prior_XY_Step_size_label = Label(Prior_XY_Setting_frame, text="Step Size (μm)")
-Prior_XY_Step_size_spinbox = Spinbox(Prior_XY_Setting_frame, textvariable=Prior_XY_Step_size_string, from_=Step_size_min, to=Step_size_max, command=Prior_update_XY_Step_size, width=7)
+Prior_XY_Step_size_label = Label(Prior_XY_Setting_frame, text="Size (μm)")
+Prior_XY_Step_size_spinbox = Spinbox(Prior_XY_Setting_frame, textvariable=Prior_XY_Step_size_string, from_=Step_size_min, to=Step_size_max, command=Prior_update_XY_Step_size, width=10)
 Prior_XY_Step_size_string.trace_add("write", Prior_update_XY_Step_size_text)
 
-Prior_XY_Speed_label = Label(root, text="Speed (μm/s)")
-Prior_XY_Speed_spinbox = Spinbox(root, textvariable=Prior_XY_Speed_string, from_=Speed_min, to=Speed_max, command=Prior_update_XY_Speed)
+Prior_XY_More_Setting_frame = Frame(root)
+
+Prior_XY_Speed_label = Label(Prior_XY_More_Setting_frame, text="Speed (μm/s)")
+Prior_XY_Speed_spinbox = Spinbox(Prior_XY_More_Setting_frame, textvariable=Prior_XY_Speed_string, from_=Speed_min, to=Speed_max, command=Prior_update_XY_Speed)
 Prior_XY_Speed_string.trace_add("write", Prior_update_XY_Speed_text)
 
-Prior_XY_Acceleration_label = Label(root, text="Accel (μm/s2)")
-Prior_XY_Acceleration_spinbox = Spinbox(root, textvariable=Prior_XY_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=Prior_update_XY_Acceleration)
+Prior_XY_Acceleration_label = Label(Prior_XY_More_Setting_frame, text="Accel (μm/s2)")
+Prior_XY_Acceleration_spinbox = Spinbox(Prior_XY_More_Setting_frame, textvariable=Prior_XY_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=Prior_update_XY_Acceleration)
 Prior_XY_Acceleration_string.trace_add("write", Prior_update_XY_Acceleration_text)
 
 Prior_button_frame = Frame(root)
@@ -823,14 +839,6 @@ Prior_Right_button = Button(Prior_button_frame, text="→", command=Prior_right_
 Prior_Up_button = Button(Prior_button_frame, text="↑", command=Prior_up_Y_pos, font=5, width=2)
 Prior_Down_button = Button(Prior_button_frame, text="↓", command=Prior_down_Y_pos, font=5, width=2)
 
-Prior_Im_X_pos_label = Label(root, text="Go to X pos (μm)")
-Prior_Im_X_pos_spinbox = Spinbox(root, textvariable=Prior_Im_X_pos_string, from_=Pos_min, to=Pos_max)
-
-Prior_Im_Y_pos_label = Label(root, text="Go to Y pos (μm)")
-Prior_Im_Y_pos_spinbox = Spinbox(root, textvariable=Prior_Im_Y_pos_string, from_=Pos_min, to=Pos_max)
-
-Prior_Go_to_XY_button = Button(root, text="Go to determined position", command=Prior_update_XY_pos)
-
 Prior_Z_control_label = Label(root, text="Z AXIS CONTROL")
 Prior_Z_pos_label = Label(root, text="Z Position")
 Prior_Z_pos_textblock = Label(root, borderwidth=1, textvariable=Prior_Z_pos_string, relief="groove")
@@ -838,31 +846,28 @@ Prior_Z_pos_textblock = Label(root, borderwidth=1, textvariable=Prior_Z_pos_stri
 Prior_Z_Up_button = Button(root, text="↑", command=Prior_up_Z_pos)
 Prior_Z_Down_button = Button(root, text="↓", command=Prior_down_Z_pos)
 
-Prior_Z_Step_size_label = Label(root, text="Step Size (μm)")
-Prior_Z_Step_size_spinbox = Spinbox(root, textvariable=Prior_Z_Step_size_string, from_=Step_size_min, to=Step_size_max, command=Prior_update_Z_Step_size)
-Prior_Z_Step_size_string.trace_add("write", Prior_update_Z_Step_size_text)
+Prior_Z_Setting_frame = Frame(root)
 
-Prior_Z_Speed_label = Label(root, text="Speed (μm/s)")
-Prior_Z_Speed_spinbox = Spinbox(root, textvariable=Prior_Z_Speed_string, from_=Speed_min, to=Speed_max, command=Prior_update_Z_Speed)
+Prior_Z_Step_size_label = Label(Prior_Z_Setting_frame, text="Size (μm)")
+Prior_Z_Step_size_spinbox = Spinbox(Prior_Z_Setting_frame, textvariable=Prior_Z_Step_size_string, from_=Step_size_min, to=Step_size_max, command=Prior_update_Z_Step_size, width=10)
+Prior_Z_Step_size_string.trace_add("write", Prior_update_Z_Step_size_text)
+Prior_Z_Setting_button = Button(Prior_Z_Setting_frame, text="More setting")
+
+Prior_Z_More_Setting_frame = Frame(root)
+
+Prior_Z_Speed_label = Label(Prior_Z_More_Setting_frame, text="Speed (μm/s)")
+Prior_Z_Speed_spinbox = Spinbox(Prior_Z_More_Setting_frame, textvariable=Prior_Z_Speed_string, from_=Speed_min, to=Speed_max, command=Prior_update_Z_Speed)
 Prior_Z_Speed_string.trace_add("write", Prior_update_Z_Speed_text)
 
-Prior_Z_Acceleration_label = Label(root, text="Accel (μm/s2)")
-Prior_Z_Acceleration_spinbox = Spinbox(root, textvariable=Prior_Z_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=Prior_update_Z_Acceleration)
+Prior_Z_Acceleration_label = Label(Prior_Z_More_Setting_frame, text="Accel (μm/s2)")
+Prior_Z_Acceleration_spinbox = Spinbox(Prior_Z_More_Setting_frame, textvariable=Prior_Z_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=Prior_update_Z_Acceleration)
 Prior_Z_Acceleration_string.trace_add("write", Prior_update_Z_Acceleration_text)
-
-Prior_Im_Z_pos_label = Label(root, text="Go to Z pos (μm)")
-Prior_Im_Z_pos_spinbox = Spinbox(root, textvariable=Prior_Im_Z_pos_string, from_=Pos_min, to=Pos_max)
-
-Prior_Go_to_Z_button = Button(root, text="Go to determined position", command=Prior_update_Z_pos)
 
 #GUI Placement ######################################################
 root.grid_propagate(True)
 
 ##TC200
-
-
 canvas.get_tk_widget().grid(column=0, row=1, columnspan=4, rowspan=6, sticky="nsew")
-# canvas.get_tk_widget().grid_propagate(False)
 
 TC_frame.grid(column=4,row=0, sticky="nsew", rowspan=7, columnspan=1)
 
@@ -909,20 +914,20 @@ Y_pos_textblock.grid(column=1, row=12, sticky="ew")
 
 # Go_to_XY_button.grid(column=3, row=6, columnspan=2, sticky="nsew")
 
-TC_button_frame.grid(column=0, row=13, rowspan=2, columnspan=2)
+KIM_button_frame.grid(column=0, row=13, rowspan=2, columnspan=2, sticky="ns")
 
 Up_button.grid(column=1, row=0, sticky="nsew")
 Down_button.grid(column=1, row=2, sticky="nsew")
 Right_button.grid(column=2, row=1, sticky="nsew")
 Left_button.grid(column=0, row=1, sticky="nsew")
 
-XY_Setting_frame.grid(column=0, row=15, columnspan=2)
+XY_Setting_frame.grid(column=0, row=15, columnspan=2, sticky="ns")
 
 XY_Step_size_label.grid(column=0, row=0, sticky="nsew")
 XY_Step_size_spinbox.grid(column=1, row=0, sticky="nsew")
 Hide_button.grid(column=2, columnspan=2, row=0, sticky="nsew")
 
-XY_More_Setting_frame.grid(column=0, row=16, columnspan=2, rowspan=2, sticky="nsew")
+XY_More_Setting_frame.grid(column=0, row=16, columnspan=2, rowspan=2, sticky="ns")
 
 XY_Speed_label.grid(column=0, row=0, sticky="nsew")
 XY_Speed_spinbox.grid(column=1, row=0, sticky="nsew")
@@ -935,47 +940,46 @@ Z_control_label.grid(column=0, row=18, columnspan=2, sticky="nsew")
 Z_pos_label.grid(column=0, row=19, sticky="nsew")
 Z_pos_textblock.grid(column=1, row=19, sticky="nsew")
 
-# Im_Z_pos_label.grid(column=3, row=14, sticky="nsew")
-# Im_Z_pos_spinbox.grid(column=4, row=14, sticky="nsew")
-
-# Go_to_Z_button.grid(column=3, row=15, columnspan=2, sticky="nsew")
-
 Z_Up_button.grid(column=0, row=20, columnspan=2, sticky="nsew")
 Z_Down_button.grid(column=0, row=21, columnspan=2, sticky="nsew")
 
-Z_Step_size_label.grid(column=0, row=22, sticky="nsew")
-Z_Step_size_spinbox.grid(column=1, row=22, sticky="nsew")
+Z_Setting_frame.grid(column=0, row=22, columnspan=2, sticky="ns")
 
-Z_Speed_label.grid(column=0, row=23, sticky="nsew")
-Z_Speed_spinbox.grid(column=1, row=23, sticky="nsew")
+Z_Step_size_label.grid(column=0, row=0, sticky="nsew")
+Z_Step_size_spinbox.grid(column=1, row=0, sticky="nsew")
+Z_Setting_button.grid(column=2, row=0, sticky="nsew", columnspan=2)
 
-Z_Acceleration_label.grid(column=0, row=24, sticky="nsew")
-Z_Acceleration_spinbox.grid(column=1, row=24, sticky="nsew")
+Z_More_Setting_frame.grid(column=0, row=23, columnspan=2, rowspan=2, sticky="ns")
+
+Z_Speed_label.grid(column=0, row=0, sticky="nsew")
+Z_Speed_spinbox.grid(column=1, row=0, sticky="nsew")
+
+Z_Acceleration_label.grid(column=0, row=1, sticky="nsew")
+Z_Acceleration_spinbox.grid(column=1, row=1, sticky="nsew")
 
 Angle_control_label.grid(column=0, row=25, columnspan=2, sticky="nsew")
 
 Angle_label.grid(column=0, row=26, sticky="nsew")
 Angle_textblock.grid(column=1, row=26, sticky="nsew")
 
-# Im_Angle_label.grid(column=3, row=23, sticky="nsew")
-# Im_Angle_spinbox.grid(column=4, row=23, sticky="nsew")
-
-# Go_to_Angle_button.grid(column=3, row=24, columnspan=2, sticky="nsew")
-
 Angle_Up_button.grid(column=1, row=27, sticky="nsew")
 Angle_Down_button.grid(column=0, row=27, sticky="nsew")
 
-Angle_Step_size_label.grid(column=0, row=28, sticky="nsew")
-Angle_Step_size_spinbox.grid(column=1, row=28, sticky="nsew")
+Angle_Setting_frame.grid(column=0, row=28, columnspan=2, sticky="ns")
 
-Angle_Speed_label.grid(column=0, row=29, sticky="nsew")
-Angle_Speed_spinbox.grid(column=1, row=29, sticky="nsew")
+Angle_Step_size_label.grid(column=0, row=0, sticky="nsew")
+Angle_Step_size_spinbox.grid(column=1, row=0, sticky="nsew")
+Angle_Setting_button.grid(column=2, row=0, columnspan=2, sticky="nsew")
 
-Angle_Acceleration_label.grid(column=0, row=30, sticky="nsew")
-Angle_Acceleration_spinbox.grid(column=1, row=30, sticky="nsew")
+Angle_More_Setting_frame.grid(column=0, row=29, rowspan=2, columnspan=2, sticky="ns")
+Angle_Speed_label.grid(column=0, row=0, sticky="nsew")
+Angle_Speed_spinbox.grid(column=1, row=0, sticky="nsew")
 
-# Filler1.grid(column=3, row=30)
-# Filler2.grid(column=3, row=31)
+Angle_Acceleration_label.grid(column=0, row=1, sticky="nsew")
+Angle_Acceleration_spinbox.grid(column=1, row=1, sticky="nsew")
+
+# Filler1.grid(column=0, row=31, sticky="nsew")
+# Filler2.grid(column=1, row=32, sticky="nsew")
 
 KIM_Prior_seperator.grid(column=2, row=9, padx=5, rowspan=31, sticky="ns")
 
@@ -1006,46 +1010,48 @@ Prior_button_frame.columnconfigure(0, weight=1)
 Prior_button_frame.columnconfigure(1, weight=1)
 Prior_button_frame.columnconfigure(2, weight=1)
 
-Prior_button_frame.grid(column=3, row=13, rowspan=2, columnspan=2)
+Prior_button_frame.grid(column=3, row=13, rowspan=2, columnspan=2, sticky="ns")
 
 Prior_Up_button.grid(column=1, row=0, sticky="nsew")
 Prior_Down_button.grid(column=1, row=2, sticky="nsew")
 Prior_Right_button.grid(column=2, row=1, sticky="nsew")
 Prior_Left_button.grid(column=0, row=1, sticky="nsew")
 
+Prior_XY_Setting_frame.grid(column=3, row=15, columnspan=2, sticky="ns")
 
-Prior_XY_Setting_frame.grid(column=3, row=15, columnspan=2)
 Prior_Setting_button.grid(column=2, row=0, columnspan=2, sticky="nsew")
 Prior_XY_Step_size_label.grid(column=0, row=0, sticky="nsew")
 Prior_XY_Step_size_spinbox.grid(column=1, row=0, sticky="nsew")
 
-Prior_XY_Speed_label.grid(column=3, row=16, sticky="nsew")
-Prior_XY_Speed_spinbox.grid(column=4, row=16, sticky="nsew")
+Prior_XY_More_Setting_frame.grid(column=3, row=16, columnspan=2, rowspan=2, sticky="ns")
 
-Prior_XY_Acceleration_label.grid(column=3, row=17, sticky="nsew")
-Prior_XY_Acceleration_spinbox.grid(column=4, row=17, sticky="nsew")
+Prior_XY_Speed_label.grid(column=0, row=0, sticky="nsew")
+Prior_XY_Speed_spinbox.grid(column=1, row=0, sticky="nsew")
+
+Prior_XY_Acceleration_label.grid(column=0, row=1, sticky="nsew")
+Prior_XY_Acceleration_spinbox.grid(column=1, row=1, sticky="nsew")
 
 Prior_Z_control_label.grid(column=3, row=18, columnspan=2, sticky="nsew")
 
 Prior_Z_pos_label.grid(column=3, row=19, sticky="nsew")
 Prior_Z_pos_textblock.grid(column=4, row=19, sticky="nsew")
 
-# Prior_Im_Z_pos_label.grid(column=3, row=14, sticky="nsew")
-# Prior_Im_Z_pos_spinbox.grid(column=4, row=14, sticky="nsew")
-
-# Prior_Go_to_Z_button.grid(column=3, row=15, columnspan=2, sticky="nsew")
-
 Prior_Z_Up_button.grid(column=3, row=20, columnspan=2, sticky="nsew")
 Prior_Z_Down_button.grid(column=3, row=21, columnspan=2, sticky="nsew")
 
-Prior_Z_Step_size_label.grid(column=3, row=22, sticky="nsew")
-Prior_Z_Step_size_spinbox.grid(column=4, row=22, sticky="nsew")
+Prior_Z_Setting_frame.grid(column=3, row=22, columnspan=2, sticky="ns")
 
-Prior_Z_Speed_label.grid(column=3, row=23, sticky="nsew")
-Prior_Z_Speed_spinbox.grid(column=4, row=23, sticky="nsew")
+Prior_Z_Step_size_label.grid(column=0, row=0, sticky="nsew")
+Prior_Z_Step_size_spinbox.grid(column=1, row=0, sticky="nsew")
+Prior_Z_Setting_button.grid(column=2, columnspan=2, row=0, sticky="nsew")
 
-Prior_Z_Acceleration_label.grid(column=3, row=24, sticky="nsew")
-Prior_Z_Acceleration_spinbox.grid(column=4, row=24, sticky="nsew")
+Prior_Z_More_Setting_frame.grid(column=3, row=23, columnspan=2, rowspan=2, sticky="ns")
+
+Prior_Z_Speed_label.grid(column=0, row=0, sticky="nsew")
+Prior_Z_Speed_spinbox.grid(column=1, row=0, sticky="nsew")
+
+Prior_Z_Acceleration_label.grid(column=0, row=1, sticky="nsew")
+Prior_Z_Acceleration_spinbox.grid(column=1, row=1, sticky="nsew")
 
 # Prior_Z_Acceleration_label.grid_forget()
 
