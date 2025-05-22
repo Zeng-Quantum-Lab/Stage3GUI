@@ -3,7 +3,6 @@ import os
 import sys
 import time
 
-
 class prior():
     def __init__(self, port_num, sdk_path):
         self.port_num = port_num

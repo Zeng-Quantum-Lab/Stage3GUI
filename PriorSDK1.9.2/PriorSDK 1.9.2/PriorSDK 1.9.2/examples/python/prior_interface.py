@@ -25,7 +25,7 @@ import os
 import sys
 import time
 
-path = r"C:\Users\zengl\Downloads\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\x64\PriorScientificSDK.dll"
+path = r"C:\Users\zengl\Downloads\PriorThorLabGUI\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\examples\python\PriorScientificSDK.dll"
 
 if os.path.exists(path):
     SDKPrior = WinDLL(path, winmode=0)
@@ -86,7 +86,7 @@ input("Press ENTER to continue...")
 if realhw:
     print("Connecting...")
     # substitute 3 with your com port Id
-    cmd("controller.connect 5")
+    cmd("controller.connect 6")
 
     # test an illegal command
     cmd("controller.stage.position.getx")
