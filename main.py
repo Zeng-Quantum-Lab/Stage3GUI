@@ -391,30 +391,108 @@ def update_Angle(*args):
         Angle = int(Im_Angle_string.get())
 
 def XY_hide_Setting(*args):
-    global XY_More_Setting_displacement
+    global XY_More_Setting_displacement, XY_More_Setting_frame, Z_More_Setting_displacement
     XY_More_Setting_displacement = 2
     XY_More_Setting_frame.grid_forget()
+    Z_control_label.grid(column=0, row=18-XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Z_pos_label.grid(column=0, row=19-XY_More_Setting_displacement, sticky="nsew")
+    Z_pos_textblock.grid(column=1, row=19-XY_More_Setting_displacement, sticky="nsew")
+    Z_Up_button.grid(column=0, row=20-XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Z_Down_button.grid(column=0, row=21-XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Z_Setting_frame.grid(column=0, row=22-XY_More_Setting_displacement, columnspan=2, sticky="ns")
+    if (Z_More_Setting_displacement == 0):
+        Z_More_Setting_frame.grid(column=0, row=23-XY_More_Setting_displacement,columnspan=2, rowspan=2, sticky="ns")
+    Angle_control_label.grid(column=0, row=25-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Angle_label.grid(column=0, row=26-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_textblock.grid(column=1, row=26-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_Up_button.grid(column=1, row=27-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_Down_button.grid(column=0, row=27-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_Setting_frame.grid(column=0, row=28-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="ns")
 
 def XY_show_Setting(*args):
-    global XY_More_Setting_displacement
+    global XY_More_Setting_displacement, XY_More_Setting_frame, Z_More_Setting_displacement
     XY_More_Setting_displacement = 0
     XY_More_Setting_frame.grid(column=0, row=16, columnspan=2, rowspan=2, sticky="ns")
+    Z_control_label.grid(column=0, row=18-XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Z_pos_label.grid(column=0, row=19-XY_More_Setting_displacement, sticky="nsew")
+    Z_pos_textblock.grid(column=1, row=19-XY_More_Setting_displacement, sticky="nsew")
+    Z_Up_button.grid(column=0, row=20-XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Z_Down_button.grid(column=0, row=21-XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Z_Setting_frame.grid(column=0, row=22-XY_More_Setting_displacement, columnspan=2, sticky="ns")
+    if (Z_More_Setting_displacement == 0):
+        Z_More_Setting_frame.grid(column=0, row=23-XY_More_Setting_displacement,columnspan=2, rowspan=2, sticky="ns")
+    Angle_control_label.grid(column=0, row=25-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Angle_label.grid(column=0, row=26-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_textblock.grid(column=1, row=26-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_Up_button.grid(column=1, row=27-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_Down_button.grid(column=0, row=27-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_Setting_frame.grid(column=0, row=28-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="ns")
+
+def XY_hide_show_Setting(*args):
+    global XY_More_Setting_displacement
+    if (XY_More_Setting_displacement == 0):
+        XY_hide_Setting()
+    else:
+        XY_show_Setting()
 
 def Z_hide_Setting(*args):
-    global Z_More_Setting_displacement
+    global Z_More_Setting_displacement, Z_More_Setting_frame
     Z_More_Setting_displacement = 2
     Z_More_Setting_frame.grid_forget()
+    Z_control_label.grid(column=0, row=18-XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Z_pos_label.grid(column=0, row=19-XY_More_Setting_displacement, sticky="nsew")
+    Z_pos_textblock.grid(column=1, row=19-XY_More_Setting_displacement, sticky="nsew")
+    Z_Up_button.grid(column=0, row=20-XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Z_Down_button.grid(column=0, row=21-XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Z_Setting_frame.grid(column=0, row=22-XY_More_Setting_displacement, columnspan=2, sticky="ns")
+    Angle_control_label.grid(column=0, row=25-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Angle_label.grid(column=0, row=26-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_textblock.grid(column=1, row=26-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_Up_button.grid(column=1, row=27-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_Down_button.grid(column=0, row=27-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_Setting_frame.grid(column=0, row=28-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="ns")
 
 def Z_show_Setting(*args):
-    global Z_More_Setting_displacement
+    global Z_More_Setting_displacement, Z_More_Setting_frame, XY_More_Setting_displacement
     Z_More_Setting_displacement = 0
-    Z_More_Setting_frame.grid(column=0, row=23, columnspan=2, rowspan=2, sticky="ns")
+    ##Literally regrid the entire half of the GUI
+    Z_control_label.grid(column=0, row=18-XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Z_pos_label.grid(column=0, row=19-XY_More_Setting_displacement, sticky="nsew")
+    Z_pos_textblock.grid(column=1, row=19-XY_More_Setting_displacement, sticky="nsew")
+    Z_Up_button.grid(column=0, row=20-XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Z_Down_button.grid(column=0, row=21-XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Z_Setting_frame.grid(column=0, row=22-XY_More_Setting_displacement, columnspan=2, sticky="ns")
+    Z_More_Setting_frame.grid(column=0, row=23-XY_More_Setting_displacement,columnspan=2, rowspan=2, sticky="ns")
+    Angle_control_label.grid(column=0, row=25-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Angle_label.grid(column=0, row=26-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_textblock.grid(column=1, row=26-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_Up_button.grid(column=1, row=27-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_Down_button.grid(column=0, row=27-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_Setting_frame.grid(column=0, row=28-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="ns")
+
+def Z_hide_show_Setting(*args):
+    global Z_More_Setting_displacement
+    if (Z_More_Setting_displacement == 0):
+        Z_hide_Setting()
+    else:
+        Z_show_Setting()
 
 def Angle_hide_Setting(*args):
-    global Angle_More_Setting_displacement
+    global Angle_More_Setting_displacement, Angle_More_Setting_frame
     Angle_More_Setting_displacement = 2
     Angle_More_Setting_frame.grid_forget()
 
+def Angle_show_Setting(*args):
+    global Angle_More_Setting_displacement, Angle_More_Setting_frame
+    Angle_More_Setting_displacement = 0
+    Angle_More_Setting_frame.grid(column=0, row=29, rowspan=2, columnspan=2, sticky="ns")
+
+def Angle_hide_show_Setting(*args):
+    global Angle_More_Setting_displacement
+    if (Angle_More_Setting_displacement == 0):
+        Angle_hide_Setting()
+    else:
+        Angle_show_Setting()
 
 ##Prior
 def Prior_update_X_pos_string(*args): #Check with Prior API, not global variable (i.e unfinished)
@@ -551,6 +629,85 @@ def Prior_update_Z_pos(*argss):
     if (Prior_Im_Z_pos_string.get() != ""):
         Prior_Z_pos = int(Prior_Im_Z_pos_string.get())
 
+def Prior_XY_hide_Setting(*args):
+    global Prior_XY_More_Setting_displacement, Prior_XY_More_Setting_frame
+    Prior_XY_More_Setting_displacement = 2
+    Prior_XY_More_Setting_frame.grid_forget()
+    Prior_Z_control_label.grid(column=3, row=18-Prior_XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+
+    Prior_Z_pos_label.grid(column=3, row=19-Prior_XY_More_Setting_displacement, sticky="nsew")
+    Prior_Z_pos_textblock.grid(column=4, row=19-Prior_XY_More_Setting_displacement, sticky="nsew")
+
+    Prior_Z_Up_button.grid(column=3, row=20-Prior_XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Prior_Z_Down_button.grid(column=3, row=21-Prior_XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+
+    Prior_Z_Setting_frame.grid(column=3, row=22-Prior_XY_More_Setting_displacement, columnspan=2, sticky="ns")
+
+    if (Prior_Z_More_Setting_displacement == 0):
+        Prior_Z_More_Setting_frame.grid(column=3, row=23-Prior_XY_More_Setting_displacement, columnspan=2, rowspan=2, sticky="ns")
+
+    Prior_Z_Step_size_label.grid(column=0, row=0, sticky="nsew")
+    Prior_Z_Step_size_spinbox.grid(column=1, row=0, sticky="nsew")
+    Prior_Z_Setting_button.grid(column=2, columnspan=2, row=0, sticky="nsew")
+    
+    Prior_Z_Speed_label.grid(column=0, row=0, sticky="nsew")
+    Prior_Z_Speed_spinbox.grid(column=1, row=0, sticky="nsew")
+
+    Prior_Z_Acceleration_label.grid(column=0, row=1, sticky="nsew")
+    Prior_Z_Acceleration_spinbox.grid(column=1, row=1, sticky="nsew")
+    
+
+def Prior_XY_show_Setting(*args):
+    global Prior_XY_More_Setting_displacement, Prior_XY_More_Setting_frame
+    Prior_XY_More_Setting_displacement = 0
+    Prior_XY_More_Setting_frame.grid(column=3, row=16, columnspan=2, rowspan=2, sticky="ns")
+    Prior_Z_control_label.grid(column=3, row=18-Prior_XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+
+    Prior_Z_pos_label.grid(column=3, row=19-Prior_XY_More_Setting_displacement, sticky="nsew")
+    Prior_Z_pos_textblock.grid(column=4, row=19-Prior_XY_More_Setting_displacement, sticky="nsew")
+
+    Prior_Z_Up_button.grid(column=3, row=20-Prior_XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Prior_Z_Down_button.grid(column=3, row=21-Prior_XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+
+    Prior_Z_Setting_frame.grid(column=3, row=22-Prior_XY_More_Setting_displacement, columnspan=2, sticky="ns")
+
+    if (Prior_Z_More_Setting_displacement == 0):
+        Prior_Z_More_Setting_frame.grid(column=3, row=23-Prior_XY_More_Setting_displacement, columnspan=2, rowspan=2, sticky="ns")
+
+    Prior_Z_Step_size_label.grid(column=0, row=0, sticky="nsew")
+    Prior_Z_Step_size_spinbox.grid(column=1, row=0, sticky="nsew")
+    Prior_Z_Setting_button.grid(column=2, columnspan=2, row=0, sticky="nsew")
+    
+    Prior_Z_Speed_label.grid(column=0, row=0, sticky="nsew")
+    Prior_Z_Speed_spinbox.grid(column=1, row=0, sticky="nsew")
+
+    Prior_Z_Acceleration_label.grid(column=0, row=1, sticky="nsew")
+    Prior_Z_Acceleration_spinbox.grid(column=1, row=1, sticky="nsew")
+
+def Prior_XY_hide_show_Setting(*args):
+    global Prior_XY_More_Setting_displacement
+    if (Prior_XY_More_Setting_displacement == 0):
+        Prior_XY_hide_Setting()
+    else:
+        Prior_XY_show_Setting()
+
+def Prior_Z_hide_Setting(*args):
+    global Prior_Z_More_Setting_displacement, Prior_Z_More_Setting_frame
+    Prior_Z_More_Setting_displacement = 2
+    Prior_Z_More_Setting_frame.grid_forget()
+
+def Prior_Z_show_Setting(*args):
+    global Prior_Z_More_Setting_displacement, Prior_Z_More_Setting_frame
+    Prior_Z_More_Setting_displacement = 0
+    Prior_Z_More_Setting_frame.grid(column=3, row=23-Prior_XY_More_Setting_displacement, columnspan=2, rowspan=2, sticky="ns")
+
+def Prior_Z_hide_show_Setting(*args):
+    global Prior_Z_More_Setting_displacement
+    if (Prior_Z_More_Setting_displacement == 0):
+        Prior_Z_hide_Setting()
+    else:
+        Prior_Z_show_Setting()
+
 # GUI Variable ################################
 ##TC200
 canvas = FigureCanvasTkAgg(fig, master=root)
@@ -583,12 +740,6 @@ XY_Speed_string.set(XY_Speed)
 
 XY_Acceleration_string = StringVar()
 XY_Acceleration_string.set(XY_Acceleration)
-
-Im_X_pos_string = StringVar()
-Im_X_pos_string.set(0)
-
-Im_Y_pos_string = StringVar()
-Im_Y_pos_string.set(0)
 
 Z_pos_string = StringVar()
 Z_pos_string.set(Z_pos)
@@ -755,7 +906,7 @@ XY_Setting_frame = Frame(root)
 XY_Step_size_label = Label(XY_Setting_frame, text="Step (μm)")
 XY_Step_size_spinbox = Spinbox(XY_Setting_frame, textvariable=XY_Step_size_string, from_=Step_size_min, to=Step_size_max, command=update_XY_Step_size, width=10)
 XY_Step_size_string.trace_add("write", update_XY_Step_size_text)
-Hide_button = Button(XY_Setting_frame, text="More setting")
+Hide_button = Button(XY_Setting_frame, text="More setting", command=XY_hide_show_Setting)
 
 XY_More_Setting_frame = Frame(root)
 
@@ -787,7 +938,7 @@ Z_Step_size_label = Label(Z_Setting_frame, text="Size (μm)")
 Z_Step_size_spinbox = Spinbox(Z_Setting_frame, textvariable=Z_Step_size_string, from_=Step_size_min, to=Step_size_max, command=update_Z_Step_size, width=10)
 Z_Step_size_string.trace_add("write", update_Z_Step_size_text)
 
-Z_Setting_button = Button(Z_Setting_frame, text="More setting")
+Z_Setting_button = Button(Z_Setting_frame, text="More setting", command=Z_hide_show_Setting)
 
 Z_More_Setting_frame = Frame(root)
 
@@ -814,7 +965,7 @@ Angle_Step_size_label = Label(Angle_Setting_frame, text="Size (μm)")
 Angle_Step_size_spinbox = Spinbox(Angle_Setting_frame, textvariable=Angle_Step_size_string, from_=Step_size_min, to=Step_size_max, command=update_Angle_Step_size, width=10)
 Angle_Step_size_string.trace_add("write", update_Angle_Step_size_text)
 
-Angle_Setting_button = Button(Angle_Setting_frame, text="More setting")
+Angle_Setting_button = Button(Angle_Setting_frame, text="More setting", command=Angle_hide_show_Setting)
 
 Angle_More_Setting_frame = Frame(root)
 
@@ -831,7 +982,7 @@ Filler2 = Label(root, text="")
 
 KIM_Prior_seperator = ttk.Separator(root, orient="vertical")
 ##Prior
-Prior_title = Label(root, text="PRIOR CONTROLLER", font=5)
+Prior_title = Label(root, text="ProScan III CONTROLLER", font=5)
 
 Prior_XY_control_label = Label(root, text="XY AXIS CONTROL")
 Prior_X_pos_label = Label(root, text="X Position")
@@ -842,7 +993,7 @@ Prior_Y_pos_textblock = Label(root, borderwidth=1,textvariable=Prior_Y_pos_strin
 
 Prior_XY_Setting_frame = Frame(root)
 
-Prior_Setting_button = Button(Prior_XY_Setting_frame, text="More setting")
+Prior_Setting_button = Button(Prior_XY_Setting_frame, text="More setting", command=Prior_XY_hide_show_Setting)
 Prior_XY_Step_size_label = Label(Prior_XY_Setting_frame, text="Size (μm)")
 Prior_XY_Step_size_spinbox = Spinbox(Prior_XY_Setting_frame, textvariable=Prior_XY_Step_size_string, from_=Step_size_min, to=Step_size_max, command=Prior_update_XY_Step_size, width=10)
 Prior_XY_Step_size_string.trace_add("write", Prior_update_XY_Step_size_text)
@@ -876,7 +1027,7 @@ Prior_Z_Setting_frame = Frame(root)
 Prior_Z_Step_size_label = Label(Prior_Z_Setting_frame, text="Size (μm)")
 Prior_Z_Step_size_spinbox = Spinbox(Prior_Z_Setting_frame, textvariable=Prior_Z_Step_size_string, from_=Step_size_min, to=Step_size_max, command=Prior_update_Z_Step_size, width=10)
 Prior_Z_Step_size_string.trace_add("write", Prior_update_Z_Step_size_text)
-Prior_Z_Setting_button = Button(Prior_Z_Setting_frame, text="More setting")
+Prior_Z_Setting_button = Button(Prior_Z_Setting_frame, text="More setting", command=Prior_Z_hide_show_Setting)
 
 Prior_Z_More_Setting_frame = Frame(root)
 
@@ -931,13 +1082,6 @@ X_pos_textblock.grid(column=1, row=11, sticky="nsew")
 Y_pos_label.grid(column=0, row=12, sticky="ew")
 Y_pos_textblock.grid(column=1, row=12, sticky="ew")
 
-# Im_X_pos_label.grid(column=3, row=4, sticky="nsew")
-# Im_X_pos_spinbox.grid(column=4, row=4, sticky="nsew")
-
-# Im_Y_pos_label.grid(column=3, row=5, sticky="nsew")
-# Im_Y_pos_spinbox.grid(column=4, row=5, sticky="nsew")
-
-# Go_to_XY_button.grid(column=3, row=6, columnspan=2, sticky="nsew")
 
 KIM_button_frame.grid(column=0, row=13, rowspan=2, columnspan=2, sticky="ns")
 
@@ -952,7 +1096,7 @@ XY_Step_size_label.grid(column=0, row=0, sticky="nsew")
 XY_Step_size_spinbox.grid(column=1, row=0, sticky="nsew")
 Hide_button.grid(column=2, columnspan=2, row=0, sticky="nsew")
 
-XY_More_Setting_frame.grid(column=0, row=16, columnspan=2, rowspan=2, sticky="ns")
+# XY_More_Setting_frame.grid(column=0, row=16, columnspan=2, rowspan=2, sticky="ns")
 
 XY_Speed_label.grid(column=0, row=0, sticky="nsew")
 XY_Speed_spinbox.grid(column=1, row=0, sticky="nsew")
@@ -960,21 +1104,19 @@ XY_Speed_spinbox.grid(column=1, row=0, sticky="nsew")
 XY_Acceleration_label.grid(column=0, row=1, sticky="nsew")
 XY_Acceleration_spinbox.grid(column=1, row=1, sticky="nsew")
 
-Z_control_label.grid(column=0, row=18, columnspan=2, sticky="nsew")
+Z_control_label.grid(column=0, row=18-XY_More_Setting_displacement, columnspan=2, sticky="nsew")
 
-Z_pos_label.grid(column=0, row=19, sticky="nsew")
-Z_pos_textblock.grid(column=1, row=19, sticky="nsew")
+Z_pos_label.grid(column=0, row=19-XY_More_Setting_displacement, sticky="nsew")
+Z_pos_textblock.grid(column=1, row=19-XY_More_Setting_displacement, sticky="nsew")
 
-Z_Up_button.grid(column=0, row=20, columnspan=2, sticky="nsew")
-Z_Down_button.grid(column=0, row=21, columnspan=2, sticky="nsew")
+Z_Up_button.grid(column=0, row=20-XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+Z_Down_button.grid(column=0, row=21-XY_More_Setting_displacement, columnspan=2, sticky="nsew")
 
-Z_Setting_frame.grid(column=0, row=22, columnspan=2, sticky="ns")
+Z_Setting_frame.grid(column=0, row=22-XY_More_Setting_displacement, columnspan=2, sticky="ns")
 
 Z_Step_size_label.grid(column=0, row=0, sticky="nsew")
 Z_Step_size_spinbox.grid(column=1, row=0, sticky="nsew")
 Z_Setting_button.grid(column=2, row=0, sticky="nsew", columnspan=2)
-
-Z_More_Setting_frame.grid(column=0, row=23, columnspan=2, rowspan=2, sticky="ns")
 
 Z_Speed_label.grid(column=0, row=0, sticky="nsew")
 Z_Speed_spinbox.grid(column=1, row=0, sticky="nsew")
@@ -982,21 +1124,21 @@ Z_Speed_spinbox.grid(column=1, row=0, sticky="nsew")
 Z_Acceleration_label.grid(column=0, row=1, sticky="nsew")
 Z_Acceleration_spinbox.grid(column=1, row=1, sticky="nsew")
 
-Angle_control_label.grid(column=0, row=25, columnspan=2, sticky="nsew")
+Angle_control_label.grid(column=0, row=25-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="nsew")
 
-Angle_label.grid(column=0, row=26, sticky="nsew")
-Angle_textblock.grid(column=1, row=26, sticky="nsew")
+Angle_label.grid(column=0, row=26-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+Angle_textblock.grid(column=1, row=26-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
 
-Angle_Up_button.grid(column=1, row=27, sticky="nsew")
-Angle_Down_button.grid(column=0, row=27, sticky="nsew")
+Angle_Up_button.grid(column=1, row=27-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+Angle_Down_button.grid(column=0, row=27-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
 
-Angle_Setting_frame.grid(column=0, row=28, columnspan=2, sticky="ns")
+Angle_Setting_frame.grid(column=0, row=28-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="ns")
 
 Angle_Step_size_label.grid(column=0, row=0, sticky="nsew")
 Angle_Step_size_spinbox.grid(column=1, row=0, sticky="nsew")
 Angle_Setting_button.grid(column=2, row=0, columnspan=2, sticky="nsew")
 
-Angle_More_Setting_frame.grid(column=0, row=29, rowspan=2, columnspan=2, sticky="ns")
+# Angle_More_Setting_frame.grid(column=0, row=29, rowspan=2, columnspan=2, sticky="ns")
 Angle_Speed_label.grid(column=0, row=0, sticky="nsew")
 Angle_Speed_spinbox.grid(column=1, row=0, sticky="nsew")
 
@@ -1048,7 +1190,7 @@ Prior_Setting_button.grid(column=2, row=0, columnspan=2, sticky="nsew")
 Prior_XY_Step_size_label.grid(column=0, row=0, sticky="nsew")
 Prior_XY_Step_size_spinbox.grid(column=1, row=0, sticky="nsew")
 
-Prior_XY_More_Setting_frame.grid(column=3, row=16, columnspan=2, rowspan=2, sticky="ns")
+# Prior_XY_More_Setting_frame.grid(column=3, row=16, columnspan=2, rowspan=2, sticky="ns")
 
 Prior_XY_Speed_label.grid(column=0, row=0, sticky="nsew")
 Prior_XY_Speed_spinbox.grid(column=1, row=0, sticky="nsew")
@@ -1056,21 +1198,21 @@ Prior_XY_Speed_spinbox.grid(column=1, row=0, sticky="nsew")
 Prior_XY_Acceleration_label.grid(column=0, row=1, sticky="nsew")
 Prior_XY_Acceleration_spinbox.grid(column=1, row=1, sticky="nsew")
 
-Prior_Z_control_label.grid(column=3, row=18, columnspan=2, sticky="nsew")
+Prior_Z_control_label.grid(column=3, row=18-Prior_XY_More_Setting_displacement, columnspan=2, sticky="nsew")
 
-Prior_Z_pos_label.grid(column=3, row=19, sticky="nsew")
-Prior_Z_pos_textblock.grid(column=4, row=19, sticky="nsew")
+Prior_Z_pos_label.grid(column=3, row=19-Prior_XY_More_Setting_displacement, sticky="nsew")
+Prior_Z_pos_textblock.grid(column=4, row=19-Prior_XY_More_Setting_displacement, sticky="nsew")
 
-Prior_Z_Up_button.grid(column=3, row=20, columnspan=2, sticky="nsew")
-Prior_Z_Down_button.grid(column=3, row=21, columnspan=2, sticky="nsew")
+Prior_Z_Up_button.grid(column=3, row=20-Prior_XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+Prior_Z_Down_button.grid(column=3, row=21-Prior_XY_More_Setting_displacement, columnspan=2, sticky="nsew")
 
-Prior_Z_Setting_frame.grid(column=3, row=22, columnspan=2, sticky="ns")
+Prior_Z_Setting_frame.grid(column=3, row=22-Prior_XY_More_Setting_displacement, columnspan=2, sticky="ns")
 
 Prior_Z_Step_size_label.grid(column=0, row=0, sticky="nsew")
 Prior_Z_Step_size_spinbox.grid(column=1, row=0, sticky="nsew")
 Prior_Z_Setting_button.grid(column=2, columnspan=2, row=0, sticky="nsew")
 
-Prior_Z_More_Setting_frame.grid(column=3, row=23, columnspan=2, rowspan=2, sticky="ns")
+# Prior_Z_More_Setting_frame.grid(column=3, row=23, columnspan=2, rowspan=2, sticky="ns")
 
 Prior_Z_Speed_label.grid(column=0, row=0, sticky="nsew")
 Prior_Z_Speed_spinbox.grid(column=1, row=0, sticky="nsew")
@@ -1078,7 +1220,6 @@ Prior_Z_Speed_spinbox.grid(column=1, row=0, sticky="nsew")
 Prior_Z_Acceleration_label.grid(column=0, row=1, sticky="nsew")
 Prior_Z_Acceleration_spinbox.grid(column=1, row=1, sticky="nsew")
 
-# Prior_Z_Acceleration_label.grid_forget()
 
 #Variable update call
 root.after(1000, update_T_current)
