@@ -53,7 +53,6 @@ class prior():
         self.x = int(position[0])
         self.y = int(position[1])
 
-
     def cmd(self, msg):
         print(msg)
         ret = SDKPrior.PriorScientificSDK_cmd(

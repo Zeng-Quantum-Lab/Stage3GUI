@@ -11,9 +11,12 @@ from Thorlabs.MotionControl.GenericMotorCLI import *
 from Thorlabs.MotionControl.KCube.InertialMotorCLI import *
 from System import Decimal  # necessary for real world units
 
+
 class kim:
     def __init__(self, serial_num):
         self.serial_num = serial_num
+
+        
         try:
             DeviceManagerCLI.BuildDeviceList()
 

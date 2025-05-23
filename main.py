@@ -645,8 +645,7 @@ def Prior_XY_hide_Setting(*args):
     Prior_Z_pos_label.grid(column=3, row=19-Prior_XY_More_Setting_displacement, sticky="nsew")
     Prior_Z_pos_textblock.grid(column=4, row=19-Prior_XY_More_Setting_displacement, sticky="nsew")
 
-    Prior_Z_Up_button.grid(column=3, row=20-Prior_XY_More_Setting_displacement, columnspan=2, sticky="nsew")
-    Prior_Z_Down_button.grid(column=3, row=21-Prior_XY_More_Setting_displacement, columnspan=2, sticky="nsew")
+    Prior_Z_button_frame.grid(column=3, row=20- Prior_XY_More_Setting_displacement, columnspan=2, rowspan=2)
 
     Prior_Z_Setting_frame.grid(column=3, row=22-Prior_XY_More_Setting_displacement, columnspan=2, sticky="ns")
 
@@ -673,9 +672,7 @@ def Prior_XY_show_Setting(*args):
     Prior_Z_pos_label.grid(column=3, row=19-Prior_XY_More_Setting_displacement, sticky="nsew")
     Prior_Z_pos_textblock.grid(column=4, row=19-Prior_XY_More_Setting_displacement, sticky="nsew")
 
-    Prior_Z_Up_button.grid(column=3, row=20-Prior_XY_More_Setting_displacement, columnspan=2, sticky="nsew")
-    Prior_Z_Down_button.grid(column=3, row=21-Prior_XY_More_Setting_displacement, columnspan=2, sticky="nsew")
-
+    Prior_Z_button_frame.grid(column=3, row=20- Prior_XY_More_Setting_displacement, columnspan=2, rowspan=2)
     Prior_Z_Setting_frame.grid(column=3, row=22-Prior_XY_More_Setting_displacement, columnspan=2, sticky="ns")
 
     if (Prior_Z_More_Setting_displacement == 0):
@@ -1044,11 +1041,11 @@ Prior_Z_pos_textblock = Label(root, borderwidth=1, textvariable=Prior_Z_pos_stri
 
 Prior_Z_button_frame = Frame(root)
 
-Prior_Z_Up_button = Button(Prior_Z_button_frame, text="▲", command=Prior_up_Z_pos, width=4, height=1)
-Prior_Z_Down_button = Button(Prior_Z_button_frame, text="▼", command=Prior_down_Z_pos, width=4, height=1)
+Prior_Z_Up_button = Button(Prior_Z_button_frame, text="▲", command=Prior_up_Z_pos, width=4, height=2)
+Prior_Z_Down_button = Button(Prior_Z_button_frame, text="▼", command=Prior_down_Z_pos, width=4, height=2)
 
-Prior_Z_Up_forward_button = Button(Prior_Z_button_frame, text="⏫")
-Prior_Z_Down_forward_button = Button(Prior_Z_button_frame, text="⏬")
+Prior_Z_Up_forward_button = Button(Prior_Z_button_frame, text="⏫",width=4, height=2)
+Prior_Z_Down_forward_button = Button(Prior_Z_button_frame, text="⏬",width=4, height=2)
 
 Prior_Z_Setting_frame = Frame(root)
 
@@ -1216,7 +1213,7 @@ Prior_Y_pos_textblock.grid(column=4, row=12, sticky="nsew")
 # Prior_button_frame.columnconfigure(1, weight=1)
 # Prior_button_frame.columnconfigure(2, weight=1)
 
-Prior_button_frame.grid(column=3, row=13, rowspan=2, columnspan=2, sticky="ns")
+Prior_button_frame.grid(column=3, row=13, rowspan=2, columnspan=2)
 
 Prior_Up_button.grid(column=2, row=1, sticky="nsew")
 Prior_Up_forward_button.grid(column=2, row=0, sticky="nsew")
@@ -1249,7 +1246,7 @@ Prior_Z_control_label.grid(column=3, row=18-Prior_XY_More_Setting_displacement, 
 Prior_Z_pos_label.grid(column=3, row=19-Prior_XY_More_Setting_displacement, sticky="nsew")
 Prior_Z_pos_textblock.grid(column=4, row=19-Prior_XY_More_Setting_displacement, sticky="nsew")
 
-Prior_button_frame.grid(column=3, row=20- Prior_XY_More_Setting_displacement, columnspan=2, rowspan=2, sticky="nsew")
+Prior_Z_button_frame.grid(column=3, row=20- Prior_XY_More_Setting_displacement, columnspan=2, rowspan=2)
 
 Prior_Z_Up_button.grid(column=0, row=0)
 Prior_Z_Down_button.grid(column=0, row=1)
