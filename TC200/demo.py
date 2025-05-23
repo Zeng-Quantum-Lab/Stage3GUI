@@ -6,7 +6,8 @@ import instruments.units as u
 tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
 
 tc.temperature_set = 20 * u.degC
-print("The current temperature is: ", tc.temperature)
+string = f"{tc.temperature}"
+print("The current temperature is: ", string[:-5])
 
 tc.mode = tc.Mode.normal
 print("The current mode is: ", tc.mode)
