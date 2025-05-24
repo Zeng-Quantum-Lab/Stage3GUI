@@ -15,14 +15,21 @@ from System import Decimal  # necessary for real world units
 class kim:
     def __init__(self, serial_num):
         self.serial_num = serial_num
+        self.xy_velocity = 500
+        self.xy_acceleration = 100000
+        self.z_velocity = 500
+        self.z_accleration = 100000
+        self.angle_velocity = 500
+        self.angle_acceleration = 100000
 
-        
+        self.x = 0
+        self.y = 0
+        self.z = 0
+        self.angle = 0
+
         try:
             DeviceManagerCLI.BuildDeviceList()
-
             # create new device
-            self.serial_num = "97251106"  # Replace this line with your device's serial number
-            
             
             self.device = KCubeInertialMotor.CreateKCubeInertialMotor(self.serial_num)
 
@@ -49,27 +56,27 @@ class kim:
             inertial_motor_config = self.device.GetInertialMotorConfiguration(self.serial_num)
 
             # Get parameters related to homing/zeroing/moving
-            device_settings = ThorlabsInertialMotorSettings.GetSettings(inertial_motor_config)
+            self.device_settings = ThorlabsInertialMotorSettings.GetSettings(inertial_motor_config)
 
             # Step parameters for an intertial motor channel
             self.x_motor = InertialMotorStatus.MotorChannels.Channel1  # enum chan ident
-            device_settings.Drive.Channel(self.x_motor).StepRate = 500
-            device_settings.Drive.Channel(self.x_motor).StepAcceleration = 100000
+            self.device_settings.Drive.Channel(self.x_motor).StepRate = 500
+            self.device_settings.Drive.Channel(self.x_motor).StepAcceleration = 100000
 
             self.y_motor = InertialMotorStatus.MotorChannels.Channel2  # enum chan ident
-            device_settings.Drive.Channel(self.y_motor).StepRate = 500
-            device_settings.Drive.Channel(self.y_motor).StepAcceleration = 100000
+            self.device_settings.Drive.Channel(self.y_motor).StepRate = 500
+            self.device_settings.Drive.Channel(self.y_motor).StepAcceleration = 100000
 
             self.z_motor = InertialMotorStatus.MotorChannels.Channel3  # enum chan ident
-            device_settings.Drive.Channel(self.z_motor).StepRate = 500
-            device_settings.Drive.Channel(self.z_motor).StepAcceleration = 100000
+            self.device_settings.Drive.Channel(self.z_motor).StepRate = 500
+            self.device_settings.Drive.Channel(self.z_motor).StepAcceleration = 100000
 
             self.angle_motor = InertialMotorStatus.MotorChannels.Channel4 # enum chan ident
-            device_settings.Drive.Channel(self.angle_motor).StepRate = 500
-            device_settings.Drive.Channel(self.angle_motor).StepAcceleration = 100000
+            self.device_settings.Drive.Channel(self.angle_motor).StepRate = 500
+            self.device_settings.Drive.Channel(self.angle_motor).StepAcceleration = 100000
 
             # Send settings to the self.device
-            self.device.SetSettings(device_settings, True, True)
+            self.device.SetSettings(self.device_settings, True, True)
 
             print("Zeroing self.device")
             self.device.SetPositionAs(self.x_motor, 0)
@@ -82,26 +89,74 @@ class kim:
     def go_to_Xpos(self, new_x):
         try:
             self.device.MoveTo(self.x_motor, new_x, 1000)
+            self.x = new_x
         except Exception as e:
             print(e)
 
     def go_to_Ypos(self, new_y):
         try:
             self.device.MoveTo(self.y_motor, new_y, 1000)
+            self.y = new_y
         except Exception as e:
             print(e)
 
     def go_to_Zpos(self, new_z):
         try:
             self.device.MoveTo(self.z_motor, new_z, 1000)
+            self.z = new_z
         except Exception as e:
             print(e)
 
     def go_to_Angle(self, new_angle):
         try:
             self.device.MoveTo(self.angle_motor, new_angle, 1000)
+            self.angle = new_angle
         except Exception as e:
             print(e)
+
+    def set_xy_velocity(self, velocity):
+        self.xy_velocity = velocity
+        self.device_settings.Drive.Channel(self.x_motor).StepRate = velocity
+        self.device_settings.Drive.Channel(self.y_motor).StepRate = velocity
+
+    def set_z_velocity(self, velocity):
+        self.z_velocity = velocity
+        self.device_settings.Drive.Channel(self.z_motor).StepRate = velocity
+
+    def set_Angle_velocity(self, velocity):
+        self.angle_velocity = velocity
+        self.device_settings.Drive.Channel(self.angle_motor).StepRate = velocity
+
+    def set_xy_acceleration(self, acceleration):
+        self.xy_acceleration = acceleration
+        self.device_settings.Drive.Channel(self.x_motor).StepAcceleration = acceleration
+        self.device_settings.Drive.Channel(self.y_motor).StepAcceleration = acceleration
+
+    def set_z_acceleration(self, acceleration):
+        self.z_accleration = acceleration
+        self.device_settings.Drive.Channel(self.z_motor).StepAcceleration = acceleration
+
+    def set_Angle_acceleration(self, acceleration):
+        self.angle_acceleration = acceleration
+        self.device_settings.Drive.Channel(self.angle_motor).StepAcceleration = acceleration
+
+    def get_xy_velocity(self):
+        return self.xy_velocity
+
+    def get_z_velocity(self):
+        return self.z_velocity
+    
+    def get_angle_velocity(self):
+        return self.angle_velocity
+
+    def get_xy_acceleration(self):
+        return self.xy_acceleration
+    
+    def get_z_acceleration(self):
+        return self.z_accleration
+    
+    def get_angle_acceleration(self):
+        return self.angle_acceleration
 
     def disconnect(self):
         try:

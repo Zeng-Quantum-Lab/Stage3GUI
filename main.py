@@ -16,6 +16,7 @@ import instruments.units as u
 #Machine variable initialization (Change COM port here)
 tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
 pr = prior(5, r"C:\Users\zengl\Downloads\PriorThorLabGUI\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\examples\python\PriorScientificSDK.dll")
+kim_obj = kim("97251106")
 
 #Constant declaration
 Temperature_PID_Max = 100
@@ -58,30 +59,30 @@ I_value = 0
 D_value = 0
 
 ##KIM101
-X_pos = 0 #debug variable 
-Y_pos = 0 #debug variable
+X_pos = kim_obj.x
+Y_pos = kim_obj.y
 
 XY_Step_size = 1
 XY_More_Setting_displacement = 2
 
-XY_Speed = 1
-XY_Acceleration = 1
+XY_Speed = kim_obj.xy_velocity
+XY_Acceleration = kim_obj.xy_acceleration
 
-Z_pos = 0 #debug variable
+Z_pos = kim_obj.z
 
 Z_Step_size = 1
 Z_More_Setting_displacement = 2
 
-Z_Speed = 1
-Z_Acceleration = 1
+Z_Speed = kim_obj.z_velocity
+Z_Acceleration = kim_obj.z_accleration
 
-Angle = 0 #debug variable
+Angle = kim_obj.angle
 
 Angle_Step_size = 1
 Angle_More_Setting_displacement = 2
 
-Angle_Speed = 1
-Angle_Acceleration = 1
+Angle_Speed = kim_obj.angle_velocity
+Angle_Acceleration = kim_obj.angle_acceleration
 
 ##Prior
 Prior_XY_Step_size = 1
@@ -215,12 +216,10 @@ def reset_plot(*args):
 def update_X_pos_string(*args): #Check with KIM101 API, not global variable (i.e unfinished)
     global X_pos
     X_pos_string.set(X_pos)
-    root.after(250, update_X_pos_string)
 
 def update_Y_pos_string(*args): #Check with KIM101 API, not global variable (i.e unfinished)
     global Y_pos
     Y_pos_string.set(Y_pos)
-    root.after(250, update_Y_pos_string)
 
 def update_XY_Step_size():
     global XY_Step_size
@@ -241,6 +240,7 @@ def update_XY_Speed():
     XY_Speed_string.set(XY_Speed_spinbox.get())
     if (XY_Speed_spinbox.get() != ""):
         XY_Speed = int(XY_Speed_spinbox.get())
+        kim_obj.set_xy_velocity(XY_Speed)
     print("XY_Speed = ", XY_Speed) #debug
 
 def update_XY_Speed_text(*args):
@@ -248,6 +248,7 @@ def update_XY_Speed_text(*args):
     print("XY_Speed string = " + XY_Speed_string.get()) #debug
     if (XY_Speed_string.get() != ""):
         XY_Speed = int(XY_Speed_string.get())
+        kim_obj.set_xy_velocity(XY_Speed)
     print("XY_Speed text = ", XY_Speed) #debug
 
 def update_XY_Acceleration():
@@ -255,6 +256,7 @@ def update_XY_Acceleration():
     XY_Acceleration_string.set(XY_Acceleration_spinbox.get())
     if (XY_Acceleration_spinbox.get() != ""):
         XY_Acceleration = int(XY_Acceleration_spinbox.get())
+        kim_obj.set_xy_acceleration(XY_Acceleration)
     print("XY_Acceleration = ", XY_Acceleration) #debug
 
 def update_XY_Acceleration_text(*args):
@@ -262,34 +264,36 @@ def update_XY_Acceleration_text(*args):
     print("XY_Acceleration string = " + XY_Acceleration_string.get()) #debug
     if (XY_Acceleration_string.get() != ""):
         XY_Acceleration = int(XY_Acceleration_string.get())
+        kim_obj.set_xy_acceleration(XY_Acceleration)
     print("XY_Acceleration text = ", XY_Acceleration) #debug
 
 def up_Y_pos(*args):
     global Y_pos, XY_Step_size
     Y_pos += XY_Step_size
+    kim_obj.go_to_Ypos(Y_pos)
+    update_Y_pos_string()
 
 def down_Y_pos(*args):
     global Y_pos, XY_Step_size
     Y_pos -= XY_Step_size
+    kim_obj.go_to_Ypos(Y_pos)
+    update_Y_pos_string()
 
 def right_X_pos(*args):
     global X_pos, XY_Step_size
     X_pos += XY_Step_size
+    kim_obj.go_to_Xpos(X_pos)
+    update_X_pos_string()
 
 def left_X_pos(*args):
     global X_pos, XY_Step_size
     X_pos -= XY_Step_size
-
-# def update_XY_pos(*args):
-#     global X_pos, Y_pos
-#     if ((Im_X_pos_string.get() != "") & (Im_Y_pos_string.get() != "")):
-#         X_pos = int(Im_X_pos_string.get())
-#         Y_pos = int(Im_Y_pos_string.get())
+    kim_obj.go_to_Xpos(X_pos)
+    update_X_pos_string()
 
 def update_Z_pos_string(*args): #Check with KIM101 API, not global variable (i.e unfinished)
     global Z_pos
     Z_pos_string.set(Z_pos)
-    root.after(250, update_Z_pos_string)
 
 def update_Z_Step_size():
     global Z_Step_size
@@ -310,6 +314,7 @@ def update_Z_Speed():
     Z_Speed_string.set(Z_Speed_spinbox.get())
     if (Z_Speed_spinbox.get() != ""):
         Z_Speed = int(Z_Speed_spinbox.get())
+        kim_obj.set_z_velocity(Z_Speed)
     print("Z_Speed = ", Z_Speed) #debug
 
 def update_Z_Speed_text(*args):
@@ -317,6 +322,7 @@ def update_Z_Speed_text(*args):
     print("Z_Speed string = " + Z_Speed_string.get()) #debug
     if (Z_Speed_string.get() != ""):
         Z_Speed = int(Z_Speed_string.get())
+        kim_obj.set_z_velocity(Z_Speed)
     print("Z_Speed text = ", Z_Speed) #debug
 
 def update_Z_Acceleration():
@@ -324,6 +330,7 @@ def update_Z_Acceleration():
     Z_Acceleration_string.set(Z_Acceleration_spinbox.get())
     if (Z_Acceleration_spinbox.get() != ""):
         Z_Acceleration = int(Z_Acceleration_spinbox.get())
+        kim_obj.set_z_acceleration(Z_Acceleration)
     print("Z_Acceleration = ", Z_Acceleration) #debug
 
 def update_Z_Acceleration_text(*args):
@@ -331,25 +338,24 @@ def update_Z_Acceleration_text(*args):
     print("Z_Acceleration string = " + Z_Acceleration_string.get()) #debug
     if (Z_Acceleration_string.get() != ""):
         Z_Acceleration = int(Z_Acceleration_string.get())
+        kim_obj.set_z_acceleration(Z_Acceleration)
     print("Z_Acceleration text = ", Z_Acceleration) #debug
 
 def up_Z_pos(*args):
     global Z_pos, Z_Step_size
     Z_pos += Z_Step_size
+    kim_obj.go_to_Zpos(Z_pos)
+    update_Z_pos_string()
 
 def down_Z_pos(*args):
     global Z_pos, Z_Step_size
     Z_pos -= Z_Step_size
-
-def update_Z_pos(*argss):
-    global Z_pos
-    if (Im_Z_pos_string.get() != ""):
-        Z_pos = int(Im_Z_pos_string.get())
+    kim_obj.go_to_Zpos(Z_pos)
+    update_Z_pos_string()
 
 def update_Angle_string(*args): #Check with KIM101 API, not global variable (i.e unfinished)
     global Angle
     Angle_string.set(Angle)
-    root.after(250, update_Angle_string)
 
 def update_Angle_Step_size():
     global Angle_Step_size
@@ -370,6 +376,7 @@ def update_Angle_Speed():
     Angle_Speed_string.set(Angle_Speed_spinbox.get())
     if (Angle_Speed_spinbox.get() != ""):
         Angle_Speed = int(Angle_Speed_spinbox.get())
+        kim_obj.set_Angle_velocity(Angle_Speed)
     print("Angle_Speed = ", Angle_Speed) #debug
 
 def update_Angle_Speed_text(*args):
@@ -377,6 +384,7 @@ def update_Angle_Speed_text(*args):
     print("Angle_Speed string = " + Angle_Speed_string.get()) #debug
     if (Angle_Speed_string.get() != ""):
         Angle_Speed = int(Angle_Speed_string.get())
+        kim_obj.set_Angle_velocity(Angle_Speed)
     print("Angle_Speed text = ", Angle_Speed) #debug
 
 def update_Angle_Acceleration():
@@ -384,6 +392,7 @@ def update_Angle_Acceleration():
     Angle_Acceleration_string.set(Angle_Acceleration_spinbox.get())
     if (Angle_Acceleration_spinbox.get() != ""):
         Angle_Acceleration = int(Angle_Acceleration_spinbox.get())
+        kim_obj.set_Angle_acceleration(Angle_Acceleration)
     print("Angle_Acceleration = ", Angle_Acceleration) #debug
 
 def update_Angle_Acceleration_text(*args):
@@ -391,20 +400,20 @@ def update_Angle_Acceleration_text(*args):
     print("Angle_Acceleration string = " + Angle_Acceleration_string.get()) #debug
     if (Angle_Acceleration_string.get() != ""):
         Angle_Acceleration = int(Angle_Acceleration_string.get())
+        kim_obj.set_Angle_acceleration(Angle_Acceleration)
     print("Angle_Acceleration text = ", Angle_Acceleration) #debug
 
 def up_Angle(*args):
     global Angle, Angle_Step_size
     Angle += Angle_Step_size
+    kim_obj.go_to_Angle(Angle)
+    update_Angle_string()
 
 def down_Angle(*args):
     global Angle, Angle_Step_size
     Angle -= Angle_Step_size
-
-def update_Angle(*args):
-    global Angle
-    if (Im_Angle_string.get() != ""):
-        Angle = int(Im_Angle_string.get())
+    kim_obj.go_to_Angle(Angle)
+    update_Angle_string()
 
 def XY_hide_Setting(*args):
     global XY_More_Setting_displacement, XY_More_Setting_frame, Z_More_Setting_displacement
@@ -908,7 +917,8 @@ T_current_textblock = Label(TC_frame, textvariable=T_current_string, borderwidth
 T_set_label = Label(TC_frame, text="T_Set", font=normal_font)
 T_set_text = Entry(TC_frame, textvariable=T_set_string, validate="focusout", validatecommand=update_T_set_text)
 T_set_string.trace_add("write", update_T_set_text)
-T_set_slider = Scale(TC_frame, from_=20, to=150, orient="horizontal", variable=T_set, command=update_T_set, length=200)
+T_set_slider = Scale(TC_frame, from_=20, to=150, orient="horizontal", variable=T_set, length=200)
+T_set_slider.bind("<ButtonRelease-1>", update_T_set)
 
 P_value_label = Label(TC_frame, text="P", font=normal_font)
 P_value_spinbox = Spinbox(TC_frame, textvariable=P_value_string, from_=Temperature_PID_Min, to=Temperature_PID_Max, command=update_P_value)
