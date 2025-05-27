@@ -66,6 +66,10 @@ I_value = tc.i
 D_value = tc.d
 
 ##KIM101
+XY_is_Con = False
+Z_is_Con = False
+Angle_is_Con = False
+
 X_pos = kim_obj.x
 Y_pos = kim_obj.y
 
@@ -95,6 +99,9 @@ Angle_Speed = kim_obj.angle_velocity
 Angle_Acceleration = kim_obj.angle_acceleration
 
 ##Prior
+Prior_XY_is_Con = False
+Prior_Z_is_Con = False
+
 Prior_XY_Step_size = 1
 Prior_XY_coeff = 1
 Prior_XY_More_Setting_displacement = 2
@@ -564,8 +571,7 @@ def XY_hide_Setting(*args):
     Angle_control_label.grid(column=0, row=27-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="nsew")
     Angle_label.grid(column=0, row=28-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
     Angle_textblock.grid(column=1, row=28-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
-    Angle_Up_button.grid(column=1, row=29-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
-    Angle_Down_button.grid(column=0, row=29-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_button_frame.grid(column=0, columnspan=2, row=29-XY_More_Setting_displacement-Z_More_Setting_displacement)
     Angle_Setting_frame.grid(column=0, row=30-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="ns")
     if (Angle_More_Setting_displacement == 0):
         Angle_More_Setting_frame.grid(column=0, row=31-XY_More_Setting_displacement-Z_More_Setting_displacement, rowspan=2, columnspan=2, sticky="ns")
@@ -587,8 +593,7 @@ def XY_show_Setting(*args):
     Angle_control_label.grid(column=0, row=27-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="nsew")
     Angle_label.grid(column=0, row=28-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
     Angle_textblock.grid(column=1, row=28-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
-    Angle_Up_button.grid(column=1, row=29-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
-    Angle_Down_button.grid(column=0, row=29-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_button_frame.grid(column=0, columnspan=2, row=29-XY_More_Setting_displacement-Z_More_Setting_displacement)
     Angle_Setting_frame.grid(column=0, row=30-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="ns")
     if (Angle_More_Setting_displacement == 0):
         Angle_More_Setting_frame.grid(column=0, row=31-XY_More_Setting_displacement-Z_More_Setting_displacement, rowspan=2, columnspan=2, sticky="ns")
@@ -599,6 +604,22 @@ def XY_hide_show_Setting(*args):
         XY_hide_Setting()
     else:
         XY_show_Setting()
+
+def update_XY_modetoCon(*args):
+    global XY_is_Con, Con_button, Dis_button
+    if XY_is_Con == False:
+        Con_button.configure(relief="sunken")
+        Dis_button.configure(relief="raised")
+        XY_is_Con = True
+    print("XY_is_Con = ", XY_is_Con)
+
+def update_XY_modetoDis(*args):
+    global XY_is_Con, Con_button, Dis_button
+    if XY_is_Con == True:
+        Con_button.configure(relief="raised")
+        Dis_button.configure(relief="sunken")
+        XY_is_Con = False
+    print("XY_is_Con = ", XY_is_Con)
 
 def Z_hide_Setting(*args):
     global Z_More_Setting_displacement, Z_More_Setting_frame
@@ -616,8 +637,7 @@ def Z_hide_Setting(*args):
     Angle_control_label.grid(column=0, row=27-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="nsew")
     Angle_label.grid(column=0, row=28-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
     Angle_textblock.grid(column=1, row=28-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
-    Angle_Up_button.grid(column=1, row=29-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
-    Angle_Down_button.grid(column=0, row=29-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_button_frame.grid(column=0, columnspan=2, row=29-XY_More_Setting_displacement-Z_More_Setting_displacement)
     Angle_Setting_frame.grid(column=0, row=30-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="ns")
     if (Angle_More_Setting_displacement == 0):
         Angle_More_Setting_frame.grid(column=0, row=31-XY_More_Setting_displacement-Z_More_Setting_displacement, rowspan=2, columnspan=2, sticky="ns")
@@ -638,8 +658,7 @@ def Z_show_Setting(*args):
     Angle_control_label.grid(column=0, row=27-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="nsew")
     Angle_label.grid(column=0, row=28-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
     Angle_textblock.grid(column=1, row=28-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
-    Angle_Up_button.grid(column=1, row=29-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
-    Angle_Down_button.grid(column=0, row=29-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+    Angle_button_frame.grid(column=0, columnspan=2, row=29-XY_More_Setting_displacement-Z_More_Setting_displacement)
     Angle_Setting_frame.grid(column=0, row=30-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="ns")
     if (Angle_More_Setting_displacement == 0):
         Angle_More_Setting_frame.grid(column=0, row=31-XY_More_Setting_displacement-Z_More_Setting_displacement, rowspan=2, columnspan=2, sticky="ns")
@@ -650,6 +669,22 @@ def Z_hide_show_Setting(*args):
         Z_hide_Setting()
     else:
         Z_show_Setting()
+
+def update_Z_modetoCon(*args):
+    global Z_is_Con, Z_Con_button, Z_Dis_button
+    if Z_is_Con == False:
+        Z_Con_button.configure(relief="sunken")
+        Z_Dis_button.configure(relief="raised")
+        Z_is_Con = True
+    print("Z_is_Con = ", Z_is_Con)
+
+def update_Z_modetoDis(*args):
+    global Z_is_Con, Z_Con_button, Z_Dis_button
+    if Z_is_Con == True:
+        Z_Con_button.configure(relief="raised")
+        Z_Dis_button.configure(relief="sunken")
+        Z_is_Con = False
+    print("Z_is_Con = ", Z_is_Con)
 
 def Angle_hide_Setting(*args):
     global Angle_More_Setting_displacement, Angle_More_Setting_frame
@@ -667,6 +702,23 @@ def Angle_hide_show_Setting(*args):
         Angle_hide_Setting()
     else:
         Angle_show_Setting()
+
+def update_Angle_modetoCon(*args):
+    global Angle_is_Con, Angle_Con_button, Angle_Dis_button
+    if Angle_is_Con == False:
+        Angle_Con_button.configure(relief="sunken")
+        Angle_Dis_button.configure(relief="raised")
+        Angle_is_Con = True
+    print("Angle_is_Con = ", Angle_is_Con)
+
+def update_Angle_modetoDis(*args):
+    global Angle_is_Con, Angle_Con_button, Angle_Dis_button
+    if Angle_is_Con == True:
+        Angle_Con_button.configure(relief="raised")
+        Angle_Dis_button.configure(relief="sunken")
+        Angle_is_Con = False
+    print("Angle_is_Con = ", Angle_is_Con)
+
 
 ##Prior
 def Prior_update_X_pos_string(*args): #Check with Prior API, not global variable (i.e unfinished)
@@ -799,11 +851,43 @@ def Prior_forward_left_X_pos(*args):
     Prior_update_X_pos_string()
     Prior_update_Y_pos_string()
 
+def Prior_update_XY_modetoCon(*args):
+    global Prior_XY_is_Con, Prior_Con_button, Prior_Dis_button
+    if Prior_XY_is_Con == False:
+        Prior_Con_button.configure(relief="sunken")
+        Prior_Dis_button.configure(relief="raised")
+        Prior_XY_is_Con = True
+    print("Prior_XY_is_Con = ", Prior_XY_is_Con)
+
+def Prior_update_XY_modetoDis(*args):
+    global Prior_XY_is_Con, Prior_Con_button, Prior_Dis_button
+    if Prior_XY_is_Con == True:
+        Prior_Con_button.configure(relief="raised")
+        Prior_Dis_button.configure(relief="sunken")
+        Prior_XY_is_Con = False
+    print("Prior_XY_is_Con = ", Prior_XY_is_Con)
+
 # def Prior_update_XY_pos(*args):
 #     global Prior_X_pos, Prior_Y_pos
 #     if ((Prior_Im_X_pos_string.get() != "") & (Prior_Im_Y_pos_string.get() != "")):
 #         Prior_X_pos = int(Prior_Im_X_pos_string.get())
 #         Prior_Y_pos = int(Prior_Im_Y_pos_string.get())
+
+def Prior_update_Z_modetoCon(*args):
+    global Prior_Z_is_Con, Prior_Z_Con_button, Prior_Z_Dis_button
+    if Prior_Z_is_Con == False:
+        Prior_Z_Con_button.configure(relief="sunken")
+        Prior_Z_Dis_button.configure(relief="raised")
+        Prior_Z_is_Con = True
+    print("Prior_Z_is_Con = ", Prior_Z_is_Con)
+
+def Prior_update_Z_modetoDis(*args):
+    global Prior_Z_is_Con, Prior_Z_Con_button, Prior_Z_Dis_button
+    if Prior_Z_is_Con == True:
+        Prior_Z_Con_button.configure(relief="raised")
+        Prior_Z_Dis_button.configure(relief="sunken")
+        Prior_Z_is_Con = False
+    print("Prior_Z_is_Con = ", Prior_Z_is_Con)
 
 def Prior_update_Z_pos_string(*args): #Check with Prior API, not global variable (i.e unfinished)
     global Prior_Z_pos, Prior_Z_pos_string, pr
@@ -1196,6 +1280,9 @@ Right_forward_button = Button(KIM_button_frame, text="⏩", command=forward_righ
 Up_forward_button = Button(KIM_button_frame, text="⏫", command=forward_up_Y_pos)
 Down_forward_button = Button(KIM_button_frame, text="⏬", command=forward_down_Y_pos)
 
+Con_button = Button(KIM_button_frame, text="C", width=2, command=update_XY_modetoCon)
+Dis_button = Button(KIM_button_frame, text="D", width=2, relief="sunken", command=update_XY_modetoDis)
+
 XY_Z_seperator = ttk.Separator(root, orient="horizontal")
 
 Z_control_label = Label(root, text="Z AXIS CONTROL", font=normal_font)
@@ -1209,6 +1296,10 @@ Z_Down_button = Button(Z_button_frame, text="▼", command=down_Z_pos, width=4, 
 
 Z_Up_forward_button = Button(Z_button_frame, text="⏫", width=4, height=2, command=forward_up_Z_pos)
 Z_Down_forward_button = Button(Z_button_frame, text="⏬", width=4, height=2, command=forward_down_Z_pos)
+
+Z_filler = Label(Z_button_frame ,text="")
+Z_Con_button = Button(Z_button_frame, text="C", width=2, command=update_Z_modetoCon)
+Z_Dis_button = Button(Z_button_frame, text="D", width=2, relief="sunken", command=update_Z_modetoDis)
 
 Z_Setting_frame = Frame(root)
 
@@ -1232,15 +1323,19 @@ Z_Acceleration_label = Label(Z_More_Setting_frame, text="Accel (μm/s²)")
 Z_Acceleration_spinbox = Spinbox(Z_More_Setting_frame, textvariable=Z_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=update_Z_Acceleration)
 Z_Acceleration_string.trace_add("write", update_Z_Acceleration_text)
 
-
 Angle_seperator = ttk.Separator(root)
 Angle_control_label = Label(root, text="ANGLE CONTROL",font=normal_font)
 
 Angle_label = Label(root, text="Angle Degree",font=normal_font)
 Angle_textblock = Label(root, textvariable=Angle_string, borderwidth=1, relief="groove")
 
-Angle_Up_button = Button(root, text="↷", command=up_Angle)
-Angle_Down_button = Button(root, text="↶", command=down_Angle)
+Angle_button_frame = Frame(root)
+
+Angle_Up_button = Button(Angle_button_frame, text="↷", command=up_Angle, width=10, height=2)
+Angle_Down_button = Button(Angle_button_frame, text="↶", command=down_Angle, width=10, height=2)
+
+Angle_Con_button = Button(Angle_button_frame, text="C", width=2, command=update_Angle_modetoCon)
+Angle_Dis_button = Button(Angle_button_frame, text="D", width=2, relief="sunken", command=update_Angle_modetoDis)
 
 Angle_Setting_frame = Frame(root)
 
@@ -1311,6 +1406,9 @@ Prior_Right_forward_button = Button(Prior_button_frame, text="⏩", command=Prio
 Prior_Up_forward_button = Button(Prior_button_frame, text="⏫", command=Prior_forward_up_Y_pos)
 Prior_Down_forward_button = Button(Prior_button_frame, text="⏬", command=Prior_forward_down_Y_pos)
 
+Prior_Con_button = Button(Prior_button_frame, text="C", width=2, command=Prior_update_XY_modetoCon)
+Prior_Dis_button = Button(Prior_button_frame, text="D", width=2, relief="sunken",command=Prior_update_XY_modetoDis)
+
 Prior_Z_Label_seperator = ttk.Separator(root, orient="horizontal")
 Prior_Z_control_label = Label(root, text="Z AXIS CONTROL",font=normal_font)
 
@@ -1324,6 +1422,11 @@ Prior_Z_Down_button = Button(Prior_Z_button_frame, text="▼", command=Prior_dow
 
 Prior_Z_Up_forward_button = Button(Prior_Z_button_frame, text="⏫",width=4, height=2, command=Prior_forward_up_Z_pos)
 Prior_Z_Down_forward_button = Button(Prior_Z_button_frame, text="⏬",width=4, height=2, command=Prior_forward_down_Z_pos)
+
+Prior_Z_filler = Label(Prior_Z_button_frame, text="")
+
+Prior_Z_Con_button = Button(Prior_Z_button_frame, text="C", width=2, command=Prior_update_Z_modetoCon)
+Prior_Z_Dis_button = Button(Prior_Z_button_frame, text="D", width=2, relief="sunken", command=Prior_update_Z_modetoDis)
 
 Prior_Z_Setting_frame = Frame(root)
 
@@ -1418,6 +1521,9 @@ Right_forward_button.grid(column=4, row=2, sticky="nsew")
 Left_forward_button.grid(column=0, row=2, sticky="nsew")
 Left_button.grid(column=1, row=2, sticky="nsew")
 
+Con_button.grid(column=3, row=4, sticky="e")
+Dis_button.grid(column=4, row=4, sticky="w")
+
 XY_Setting_frame.grid(column=0, row=15, columnspan=2, sticky="ns")
 
 XY_Step_size_label.grid(column=0, row=0, sticky="nsew")
@@ -1445,8 +1551,14 @@ Z_button_frame.grid(column=0, row=21-XY_More_Setting_displacement, rowspan=2, co
 
 Z_Up_forward_button.grid(column=1, row=0)
 Z_Up_button.grid(column=0, row=0)
+
 Z_Down_button.grid(column=0, row=1)
 Z_Down_forward_button.grid(column=1, row=1)
+
+Z_filler.grid(column=3, row=1, padx=7)
+
+Z_Con_button.grid(column=4, row=1, sticky="s")
+Z_Dis_button.grid(column=5, row=1, sticky="s")
 
 Z_Setting_frame.grid(column=0, row=23-XY_More_Setting_displacement, columnspan=2, sticky="ns")
 
@@ -1469,8 +1581,13 @@ Angle_control_label.grid(column=0, row=27-XY_More_Setting_displacement-Z_More_Se
 Angle_label.grid(column=0, row=28-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
 Angle_textblock.grid(column=1, row=28-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
 
-Angle_Up_button.grid(column=1, row=29-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
-Angle_Down_button.grid(column=0, row=29-XY_More_Setting_displacement-Z_More_Setting_displacement, sticky="nsew")
+Angle_button_frame.grid(column=0, columnspan=2, row=29-XY_More_Setting_displacement-Z_More_Setting_displacement)
+
+Angle_Up_button.grid(column=1, row=0, sticky="nsew")
+Angle_Down_button.grid(column=0, row=0, sticky="nsew")
+
+Angle_Con_button.grid(column=0, row=1, sticky="e", pady=4)
+Angle_Dis_button.grid(column=1, row=1, sticky="w", pady=4)
 
 Angle_Setting_frame.grid(column=0, row=30-XY_More_Setting_displacement-Z_More_Setting_displacement, columnspan=2, sticky="ns")
 
@@ -1517,6 +1634,9 @@ Prior_Right_forward_button.grid(column=4, row=2, sticky="nsew")
 Prior_Left_button.grid(column=1, row=2, sticky="nsew")
 Prior_Left_forward_button.grid(column=0, row=2, sticky="nsew")
 
+Prior_Con_button.grid(column=3, row=4, sticky="e")
+Prior_Dis_button.grid(column=4, row=4, sticky="w")
+
 Prior_XY_Setting_frame.grid(column=3, row=15, columnspan=2, sticky="ns")
 
 Prior_Setting_button.grid(column=2, row=0, columnspan=2, sticky="nsew")
@@ -1545,6 +1665,10 @@ Prior_Z_Down_button.grid(column=0, row=1)
 
 Prior_Z_Up_forward_button.grid(column=1, row=0)
 Prior_Z_Down_forward_button.grid(column=1, row=1)
+
+Prior_Z_filler.grid(column=2, row=1, padx=7)
+Prior_Z_Con_button.grid(column=3, row=1, sticky="s")
+Prior_Z_Dis_button.grid(column=4, row=1, sticky="s")
 
 Prior_Z_Setting_frame.grid(column=3, row=23-Prior_XY_More_Setting_displacement, columnspan=2, sticky="ns")
 
