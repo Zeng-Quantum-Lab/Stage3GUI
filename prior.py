@@ -9,6 +9,8 @@ class prior():
         self.path = sdk_path
         self.velocity = 2600
         self.acceleration = 134442
+        self.z_velocity = 2600
+        self.z_acceleration = 134442
 
         if os.path.exists(self.path):
             global SDKPrior
@@ -49,14 +51,26 @@ class prior():
             # print("controller.connect ", self.port_num)
             self.cmd(f"controller.connect {self.port_num}")
 
+            # initialization
+            ##pos
             self.check_busy()
             position = self.cmd("controller.stage.position.get")
-
             curr_pos = position[1]
             curr_pos_list = curr_pos.split(",")
             print(curr_pos_list)
             self.x = int(curr_pos_list[0])
             self.y = int(curr_pos_list[1])
+            z_pos = self.cmd("controller.z.position.get")
+            self.z = int(z_pos[1])
+
+            ## velocity and acceleration
+            self.check_busy()
+            self.cmd(f"controller.stage.acc.set {self.acceleration}")
+            self.cmd(f"controller.z.acc.set {self.z_acceleration}")
+
+            self.cmd(f"controller.stage.speed.set {self.velocity}")
+            self.cmd(f"controller.z.speed.set {self.z_velocity}")
+
         except Exception as e:
             print(e)
 
@@ -72,7 +86,7 @@ class prior():
         return ret, rx.value.decode()
     
     def check_busy(self):
-        while self.cmd("controller.stage.busy.get") == 1 :
+        while (self.cmd("controller.stage.busy.get") == 1) | (self.cmd("controller.z.busy.get") == 1) :
             print("Controller is Busy\n")
             time.sleep(1)
 
@@ -103,6 +117,31 @@ class prior():
         # print("curre_pos = ", curr_pos)
         self.x = int(curr_pos[0])
         self.y = int(curr_pos[1])
+
+    def set_z_velocity(self, velocity):
+        self.check_busy()
+        self.velocity = velocity
+        self.cmd(f"controller.z.speed.set {self.velocity}")
+        self.cmd("controller.z.speed.get")
+
+    def set_z_acceleration(self, acceleration):
+        self.check_busy()
+        self.acceleration = acceleration
+        self.cmd(f"controller.z.acc.set {self.acceleration}")
+        self.cmd("controller.z.acc.get")
+
+    def go_to_z_pos(self, new_z):
+        self.z = new_z
+        # self.check_busy()
+        self.cmd(f"controller.z.goto-position {self.z}")
+        self.cmd("controller.z.speed.get")
+        # time.sleep(1)
+
+    def get_curr_z_pos(self):
+        self.check_busy()
+        position = self.cmd("controller.z.position.get")
+        self.z = int(position[1])
+        return self.z
 
     def disconnect(self):
         self.check_busy()
