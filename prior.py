@@ -120,13 +120,13 @@ class prior():
 
     def set_z_velocity(self, velocity):
         self.check_busy()
-        self.velocity = velocity
+        self.z_velocity = velocity
         self.cmd(f"controller.z.speed.set {self.velocity}")
         self.cmd("controller.z.speed.get")
 
     def set_z_acceleration(self, acceleration):
         self.check_busy()
-        self.acceleration = acceleration
+        self.z_acceleration = acceleration
         self.cmd(f"controller.z.acc.set {self.acceleration}")
         self.cmd("controller.z.acc.get")
 
@@ -142,6 +142,27 @@ class prior():
         position = self.cmd("controller.z.position.get")
         self.z = int(position[1])
         return self.z
+
+    def start_forward_x_motor(self):
+        self.cmd(f"controller.stage.move-at-velocity {self.velocity} 0")
+    def start_backward_x_motor(self):
+        self.cmd(f"controller.stage.move-at-velocity -{self.velocity} 0")
+    def stop_x_motor(self):
+        self.cmd(f"controller.stage.move-at-velocity 0 0")
+
+    def start_forward_y_motor(self):
+        self.cmd(f"controller.stage.move-at-velocity 0 -{self.velocity}")
+    def start_backward_y_motor(self):
+        self.cmd(f"controller.stage.move-at-velocity 0 {self.velocity}")
+    def stop_y_motor(self):
+        self.cmd(f"controller.stage.move-at-velocity 0 0")
+
+    def start_forward_z_motor(self):
+        self.cmd(f"controller.z.move-at-velocity {self.z_velocity}")
+    def start_backward_z_motor(self):
+        self.cmd(f"controller.z.move-at-velocity -{self.z_velocity}")
+    def stop_z_motor(self):
+        self.cmd(f"controller.z.move-at-velocity 0")
 
     def disconnect(self):
         self.check_busy()

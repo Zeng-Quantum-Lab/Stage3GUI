@@ -22,17 +22,17 @@ kim_obj = kim("97251106")
 Temperature_PID_Max = 500
 Temperature_PID_Min = -500
 
-Pos_max = 1000000
-Pos_min = -1000000
+Pos_max = 1000000000
+Pos_min = -1000000000
 
-Step_size_max = 10000
-Step_size_min = -10000
+Step_size_max = 10000000
+Step_size_min = -10000000
 
-Acceleration_max = 10000
-Acceleration_min = -10000
+Acceleration_max = 10000000
+Acceleration_min = -10000000
 
-Speed_max = 10000
-Speed_min = -10000
+Speed_max = 10000000
+Speed_min = -10000000
 
 Coeff_size_max = 1000000000
 Coeff_size_min = 0
@@ -80,6 +80,11 @@ XY_More_Setting_displacement = 2
 XY_Speed = kim_obj.xy_velocity
 XY_Acceleration = kim_obj.xy_acceleration
 
+left_X_isHold = False
+right_X_isHold = False
+up_Y_isHold = False
+down_Y_isHold = False
+
 Z_pos = kim_obj.z
 
 Z_Step_size = 1
@@ -87,7 +92,10 @@ Z_coeff = 1
 Z_More_Setting_displacement = 2
 
 Z_Speed = kim_obj.z_velocity
-Z_Acceleration = kim_obj.z_accleration
+Z_Acceleration = kim_obj.z_acceleration
+
+up_Z_isHold = False
+down_Z_isHold = False
 
 Angle = kim_obj.angle
 
@@ -98,6 +106,9 @@ Angle_More_Setting_displacement = 2
 Angle_Speed = kim_obj.angle_velocity
 Angle_Acceleration = kim_obj.angle_acceleration
 
+up_Angle_isHold = False
+down_Angle_isHold = False
+
 ##Prior
 Prior_XY_is_Con = False
 Prior_Z_is_Con = False
@@ -106,13 +117,15 @@ Prior_XY_Step_size = 1
 Prior_XY_coeff = 1
 Prior_XY_More_Setting_displacement = 2
 
-try:
-    Prior_X_pos = pr.x
-    Prior_Y_pos = pr.y
-    Prior_XY_Speed = pr.velocity
-    Prior_XY_Acceleration = pr.acceleration
-except Exception as e:
-    print(e)
+Prior_X_pos = pr.x
+Prior_Y_pos = pr.y
+Prior_XY_Speed = pr.velocity
+Prior_XY_Acceleration = pr.acceleration
+
+Prior_left_X_isHold = False
+Prior_right_X_isHold = False
+Prior_up_X_isHold = False
+Prior_down_X_isHold = False
 
 Prior_Z_Step_size = 1
 Prior_Z_coeff = 1
@@ -121,12 +134,6 @@ Prior_Z_Speed = pr.z_velocity
 Prior_Z_Acceleration = pr.z_acceleration
 
 Prior_Z_pos = 0 #debug variable
-##Initialized Setting
-try:
-    pr.set_velocity(Prior_XY_Speed)
-    pr.set_acceleration(Prior_XY_Acceleration)
-except Exception as e:
-    print(e)
 
 #Update functions ################################
 ## TC200
@@ -257,10 +264,16 @@ def hide_show_PID(*args):
 ## KIM101
 def update_X_pos_string(*args): #Check with KIM101 API, not global variable (i.e unfinished)
     global X_pos
+    if (XY_is_Con):
+        time.sleep(0.25)
+    X_pos = kim_obj.get_x_pos()
     X_pos_string.set(X_pos)
 
 def update_Y_pos_string(*args): #Check with KIM101 API, not global variable (i.e unfinished)
-    global Y_pos
+    global Y_pos, Y_pos_string
+    if (XY_is_Con):
+        time.sleep(0.25)
+    Y_pos = kim_obj.get_y_pos()
     Y_pos_string.set(Y_pos)
 
 def update_XY_Step_size():
@@ -292,7 +305,6 @@ def update_XY_coeff_text(*args):
         XY_coeff = int(XY_coeff_string.get())
         kim_obj.set_Angle_velocity(XY_coeff)
     print("XY_coeff text = ", XY_coeff) #debug
-
 
 def update_XY_Speed():
     global XY_Speed, XY_Speed_spinbox
@@ -332,11 +344,72 @@ def up_Y_pos(*args):
     kim_obj.go_to_Ypos(Y_pos)
     update_Y_pos_string()
 
-def forward_up_Y_pos(*args):
+def x10_up_Y_pos(*args):
     global Y_pos, XY_Step_size, XY_coeff
     Y_pos += XY_Step_size * XY_coeff * 10
     kim_obj.go_to_Ypos(Y_pos)
     update_Y_pos_string()
+
+def hold_right_X_pos(*args):
+    kim_obj.start_forward_x_motor()
+    update_X_pos_string()
+
+def release_X_pos(*args):
+    kim_obj.stop_x_motor()
+    update_X_pos_string()
+
+def hold_left_X_pos(*args):
+    kim_obj.start_backward_x_motor()
+    update_X_pos_string()
+
+def hold_up_Y_pos(*args):
+    kim_obj.start_forward_y_motor()
+    update_Y_pos_string()
+
+def release_Y_pos(*args):
+    kim_obj.stop_y_motor()
+    update_Y_pos_string()
+
+def hold_down_Y_pos(*args):
+    kim_obj.start_backward_y_motor()
+    update_Y_pos_string()
+
+def continuous_setup(*args):
+    global Up_button, Down_button, Right_button, Left_button
+    Up_button.unbind("<ButtonRelease-1>")
+    Up_button.bind("<Button-1>", hold_up_Y_pos)
+    Up_button.bind("<ButtonRelease-1>", release_Y_pos)
+
+    Down_button.unbind("<ButtonRelease-1>")
+    Down_button.bind("<Button-1>", hold_down_Y_pos)
+    Down_button.bind("<ButtonRelease-1>", release_Y_pos)
+
+    Right_button.unbind("<ButtonRelease-1>")
+    Right_button.bind("<Button-1>", hold_right_X_pos)
+    Right_button.bind("<ButtonRelease-1>", release_X_pos)
+
+    Left_button.unbind("<ButtonRelease-1>")
+    Left_button.bind("<Button-1>", hold_left_X_pos)
+    Left_button.bind("<ButtonRelease-1>", release_X_pos)
+
+
+def discreet_setup(*args):
+    global Up_button, Down_button, Right_button, Left_button
+    Up_button.unbind("<Button-1>")
+    Up_button.unbind("<ButtonRelease-1>")
+    Up_button.bind("<ButtonRelease-1>", up_Y_pos)
+
+    Down_button.unbind("<Button-1>")
+    Down_button.unbind("<ButtonRelease-1>")
+    Down_button.bind("<ButtonRelease-1>", down_Y_pos)
+
+    Right_button.unbind("<Button-1>")
+    Right_button.unbind("<ButtonRelease-1>")
+    Right_button.bind("<ButtonRelease-1>", right_X_pos)
+
+    Left_button.unbind("<Button-1>")
+    Left_button.unbind("<ButtonRelease-1>")
+    Left_button.bind("<ButtonRelease-1>", left_X_pos)
 
 def down_Y_pos(*args):
     global Y_pos, XY_Step_size, XY_coeff
@@ -344,7 +417,7 @@ def down_Y_pos(*args):
     kim_obj.go_to_Ypos(Y_pos)
     update_Y_pos_string()
 
-def forward_down_Y_pos(*args):
+def x10_down_Y_pos(*args):
     global Y_pos, XY_Step_size, XY_coeff
     Y_pos -= XY_Step_size * XY_coeff * 10
     kim_obj.go_to_Ypos(Y_pos)
@@ -356,7 +429,7 @@ def right_X_pos(*args):
     kim_obj.go_to_Xpos(X_pos)
     update_X_pos_string()
 
-def forward_right_X_pos(*args):
+def x10_right_X_pos(*args):
     global X_pos, XY_Step_size, XY_coeff
     X_pos += XY_Step_size * XY_coeff * 10
     kim_obj.go_to_Xpos(X_pos)
@@ -368,14 +441,23 @@ def left_X_pos(*args):
     kim_obj.go_to_Xpos(X_pos)
     update_X_pos_string()
 
-def forward_left_X_pos(*args):
+def left_hold_X_pos(*args):
+    global X_pos, XY_Step_size, XY_coeff
+    X_pos -= XY_Step_size * XY_coeff
+    kim_obj.go_to_Xpos(X_pos)
+    update_X_pos_string()
+
+def x10_left_X_pos(*args):
     global X_pos, XY_Step_size, XY_coeff
     X_pos -= XY_Step_size * XY_coeff * 10
     kim_obj.go_to_Xpos(X_pos)
     update_X_pos_string()
 
 def update_Z_pos_string(*args): #Check with KIM101 API, not global variable (i.e unfinished)
-    global Z_pos
+    global Z_pos, kim_obj
+    if Z_is_Con:
+        time.sleep(0.25)
+    Z_pos = kim_obj.get_z_pos()
     Z_pos_string.set(Z_pos)
 
 def update_Z_Step_size():
@@ -446,7 +528,7 @@ def up_Z_pos(*args):
     kim_obj.go_to_Zpos(Z_pos)
     update_Z_pos_string()
 
-def forward_up_Z_pos(*args):
+def x10_up_Z_pos(*args):
     global Z_pos, Z_Step_size, Z_coeff
     Z_pos += Z_Step_size * Z_coeff * 10
     kim_obj.go_to_Zpos(Z_pos)
@@ -458,14 +540,49 @@ def down_Z_pos(*args):
     kim_obj.go_to_Zpos(Z_pos)
     update_Z_pos_string()
 
-def forward_down_Z_pos(*args):
+def x10_down_Z_pos(*args):
     global Z_pos, Z_Step_size, Z_coeff
     Z_pos -= Z_Step_size * Z_coeff * 10
     kim_obj.go_to_Zpos(Z_pos)
     update_Z_pos_string()
 
+def hold_up_Z_pos(*args):
+    kim_obj.start_forward_z_motor()
+    update_Z_pos_string()
+
+def release_Z_pos(*args):
+    kim_obj.stop_z_motor()
+    update_Z_pos_string()
+
+def hold_down_Z_pos(*args):
+    kim_obj.start_backward_z_motor()
+    update_Z_pos_string()
+
+def Z_continuous_setup(*args):
+    global Z_Up_button, Z_Down_button
+    Z_Up_button.unbind("<ButtonRelease-1>")
+    Z_Up_button.bind("<Button-1>", hold_up_Z_pos)
+    Z_Up_button.bind("<ButtonRelease-1>", release_Z_pos)
+
+    Z_Down_button.unbind("<ButtonRelease-1>")
+    Z_Down_button.bind("<Button-1>", hold_down_Z_pos)
+    Z_Down_button.bind("<ButtonRelease-1>", release_Z_pos)
+
+def Z_discreet_setup(*args):
+    global Z_Up_button, Z_Down_button
+    Z_Up_button.unbind("<Button-1>")
+    Z_Up_button.unbind("<ButtonRelease-1>")
+    Z_Up_button.bind("<ButtonRelease-1>", up_Z_pos)
+
+    Z_Down_button.unbind("<Button-1>")
+    Z_Down_button.unbind("<ButtonRelease-1>")
+    Z_Down_button.bind("<ButtonRelease-1>", down_Z_pos)
+
 def update_Angle_string(*args): #Check with KIM101 API, not global variable (i.e unfinished)
-    global Angle
+    global Angle, kim_obj
+    if Angle_is_Con:
+        time.sleep(0.25)
+    Angle = kim_obj.get_angle_pos()
     Angle_string.set(Angle)
 
 def update_Angle_Step_size():
@@ -497,7 +614,6 @@ def update_Angle_coeff_text(*args):
         Angle_coeff = int(Angle_coeff_string.get())
         kim_obj.set_Angle_velocity(Angle_coeff)
     print("Angle_coeff text = ", Angle_coeff) #debug
-
 
 def update_Angle_Speed():
     global Angle_Speed, Angle_Speed_spinbox
@@ -537,7 +653,7 @@ def up_Angle(*args):
     kim_obj.go_to_Angle(Angle)
     update_Angle_string()
 
-def forward_up_Angle(*args):
+def x10_up_Angle(*args):
     global Angle, Angle_Step_size, Angle_coeff
     Angle += Angle_Step_size * Angle_coeff * 10
     kim_obj.go_to_Angle(Angle)
@@ -549,11 +665,43 @@ def down_Angle(*args):
     kim_obj.go_to_Angle(Angle)
     update_Angle_string()
 
-def forward_down_Angle(*args):
+def x10_down_Angle(*args):
     global Angle, Angle_Step_size, Angle_coeff
     Angle -= Angle_Step_size * Angle_coeff * 10
     kim_obj.go_to_Angle(Angle)
     update_Angle_string()
+
+def hold_up_Angle_pos(*args):
+    kim_obj.start_forward_angle_motor()
+    update_Angle_string()
+
+def release_Angle_pos(*args):
+    kim_obj.stop_angle_motor()
+    update_Angle_string()
+
+def hold_down_Angle_pos(*args):
+    kim_obj.start_backward_angle_motor()
+    update_Angle_string()
+
+def Angle_continuous_setup(*args):
+    global Angle_Up_button, Angle_Down_button
+    Angle_Up_button.unbind("<ButtonRelease-1>")
+    Angle_Up_button.bind("<Button-1>", hold_up_Angle_pos)
+    Angle_Up_button.bind("<ButtonRelease-1>", release_Angle_pos)
+
+    Angle_Down_button.unbind("<ButtonRelease-1>")
+    Angle_Down_button.bind("<Button-1>", hold_down_Angle_pos)
+    Angle_Down_button.bind("<ButtonRelease-1>", release_Angle_pos)
+
+def Angle_discreet_setup(*args):
+    global Angle_Up_button, Angle_Down_button
+    Angle_Up_button.unbind("<Button-1>")
+    Angle_Up_button.unbind("<ButtonRelease-1>")
+    Angle_Up_button.bind("<ButtonRelease-1>", up_Angle)
+
+    Angle_Down_button.unbind("<Button-1>")
+    Angle_Down_button.unbind("<ButtonRelease-1>")
+    Angle_Down_button.bind("<ButtonRelease-1>", down_Angle)
 
 def XY_hide_Setting(*args):
     global XY_More_Setting_displacement, XY_More_Setting_frame, Z_More_Setting_displacement
@@ -611,6 +759,7 @@ def update_XY_modetoCon(*args):
         Con_button.configure(relief="sunken")
         Dis_button.configure(relief="raised")
         XY_is_Con = True
+        continuous_setup()
     print("XY_is_Con = ", XY_is_Con)
 
 def update_XY_modetoDis(*args):
@@ -619,6 +768,7 @@ def update_XY_modetoDis(*args):
         Con_button.configure(relief="raised")
         Dis_button.configure(relief="sunken")
         XY_is_Con = False
+        discreet_setup()
     print("XY_is_Con = ", XY_is_Con)
 
 def Z_hide_Setting(*args):
@@ -676,6 +826,7 @@ def update_Z_modetoCon(*args):
         Z_Con_button.configure(relief="sunken")
         Z_Dis_button.configure(relief="raised")
         Z_is_Con = True
+        Z_continuous_setup()
     print("Z_is_Con = ", Z_is_Con)
 
 def update_Z_modetoDis(*args):
@@ -684,6 +835,7 @@ def update_Z_modetoDis(*args):
         Z_Con_button.configure(relief="raised")
         Z_Dis_button.configure(relief="sunken")
         Z_is_Con = False
+        Z_discreet_setup()
     print("Z_is_Con = ", Z_is_Con)
 
 def Angle_hide_Setting(*args):
@@ -709,6 +861,7 @@ def update_Angle_modetoCon(*args):
         Angle_Con_button.configure(relief="sunken")
         Angle_Dis_button.configure(relief="raised")
         Angle_is_Con = True
+        Angle_continuous_setup()
     print("Angle_is_Con = ", Angle_is_Con)
 
 def update_Angle_modetoDis(*args):
@@ -717,19 +870,22 @@ def update_Angle_modetoDis(*args):
         Angle_Con_button.configure(relief="raised")
         Angle_Dis_button.configure(relief="sunken")
         Angle_is_Con = False
+        Angle_discreet_setup()
     print("Angle_is_Con = ", Angle_is_Con)
 
 
 ##Prior
 def Prior_update_X_pos_string(*args): #Check with Prior API, not global variable (i.e unfinished)
-    global Prior_X_pos, pr
+    global Prior_X_pos, pr, Prior_X_pos
     pr.get_curr_pos()
+    Prior_X_pos = pr.x
     Prior_X_pos_string.set(pr.x)
     # root.after(250, Prior_update_X_pos_string)
 
 def Prior_update_Y_pos_string(*args): #Check with Prior API, not global variable (i.e unfinished)
-    global Prior_Y_pos, pr
+    global Prior_Y_pos, pr, Prior_Y_pos
     pr.get_curr_pos()
+    Prior_Y_pos = pr.y
     Prior_Y_pos_string.set(pr.y)
     # root.after(250, Prior_update_Y_pos_string)
 
@@ -802,7 +958,7 @@ def Prior_up_Y_pos(*args):
     Prior_update_X_pos_string()
     Prior_update_Y_pos_string()
 
-def Prior_forward_up_Y_pos(*args):
+def Prior_x10_up_Y_pos(*args):
     global Prior_Y_pos, Prior_XY_Step_size, pr, Prior_X_pos, Prior_XY_coeff
     Prior_Y_pos -= Prior_XY_Step_size * Prior_XY_coeff * 10
     pr.go_to_pos(Prior_X_pos, Prior_Y_pos)
@@ -816,7 +972,7 @@ def Prior_down_Y_pos(*args):
     Prior_update_X_pos_string()
     Prior_update_Y_pos_string()
 
-def Prior_forward_down_Y_pos(*args):
+def Prior_x10_down_Y_pos(*args):
     global Prior_Y_pos, Prior_XY_Step_size, pr, Prior_X_pos, Prior_XY_coeff
     Prior_Y_pos += Prior_XY_Step_size * Prior_XY_coeff * 10
     pr.go_to_pos(Prior_X_pos, Prior_Y_pos)
@@ -830,7 +986,7 @@ def Prior_right_X_pos(*args):
     Prior_update_X_pos_string()
     Prior_update_Y_pos_string()
 
-def Prior_forward_right_X_pos(*args):
+def Prior_x10_right_X_pos(*args):
     global Prior_X_pos, Prior_XY_Step_size, pr, Prior_Y_pos, Prior_XY_coeff
     Prior_X_pos += Prior_XY_Step_size * Prior_XY_coeff * 10
     pr.go_to_pos(Prior_X_pos, Prior_Y_pos)
@@ -844,12 +1000,79 @@ def Prior_left_X_pos(*args):
     Prior_update_X_pos_string()
     Prior_update_Y_pos_string()
 
-def Prior_forward_left_X_pos(*args):
+def Prior_x10_left_X_pos(*args):
     global Prior_X_pos, Prior_XY_Step_size, pr, Prior_Y_pos, Prior_XY_coeff
     Prior_X_pos -= Prior_XY_Step_size * Prior_XY_coeff * 10
     pr.go_to_pos(Prior_X_pos, Prior_Y_pos)
     Prior_update_X_pos_string()
     Prior_update_Y_pos_string()
+
+def Prior_hold_right_X_pos(*args):
+    global pr
+    pr.start_forward_x_motor()
+    Prior_update_X_pos_string()
+
+def Prior_release_X_pos(*args):
+    global pr
+    pr.stop_x_motor()
+    Prior_update_X_pos_string()
+
+def Prior_hold_left_X_pos(*args):
+    global pr
+    pr.start_backward_x_motor()
+    Prior_update_X_pos_string()
+
+def Prior_hold_up_Y_pos(*args):
+    global pr
+    pr.start_forward_y_motor()
+    Prior_update_Y_pos_string()
+
+def Prior_release_Y_pos(*args):
+    global pr
+    pr.stop_y_motor()
+    Prior_update_Y_pos_string()
+
+def Prior_hold_down_Y_pos(*args):
+    global pr
+    pr.start_backward_y_motor()
+    Prior_update_Y_pos_string()
+
+def Prior_continuous_setup(*args):
+    global Prior_Up_button, Prior_Down_button, Prior_Right_button, Prior_Left_button
+    Prior_Up_button.unbind("<ButtonRelease-1>")
+    Prior_Up_button.bind("<Button-1>", Prior_hold_up_Y_pos)
+    Prior_Up_button.bind("<ButtonRelease-1>", Prior_release_Y_pos)
+
+    Prior_Down_button.unbind("<ButtonRelease-1>")
+    Prior_Down_button.bind("<Button-1>", Prior_hold_down_Y_pos)
+    Prior_Down_button.bind("<ButtonRelease-1>", Prior_release_Y_pos)
+
+    Prior_Right_button.unbind("<ButtonRelease-1>")
+    Prior_Right_button.bind("<Button-1>", Prior_hold_right_X_pos)
+    Prior_Right_button.bind("<ButtonRelease-1>", Prior_release_X_pos)
+
+    Prior_Left_button.unbind("<ButtonRelease-1>")
+    Prior_Left_button.bind("<Button-1>", Prior_hold_left_X_pos)
+    Prior_Left_button.bind("<ButtonRelease-1>", Prior_release_X_pos)
+
+
+def Prior_discreet_setup(*args):
+    global Prior_Up_button, Prior_Down_button, Prior_Right_button, Prior_Left_button
+    Prior_Up_button.unbind("<Button-1>")
+    Prior_Up_button.unbind("<ButtonRelease-1>")
+    Prior_Up_button.bind("<ButtonRelease-1>", Prior_up_Y_pos)
+
+    Prior_Down_button.unbind("<Button-1>")
+    Prior_Down_button.unbind("<ButtonRelease-1>")
+    Prior_Down_button.bind("<ButtonRelease-1>", Prior_down_Y_pos)
+
+    Prior_Right_button.unbind("<Button-1>")
+    Prior_Right_button.unbind("<ButtonRelease-1>")
+    Prior_Right_button.bind("<ButtonRelease-1>", Prior_right_X_pos)
+
+    Prior_Left_button.unbind("<Button-1>")
+    Prior_Left_button.unbind("<ButtonRelease-1>")
+    Prior_Left_button.bind("<ButtonRelease-1>", Prior_left_X_pos)
 
 def Prior_update_XY_modetoCon(*args):
     global Prior_XY_is_Con, Prior_Con_button, Prior_Dis_button
@@ -857,6 +1080,7 @@ def Prior_update_XY_modetoCon(*args):
         Prior_Con_button.configure(relief="sunken")
         Prior_Dis_button.configure(relief="raised")
         Prior_XY_is_Con = True
+        Prior_continuous_setup()
     print("Prior_XY_is_Con = ", Prior_XY_is_Con)
 
 def Prior_update_XY_modetoDis(*args):
@@ -865,6 +1089,7 @@ def Prior_update_XY_modetoDis(*args):
         Prior_Con_button.configure(relief="raised")
         Prior_Dis_button.configure(relief="sunken")
         Prior_XY_is_Con = False
+        Prior_discreet_setup()
     print("Prior_XY_is_Con = ", Prior_XY_is_Con)
 
 # def Prior_update_XY_pos(*args):
@@ -879,6 +1104,7 @@ def Prior_update_Z_modetoCon(*args):
         Prior_Z_Con_button.configure(relief="sunken")
         Prior_Z_Dis_button.configure(relief="raised")
         Prior_Z_is_Con = True
+        Prior_Z_continuous_setup()
     print("Prior_Z_is_Con = ", Prior_Z_is_Con)
 
 def Prior_update_Z_modetoDis(*args):
@@ -887,6 +1113,7 @@ def Prior_update_Z_modetoDis(*args):
         Prior_Z_Con_button.configure(relief="raised")
         Prior_Z_Dis_button.configure(relief="sunken")
         Prior_Z_is_Con = False
+        Prior_Z_discreet_setup()
     print("Prior_Z_is_Con = ", Prior_Z_is_Con)
 
 def Prior_update_Z_pos_string(*args): #Check with Prior API, not global variable (i.e unfinished)
@@ -962,7 +1189,7 @@ def Prior_up_Z_pos(*args):
     pr.go_to_z_pos(Prior_Z_pos)
     Prior_update_Z_pos_string()
 
-def Prior_forward_up_Z_pos(*args):
+def Prior_x10_up_Z_pos(*args):
     global Prior_Z_pos, Prior_Z_Step_size, Prior_Z_coeff
     Prior_Z_pos += Prior_Z_Step_size * Prior_Z_coeff * 10
     pr.go_to_z_pos(Prior_Z_pos)
@@ -974,11 +1201,46 @@ def Prior_down_Z_pos(*args):
     pr.go_to_z_pos(Prior_Z_pos)
     Prior_update_Z_pos_string()
     
-def Prior_forward_down_Z_pos(*args):
+def Prior_x10_down_Z_pos(*args):
     global Prior_Z_pos, Prior_Z_Step_size, Prior_Z_coeff
     Prior_Z_pos -= Prior_Z_Step_size * Prior_Z_coeff * 10
     pr.go_to_z_pos(Prior_Z_pos)
     Prior_update_Z_pos_string()
+
+def Prior_hold_up_Z_pos(*args):
+    global pr
+    pr.start_forward_z_motor()
+    Prior_update_Z_pos_string()
+
+def Prior_release_Z_pos(*args):
+    global pr
+    pr.stop_z_motor()
+    Prior_update_Z_pos_string()
+
+def Prior_hold_down_Z_pos(*args):
+    global pr
+    pr.start_backward_z_motor()
+    Prior_update_Z_pos_string()
+
+def Prior_Z_continuous_setup(*args):
+    global Prior_Z_Up_button, Prior_Z_Down_button
+    Prior_Z_Up_button.unbind("<ButtonRelease-1>")
+    Prior_Z_Up_button.bind("<Button-1>", Prior_hold_up_Z_pos)
+    Prior_Z_Up_button.bind("<ButtonRelease-1>", Prior_release_Z_pos)
+
+    Prior_Z_Down_button.unbind("<ButtonRelease-1>")
+    Prior_Z_Down_button.bind("<Button-1>", Prior_hold_down_Z_pos)
+    Prior_Z_Down_button.bind("<ButtonRelease-1>", Prior_release_Z_pos)
+
+def Prior_Z_discreet_setup(*args):
+    global Prior_Z_Up_button, Prior_Z_Down_button
+    Prior_Z_Up_button.unbind("<Button-1>")
+    Prior_Z_Up_button.unbind("<ButtonRelease-1>")
+    Prior_Z_Up_button.bind("<ButtonRelease-1>", Prior_up_Z_pos)
+
+    Prior_Z_Down_button.unbind("<Button-1>")
+    Prior_Z_Down_button.unbind("<ButtonRelease-1>")
+    Prior_Z_Down_button.bind("<ButtonRelease-1>", Prior_down_Z_pos)
 
 # def Prior_update_Z_pos(*argss):
 #     global Prior_Z_pos
@@ -1270,15 +1532,16 @@ XY_Acceleration_string.trace_add("write", update_XY_Acceleration_text)
 
 KIM_button_frame = Frame(root)
 
-Left_button = Button(KIM_button_frame, text="◄", command=left_X_pos, font=5, width=3, height=1)
-Right_button = Button(KIM_button_frame, text="►", command=right_X_pos, font=5, width=3, height=1)
-Up_button = Button(KIM_button_frame, text="▲", command=up_Y_pos, font=5, width=3, height=1)
-Down_button = Button(KIM_button_frame, text="▼", command=down_Y_pos, font=5, width=3, height=1)
+Left_button = Button(KIM_button_frame, text="◄", font=5, width=3, height=1)
+Right_button = Button(KIM_button_frame, text="►", font=5, width=3, height=1)
+Up_button = Button(KIM_button_frame, text="▲", font=5, width=3, height=1)
+Down_button = Button(KIM_button_frame, text="▼", font=5, width=3, height=1)
+discreet_setup()
 
-Left_forward_button = Button(KIM_button_frame, text="⏪", command=forward_left_X_pos)
-Right_forward_button = Button(KIM_button_frame, text="⏩", command=forward_right_X_pos)
-Up_forward_button = Button(KIM_button_frame, text="⏫", command=forward_up_Y_pos)
-Down_forward_button = Button(KIM_button_frame, text="⏬", command=forward_down_Y_pos)
+Left_x10_button = Button(KIM_button_frame, text="⏪", command=x10_left_X_pos)
+Right_x10_button = Button(KIM_button_frame, text="⏩", command=x10_right_X_pos)
+Up_x10_button = Button(KIM_button_frame, text="⏫", command=x10_up_Y_pos)
+Down_x10_button = Button(KIM_button_frame, text="⏬", command=x10_down_Y_pos)
 
 Con_button = Button(KIM_button_frame, text="C", width=2, command=update_XY_modetoCon)
 Dis_button = Button(KIM_button_frame, text="D", width=2, relief="sunken", command=update_XY_modetoDis)
@@ -1291,11 +1554,13 @@ Z_pos_textblock = Label(root, textvariable=Z_pos_string, borderwidth=1, relief="
 
 Z_button_frame = Frame(root)
 
-Z_Up_button = Button(Z_button_frame, text="▲", command=up_Z_pos, width=4, height=2)
-Z_Down_button = Button(Z_button_frame, text="▼", command=down_Z_pos, width=4, height=2)
+Z_Up_button = Button(Z_button_frame, text="▲", width=4, height=2)
+Z_Down_button = Button(Z_button_frame, text="▼", width=4, height=2)
 
-Z_Up_forward_button = Button(Z_button_frame, text="⏫", width=4, height=2, command=forward_up_Z_pos)
-Z_Down_forward_button = Button(Z_button_frame, text="⏬", width=4, height=2, command=forward_down_Z_pos)
+Z_discreet_setup()
+
+Z_Up_x10_button = Button(Z_button_frame, text="⏫", width=4, height=2, command=x10_up_Z_pos)
+Z_Down_x10_button = Button(Z_button_frame, text="⏬", width=4, height=2, command=x10_down_Z_pos)
 
 Z_filler = Label(Z_button_frame ,text="")
 Z_Con_button = Button(Z_button_frame, text="C", width=2, command=update_Z_modetoCon)
@@ -1331,8 +1596,10 @@ Angle_textblock = Label(root, textvariable=Angle_string, borderwidth=1, relief="
 
 Angle_button_frame = Frame(root)
 
-Angle_Up_button = Button(Angle_button_frame, text="↷", command=up_Angle, width=10, height=2)
-Angle_Down_button = Button(Angle_button_frame, text="↶", command=down_Angle, width=10, height=2)
+Angle_Up_button = Button(Angle_button_frame, text="↷", width=10, height=2)
+Angle_Down_button = Button(Angle_button_frame, text="↶", width=10, height=2)
+
+Angle_discreet_setup()
 
 Angle_Con_button = Button(Angle_button_frame, text="C", width=2, command=update_Angle_modetoCon)
 Angle_Dis_button = Button(Angle_button_frame, text="D", width=2, relief="sunken", command=update_Angle_modetoDis)
@@ -1396,15 +1663,17 @@ Prior_XY_Acceleration_string.trace_add("write", Prior_update_XY_Acceleration_tex
 
 Prior_button_frame = Frame(root)
 
-Prior_Left_button = Button(Prior_button_frame, text="◄", command=Prior_left_X_pos, font=5, width=3, height=1)
-Prior_Right_button = Button(Prior_button_frame, text="►", command=Prior_right_X_pos, font=5, width=3, height=1)
-Prior_Up_button = Button(Prior_button_frame, text="▲", command=Prior_up_Y_pos, font=5, width=3, height=1)
-Prior_Down_button = Button(Prior_button_frame, text="▼", command=Prior_down_Y_pos, font=5, width=3, height=1)
+Prior_Left_button = Button(Prior_button_frame, text="◄", font=5, width=3, height=1)
+Prior_Right_button = Button(Prior_button_frame, text="►", font=5, width=3, height=1)
+Prior_Up_button = Button(Prior_button_frame, text="▲", font=5, width=3, height=1)
+Prior_Down_button = Button(Prior_button_frame, text="▼", font=5, width=3, height=1)
 
-Prior_Left_forward_button = Button(Prior_button_frame, text="⏪", command=Prior_forward_left_X_pos)
-Prior_Right_forward_button = Button(Prior_button_frame, text="⏩", command=Prior_forward_right_X_pos)
-Prior_Up_forward_button = Button(Prior_button_frame, text="⏫", command=Prior_forward_up_Y_pos)
-Prior_Down_forward_button = Button(Prior_button_frame, text="⏬", command=Prior_forward_down_Y_pos)
+Prior_discreet_setup()
+
+Prior_Left_x10_button = Button(Prior_button_frame, text="⏪", command=Prior_x10_left_X_pos)
+Prior_Right_x10_button = Button(Prior_button_frame, text="⏩", command=Prior_x10_right_X_pos)
+Prior_Up_x10_button = Button(Prior_button_frame, text="⏫", command=Prior_x10_up_Y_pos)
+Prior_Down_x10_button = Button(Prior_button_frame, text="⏬", command=Prior_x10_down_Y_pos)
 
 Prior_Con_button = Button(Prior_button_frame, text="C", width=2, command=Prior_update_XY_modetoCon)
 Prior_Dis_button = Button(Prior_button_frame, text="D", width=2, relief="sunken",command=Prior_update_XY_modetoDis)
@@ -1417,11 +1686,13 @@ Prior_Z_pos_textblock = Label(root, borderwidth=1, textvariable=Prior_Z_pos_stri
 
 Prior_Z_button_frame = Frame(root)
 
-Prior_Z_Up_button = Button(Prior_Z_button_frame, text="▲", command=Prior_up_Z_pos, width=4, height=2)
-Prior_Z_Down_button = Button(Prior_Z_button_frame, text="▼", command=Prior_down_Z_pos, width=4, height=2)
+Prior_Z_Up_button = Button(Prior_Z_button_frame, text="▲", width=4, height=2)
+Prior_Z_Down_button = Button(Prior_Z_button_frame, text="▼", width=4, height=2)
 
-Prior_Z_Up_forward_button = Button(Prior_Z_button_frame, text="⏫",width=4, height=2, command=Prior_forward_up_Z_pos)
-Prior_Z_Down_forward_button = Button(Prior_Z_button_frame, text="⏬",width=4, height=2, command=Prior_forward_down_Z_pos)
+Prior_Z_discreet_setup()
+
+Prior_Z_Up_x10_button = Button(Prior_Z_button_frame, text="⏫",width=4, height=2, command=Prior_x10_up_Z_pos)
+Prior_Z_Down_x10_button = Button(Prior_Z_button_frame, text="⏬",width=4, height=2, command=Prior_x10_down_Z_pos)
 
 Prior_Z_filler = Label(Prior_Z_button_frame, text="")
 
@@ -1509,16 +1780,16 @@ Y_pos_textblock.grid(column=1, row=12, sticky="nsew")
 
 KIM_button_frame.grid(column=0, row=13, rowspan=2, columnspan=2, sticky="ns")
 
-Up_forward_button.grid(column=2, row=0, sticky="nsew")
+Up_x10_button.grid(column=2, row=0, sticky="nsew")
 Up_button.grid(column=2, row=1, sticky="nsew")
 
-Down_forward_button.grid(column=2, row=4, sticky="nsew")
+Down_x10_button.grid(column=2, row=4, sticky="nsew")
 Down_button.grid(column=2, row=3, sticky="nsew")
 
 Right_button.grid(column=3, row=2, sticky="nsew")
-Right_forward_button.grid(column=4, row=2, sticky="nsew")
+Right_x10_button.grid(column=4, row=2, sticky="nsew")
 
-Left_forward_button.grid(column=0, row=2, sticky="nsew")
+Left_x10_button.grid(column=0, row=2, sticky="nsew")
 Left_button.grid(column=1, row=2, sticky="nsew")
 
 Con_button.grid(column=3, row=4, sticky="e")
@@ -1549,11 +1820,11 @@ Z_pos_textblock.grid(column=1, row=20-XY_More_Setting_displacement, sticky="nsew
 
 Z_button_frame.grid(column=0, row=21-XY_More_Setting_displacement, rowspan=2, columnspan=2)
 
-Z_Up_forward_button.grid(column=1, row=0)
+Z_Up_x10_button.grid(column=1, row=0)
 Z_Up_button.grid(column=0, row=0)
 
 Z_Down_button.grid(column=0, row=1)
-Z_Down_forward_button.grid(column=1, row=1)
+Z_Down_x10_button.grid(column=1, row=1)
 
 Z_filler.grid(column=3, row=1, padx=7)
 
@@ -1623,16 +1894,16 @@ Prior_Y_pos_textblock.grid(column=4, row=12, sticky="nsew")
 Prior_button_frame.grid(column=3, row=13, rowspan=2, columnspan=2)
 
 Prior_Up_button.grid(column=2, row=1, sticky="nsew")
-Prior_Up_forward_button.grid(column=2, row=0, sticky="nsew")
+Prior_Up_x10_button.grid(column=2, row=0, sticky="nsew")
 
 Prior_Down_button.grid(column=2, row=3, sticky="nsew")
-Prior_Down_forward_button.grid(column=2, row=4, sticky="nsew")
+Prior_Down_x10_button.grid(column=2, row=4, sticky="nsew")
 
 Prior_Right_button.grid(column=3, row=2, sticky="nsew")
-Prior_Right_forward_button.grid(column=4, row=2, sticky="nsew")
+Prior_Right_x10_button.grid(column=4, row=2, sticky="nsew")
 
 Prior_Left_button.grid(column=1, row=2, sticky="nsew")
-Prior_Left_forward_button.grid(column=0, row=2, sticky="nsew")
+Prior_Left_x10_button.grid(column=0, row=2, sticky="nsew")
 
 Prior_Con_button.grid(column=3, row=4, sticky="e")
 Prior_Dis_button.grid(column=4, row=4, sticky="w")
@@ -1663,8 +1934,8 @@ Prior_Z_button_frame.grid(column=3, row=21- Prior_XY_More_Setting_displacement, 
 Prior_Z_Up_button.grid(column=0, row=0)
 Prior_Z_Down_button.grid(column=0, row=1)
 
-Prior_Z_Up_forward_button.grid(column=1, row=0)
-Prior_Z_Down_forward_button.grid(column=1, row=1)
+Prior_Z_Up_x10_button.grid(column=1, row=0)
+Prior_Z_Down_x10_button.grid(column=1, row=1)
 
 Prior_Z_filler.grid(column=2, row=1, padx=7)
 Prior_Z_Con_button.grid(column=3, row=1, sticky="s")

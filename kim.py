@@ -15,12 +15,12 @@ from System import Decimal  # necessary for real world units
 class kim:
     def __init__(self, serial_num):
         self.serial_num = serial_num
-        self.xy_velocity = 500
-        self.xy_acceleration = 100000
-        self.z_velocity = 500
-        self.z_accleration = 100000
-        self.angle_velocity = 500
-        self.angle_acceleration = 100000
+        # self.xy_velocity = 500
+        # self.xy_acceleration = 100000
+        # self.z_velocity = 500
+        # self.z_acceleration = 100000
+        # self.angle_velocity = 500
+        # self.angle_acceleration = 100000
 
         self.x = 0
         self.y = 0
@@ -60,20 +60,20 @@ class kim:
 
             # Step parameters for an intertial motor channel
             self.x_motor = InertialMotorStatus.MotorChannels.Channel1  # enum chan ident
-            self.device_settings.Drive.Channel(self.x_motor).StepRate = 500
-            self.device_settings.Drive.Channel(self.x_motor).StepAcceleration = 100000
+            self.xy_velocity = self.device_settings.Drive.Channel(self.x_motor).StepRate
+            self.xy_acceleration = self.device_settings.Drive.Channel(self.x_motor).StepAcceleration
 
             self.y_motor = InertialMotorStatus.MotorChannels.Channel2  # enum chan ident
-            self.device_settings.Drive.Channel(self.y_motor).StepRate = 500
-            self.device_settings.Drive.Channel(self.y_motor).StepAcceleration = 100000
+            self.device_settings.Drive.Channel(self.y_motor).StepRate = self.xy_velocity
+            self.device_settings.Drive.Channel(self.y_motor).StepAcceleration = self.xy_acceleration
 
             self.z_motor = InertialMotorStatus.MotorChannels.Channel3  # enum chan ident
-            self.device_settings.Drive.Channel(self.z_motor).StepRate = 500
-            self.device_settings.Drive.Channel(self.z_motor).StepAcceleration = 100000
+            self.z_velocity = self.device_settings.Drive.Channel(self.z_motor).StepRate
+            self.z_acceleration = self.device_settings.Drive.Channel(self.z_motor).StepAcceleration
 
             self.angle_motor = InertialMotorStatus.MotorChannels.Channel4 # enum chan ident
-            self.device_settings.Drive.Channel(self.angle_motor).StepRate = 500
-            self.device_settings.Drive.Channel(self.angle_motor).StepAcceleration = 100000
+            self.angle_velocity = self.device_settings.Drive.Channel(self.angle_motor).StepRate
+            self.angle_acceleration = self.device_settings.Drive.Channel(self.angle_motor).StepAcceleration
 
             # Send settings to the self.device
             self.device.SetSettings(self.device_settings, True, True)
@@ -83,6 +83,33 @@ class kim:
             self.device.SetPositionAs(self.y_motor, 0)
             self.device.SetPositionAs(self.z_motor, 0)
             self.device.SetPositionAs(self.angle_motor, 0)
+
+            print("Setting Jog parameters")
+            self.x_jogParams = self.device.GetJogParameters(self.x_motor)
+            self.x_jogParams.JogRate = self.xy_velocity
+            self.x_jogParams.JogAcceleration = self.xy_acceleration
+            self.x_jogParams.JogMode = InertialMotorJogMode.Continuous
+            self.device.SetJogParameters(self.x_motor, self.x_jogParams)
+
+            self.y_jogParams = self.device.GetJogParameters(self.y_motor)
+            self.y_jogParams.JogRate = self.xy_velocity
+            self.y_jogParams.JogAcceleration = self.xy_acceleration
+            self.y_jogParams.JogMode = InertialMotorJogMode.Continuous
+            self.device.SetJogParameters(self.y_motor, self.y_jogParams)
+
+            self.z_jogParams = self.device.GetJogParameters(self.z_motor)
+            self.z_jogParams.JogRate = self.z_velocity
+            self.z_jogParams.JogAcceleration = self.z_acceleration
+            self.z_jogParams.JogMode = InertialMotorJogMode.Continuous
+            self.device.SetJogParameters(self.z_motor, self.z_jogParams)
+
+            self.angle_jogParams = self.device.GetJogParameters(self.angle_motor)
+            self.angle_jogParams.JogRate = self.angle_velocity
+            self.angle_jogParams.JogAcceleration = self.angle_acceleration
+            self.angle_jogParams.JogMode = InertialMotorJogMode.Continuous
+            self.device.SetJogParameters(self.angle_motor, self.angle_jogParams)
+
+
         except Exception as e:
             print(e)
 
@@ -118,27 +145,43 @@ class kim:
         self.xy_velocity = velocity
         self.device_settings.Drive.Channel(self.x_motor).StepRate = velocity
         self.device_settings.Drive.Channel(self.y_motor).StepRate = velocity
+        self.x_jogParams.JogRate = self.xy_velocity
+        self.y_jogParams.JogRate = self.xy_velocity
+        self.device.SetJogParameters(self.x_motor, self.x_jogParams)
+        self.device.SetJogParameters(self.y_motor, self.y_jogParams)
 
     def set_z_velocity(self, velocity):
         self.z_velocity = velocity
         self.device_settings.Drive.Channel(self.z_motor).StepRate = velocity
+        self.z_jogParams.JogRate = self.z_velocity
+        self.device.SetJogParameters(self.z_motor, self.z_jogParams)
 
     def set_Angle_velocity(self, velocity):
         self.angle_velocity = velocity
         self.device_settings.Drive.Channel(self.angle_motor).StepRate = velocity
+        self.angle_jogParams.JogRate = self.angle_velocity
+        self.device.SetJogParameters(self.angle_motor, self.angle_jogParams)
 
     def set_xy_acceleration(self, acceleration):
         self.xy_acceleration = acceleration
         self.device_settings.Drive.Channel(self.x_motor).StepAcceleration = acceleration
         self.device_settings.Drive.Channel(self.y_motor).StepAcceleration = acceleration
+        self.x_jogParams.JogAcceleration = self.xy_acceleration
+        self.y_jogParams.JogAcceleration = self.xy_acceleration
+        self.device.SetJogParameters(self.x_motor, self.x_jogParams)
+        self.device.SetJogParameters(self.y_motor, self.y_jogParams)
 
     def set_z_acceleration(self, acceleration):
         self.z_accleration = acceleration
         self.device_settings.Drive.Channel(self.z_motor).StepAcceleration = acceleration
+        self.z_jogParams.JogAcceleration = self.z_acceleration
+        self.device.SetJogParameters(self.z_motor, self.z_jogParams)
 
     def set_Angle_acceleration(self, acceleration):
         self.angle_acceleration = acceleration
         self.device_settings.Drive.Channel(self.angle_motor).StepAcceleration = acceleration
+        self.angle_jogParams.JogAcceleration = self.angle_acceleration
+        self.device.SetJogParameters(self.angle_motor, self.angle_jogParams)
 
     def get_xy_velocity(self):
         return self.xy_velocity
@@ -157,6 +200,42 @@ class kim:
     
     def get_angle_acceleration(self):
         return self.angle_acceleration
+
+    def start_forward_x_motor(self):
+        self.device.Jog(self.x_motor, InertialMotorJogDirection.Increase, 0)
+    def start_backward_x_motor(self):
+        self.device.Jog(self.x_motor, InertialMotorJogDirection.Decrease, 0)
+    def stop_x_motor(self):
+        self.device.Stop(self.x_motor)
+    def get_x_pos(self):
+        return self.device.GetPosition(self.x_motor)
+
+    def start_forward_y_motor(self):
+        self.device.Jog(self.y_motor, InertialMotorJogDirection.Increase, 0)
+    def start_backward_y_motor(self):
+        self.device.Jog(self.y_motor, InertialMotorJogDirection.Decrease, 0)
+    def stop_y_motor(self):
+        self.device.Stop(self.y_motor)
+    def get_y_pos(self):
+        return self.device.GetPosition(self.y_motor)
+
+    def start_forward_z_motor(self):
+        self.device.Jog(self.z_motor, InertialMotorJogDirection.Increase, 0)
+    def start_backward_z_motor(self):
+        self.device.Jog(self.z_motor, InertialMotorJogDirection.Decrease, 0)
+    def stop_z_motor(self):
+        self.device.Stop(self.z_motor)
+    def get_z_pos(self):
+        return self.device.GetPosition(self.z_motor)
+    
+    def start_forward_angle_motor(self):
+        self.device.Jog(self.angle_motor, InertialMotorJogDirection.Increase, 0)
+    def start_backward_angle_motor(self):
+        self.device.Jog(self.angle_motor, InertialMotorJogDirection.Decrease, 0)
+    def stop_angle_motor(self):
+        self.device.Stop(self.angle_motor)
+    def get_angle_pos(self):
+        return self.device.GetPosition(self.angle_motor)
 
     def disconnect(self):
         try:
