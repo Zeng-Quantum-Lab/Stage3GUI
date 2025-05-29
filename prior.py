@@ -52,7 +52,7 @@ class prior():
             self.cmd(f"controller.connect {self.port_num}")
 
             # initialization
-            ##pos
+            ## get pos
             self.check_busy()
             position = self.cmd("controller.stage.position.get")
             curr_pos = position[1]
@@ -63,7 +63,11 @@ class prior():
             z_pos = self.cmd("controller.z.position.get")
             self.z = int(z_pos[1])
 
-            ## velocity and acceleration
+            ## get backlash values
+            self.backlash_en, self.backlash_dist = self.get_backlash()
+            self.z_backlash_en, self.z_backlash_dist = self.get_z_backlash()
+
+            ## set velocity and acceleration
             self.check_busy()
             self.cmd(f"controller.stage.acc.set {self.acceleration}")
             self.cmd(f"controller.z.acc.set {self.z_acceleration}")
@@ -86,9 +90,10 @@ class prior():
         return ret, rx.value.decode()
     
     def check_busy(self):
-        while (self.cmd("controller.stage.busy.get") == 1) | (self.cmd("controller.z.busy.get") == 1) :
+        # print(self.cmd("controller.stage.busy.get")[1])
+        while (self.cmd("controller.stage.busy.get")[1] == "2") | (self.cmd("controller.z.busy.get")[1] == "4") | (self.cmd("controller.stage.busy.get")[1] == "1") | (self.cmd("controller.stage.busy.get")[1] == "3"):
             print("Controller is Busy\n")
-            time.sleep(1)
+            time.sleep(0.25)
 
     def set_velocity(self, velocity):
         self.check_busy()
@@ -163,6 +168,32 @@ class prior():
         self.cmd(f"controller.z.move-at-velocity -{self.z_velocity}")
     def stop_z_motor(self):
         self.cmd(f"controller.z.move-at-velocity 0")
+
+    def get_backlash(self):
+        backlash = self.cmd(f"controller.stage.backlash.get")[1]
+        backlash = backlash.split(",")
+        return int(backlash[0]), int(backlash[1]) #enable, backlash correction
+
+    def get_z_backlash(self):
+        backlash = self.cmd(f"controller.z.backlash.get")[1]
+        backlash = backlash.split(",")
+        return int(backlash[0]), int(backlash[1]) #enable, backlash correction
+    
+    def set_backlash_en(self, backlash_en):
+        self.backlash_en = backlash_en
+        self.cmd(f"controller.stage.backlash.set {self.backlash_en} {self.backlash_dist}")
+
+    def set_backlash_dist(self, backlash_dist):
+        self.backlash_dist = backlash_dist
+        self.cmd(f"controller.stage.backlash.set {self.backlash_en} {self.backlash_dist}")
+
+    def set_z_backlash_dist(self, backlash_dist):
+        self.z_backlash_dist = backlash_dist
+        self.cmd(f"controller.z.backlash.set {self.z_backlash_en} {self.z_backlash_dist}")
+
+    def set_z_backlash_en(self, backlash_en):
+        self.z_backlash_en = backlash_en
+        self.cmd(f"controller.z.backlash.set {self.z_backlash_en} {self.z_backlash_dist}")
 
     def disconnect(self):
         self.check_busy()
