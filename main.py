@@ -48,6 +48,9 @@ Speed_min = -10000000
 Coeff_size_max = 1000000000
 Coeff_size_min = 0
 
+Backlash_Dist_min = -1000000000
+Backlash_Dist_max = 1000000000
+
 # Window declaration
 root = Tk() 
 fig = Figure(figsize=(3,2), dpi = 85)
@@ -132,6 +135,10 @@ Prior_X_pos = pr.x
 Prior_Y_pos = pr.y
 Prior_XY_Speed = pr.velocity
 Prior_XY_Acceleration = pr.acceleration
+Prior_XY_Backlash_EN = IntVar(value=pr.backlash_en)
+print("Prior_XY_Backlash_EN = ", Prior_XY_Backlash_EN)
+Prior_XY_Backlash_Dist = pr.backlash_dist
+
 
 Prior_left_X_isHold = False
 Prior_right_X_isHold = False
@@ -143,6 +150,8 @@ Prior_Z_coeff = 1
 Prior_Z_More_Setting_displacement = 2
 Prior_Z_Speed = pr.z_velocity
 Prior_Z_Acceleration = pr.z_acceleration
+Prior_Z_Backlash_EN = IntVar(value=pr.z_backlash_en)
+Prior_Z_Backlash_Dist = pr.z_backlash_dist
 
 Prior_Z_pos = 0 #debug variable
 
@@ -299,14 +308,13 @@ def update_XY_Step_size_text(*args):
     print("XY_Step_size string = " + XY_Step_size_string.get()) #debug
     if (XY_Step_size_string.get() != ""):
         XY_Step_size = int(XY_Step_size_string.get())
-    print("Step size text = ", XY_Step_size) #debug
+    print("Step (μm) size text = ", XY_Step_size) #debug
 
 def update_XY_coeff():
     global XY_coeff, XY_coeff_spinbox
     XY_coeff_string.set(XY_coeff_spinbox.get())
     if (XY_coeff_spinbox.get() != ""):
         XY_coeff = int(XY_coeff_spinbox.get())
-        kim_obj.set_Angle_velocity(XY_coeff)
     print("XY_coeff = ", XY_coeff) #debug
 
 def update_XY_coeff_text(*args):
@@ -314,7 +322,6 @@ def update_XY_coeff_text(*args):
     print("XY_coeff string = " + XY_coeff_string.get()) #debug
     if (XY_coeff_string.get() != ""):
         XY_coeff = int(XY_coeff_string.get())
-        kim_obj.set_Angle_velocity(XY_coeff)
     print("XY_coeff text = ", XY_coeff) #debug
 
 def update_XY_Speed():
@@ -483,14 +490,13 @@ def update_Z_Step_size_text(*args):
     print("Z_Step_size string = " + Z_Step_size_string.get()) #debug
     if (Z_Step_size_string.get() != ""):
         Z_Step_size = int(Z_Step_size_string.get())
-    print("Step size text = ", Z_Step_size) #debug
+    print("Step (μm) size text = ", Z_Step_size) #debug
 
 def update_Z_coeff():
     global Z_coeff, Z_coeff_spinbox
     Z_coeff_string.set(Z_coeff_spinbox.get())
     if (Z_coeff_spinbox.get() != ""):
         Z_coeff = int(Z_coeff_spinbox.get())
-        kim_obj.set_Angle_velocity(Z_coeff)
     print("Z_coeff = ", Z_coeff) #debug
 
 def update_Z_coeff_text(*args):
@@ -498,7 +504,6 @@ def update_Z_coeff_text(*args):
     print("Z_coeff string = " + Z_coeff_string.get()) #debug
     if (Z_coeff_string.get() != ""):
         Z_coeff = int(Z_coeff_string.get())
-        kim_obj.set_Angle_velocity(Z_coeff)
     print("Z_coeff text = ", Z_coeff) #debug
 
 def update_Z_Speed():
@@ -608,14 +613,13 @@ def update_Angle_Step_size_text(*args):
     print("Angle_Step_size string = " + Angle_Step_size_string.get()) #debug
     if (Angle_Step_size_string.get() != ""):
         Angle_Step_size = int(Angle_Step_size_string.get())
-    print("Angle Step size text = ", Angle_Step_size) #debug
+    print("Angle Step (μm) size text = ", Angle_Step_size) #debug
 
 def update_Angle_coeff():
     global Angle_coeff, Angle_coeff_spinbox
     Angle_coeff_string.set(Angle_coeff_spinbox.get())
     if (Angle_coeff_spinbox.get() != ""):
         Angle_coeff = int(Angle_coeff_spinbox.get())
-        kim_obj.set_Angle_velocity(Angle_coeff)
     print("Angle_coeff = ", Angle_coeff) #debug
 
 def update_Angle_coeff_text(*args):
@@ -623,7 +627,6 @@ def update_Angle_coeff_text(*args):
     print("Angle_coeff string = " + Angle_coeff_string.get()) #debug
     if (Angle_coeff_string.get() != ""):
         Angle_coeff = int(Angle_coeff_string.get())
-        kim_obj.set_Angle_velocity(Angle_coeff)
     print("Angle_coeff text = ", Angle_coeff) #debug
 
 def update_Angle_Speed():
@@ -912,14 +915,13 @@ def Prior_update_XY_Step_size_text(*args):
     print("Prior_XY_Step_size string = " + Prior_XY_Step_size_string.get()) #debug
     if (Prior_XY_Step_size_string.get() != ""):
         Prior_XY_Step_size = int(Prior_XY_Step_size_string.get())
-    print("Prior Step size text = ", Prior_XY_Step_size) #debug
+    print("Prior Step (μm) size text = ", Prior_XY_Step_size) #debug
 
 def Prior_update_XY_coeff():
     global Prior_XY_coeff, Prior_XY_coeff_spinbox
     Prior_XY_coeff_string.set(Prior_XY_coeff_spinbox.get())
     if (Prior_XY_coeff_spinbox.get() != ""):
         Prior_XY_coeff = int(Prior_XY_coeff_spinbox.get())
-        pr.set_z_velocity(Prior_XY_coeff)
     print("Prior_XY_coeff = ", Prior_XY_coeff) #debug
 
 def Prior_update_XY_coeff_text(*args):
@@ -927,7 +929,6 @@ def Prior_update_XY_coeff_text(*args):
     print("Prior_XY_coeff string = " + Prior_XY_coeff_string.get()) #debug
     if (Prior_XY_coeff_string.get() != ""):
         Prior_XY_coeff = int(Prior_XY_coeff_string.get())
-        pr.set_z_velocity(Prior_XY_coeff)
     print("Prior_XY_coeff text = ", Prior_XY_coeff) #debug
 
 def Prior_update_XY_Speed():
@@ -961,6 +962,26 @@ def Prior_update_XY_Acceleration_text(*args):
         Prior_XY_Acceleration = int(Prior_XY_Acceleration_string.get())
         pr.set_acceleration(Prior_XY_Acceleration)
     print("Prior_XY_Acceleration text = ", Prior_XY_Acceleration) #debug
+
+def Prior_update_XY_Backlash_Enable():
+    global pr, Prior_XY_Backlash_EN
+    pr.set_backlash_en(Prior_XY_Backlash_EN.get())
+
+def Prior_update_XY_Backlash_Dist():
+    global Prior_XY_Backlash_Dist, Prior_XY_Backlash_Dist_spinbox
+    Prior_XY_Backlash_Dist_string.set(Prior_XY_Backlash_Dist_spinbox.get())
+    if (Prior_XY_Backlash_Dist_spinbox.get() != ""):
+        Prior_XY_Backlash_Dist = int(Prior_XY_Backlash_Dist_spinbox.get())
+        pr.set_Backlash_Dist(Prior_XY_Backlash_Dist)
+    print("Prior_XY_Backlash_Dist = ", Prior_XY_Backlash_Dist) #debug
+
+def Prior_update_XY_Backlash_Dist_text(*args):
+    global Prior_XY_Backlash_Dist, Prior_XY_Backlash_Dist_string
+    print("Prior_XY_Backlash_Dist string = " + Prior_XY_Backlash_Dist_string.get()) #debug
+    if (Prior_XY_Backlash_Dist_string.get() != ""):
+        Prior_XY_Backlash_Dist = int(Prior_XY_Backlash_Dist_string.get())
+        pr.set_Backlash_Dist(Prior_XY_Backlash_Dist)
+    print("Prior_XY_Backlash_Dist text = ", Prior_XY_Backlash_Dist) #debug
 
 def Prior_up_Y_pos(*args):
     global Prior_Y_pos, Prior_XY_Step_size, pr, Prior_X_pos, Prior_XY_coeff
@@ -1021,7 +1042,6 @@ def Prior_x10_left_X_pos(*args):
 def Prior_hold_right_X_pos(*args):
     global pr
     pr.start_forward_x_motor()
-    Prior_update_X_pos_string()
 
 def Prior_release_X_pos(*args):
     global pr
@@ -1031,12 +1051,10 @@ def Prior_release_X_pos(*args):
 def Prior_hold_left_X_pos(*args):
     global pr
     pr.start_backward_x_motor()
-    Prior_update_X_pos_string()
 
 def Prior_hold_up_Y_pos(*args):
     global pr
     pr.start_forward_y_motor()
-    Prior_update_Y_pos_string()
 
 def Prior_release_Y_pos(*args):
     global pr
@@ -1046,7 +1064,6 @@ def Prior_release_Y_pos(*args):
 def Prior_hold_down_Y_pos(*args):
     global pr
     pr.start_backward_y_motor()
-    Prior_update_Y_pos_string()
 
 def Prior_continuous_setup(*args):
     global Prior_Up_button, Prior_Down_button, Prior_Right_button, Prior_Left_button
@@ -1151,7 +1168,6 @@ def Prior_update_Z_coeff():
     Prior_Z_coeff_string.set(Prior_Z_coeff_spinbox.get())
     if (Prior_Z_coeff_spinbox.get() != ""):
         Prior_Z_coeff = int(Prior_Z_coeff_spinbox.get())
-        pr.set_z_velocity(Prior_Z_coeff)
     print("Prior_Z_coeff = ", Prior_Z_coeff) #debug
 
 def Prior_update_Z_coeff_text(*args):
@@ -1159,7 +1175,6 @@ def Prior_update_Z_coeff_text(*args):
     print("Prior_Z_coeff string = " + Prior_Z_coeff_string.get()) #debug
     if (Prior_Z_coeff_string.get() != ""):
         Prior_Z_coeff = int(Prior_Z_coeff_string.get())
-        pr.set_z_velocity(Prior_Z_coeff)
     print("Prior_Z_coeff text = ", Prior_Z_coeff) #debug
 
 def Prior_update_Z_Speed():
@@ -1194,11 +1209,32 @@ def Prior_update_Z_Acceleration_text(*args):
         pr.set_z_acceleration(Prior_Z_Acceleration)
     print("Prior_Z_Acceleration text = ", Prior_Z_Acceleration) #debug
 
+def Prior_update_Z_Backlash_Enable():
+    global pr, Prior_Z_Backlash_EN
+    pr.set_z_backlash_en(Prior_Z_Backlash_EN.get())
+
+def Prior_update_Z_Backlash_Dist():
+    global Prior_Z_Backlash_Dist, Prior_Z_Backlash_Dist_spinbox
+    Prior_Z_Backlash_Dist_string.set(Prior_Z_Backlash_Dist_spinbox.get())
+    if (Prior_Z_Backlash_Dist_spinbox.get() != ""):
+        Prior_Z_Backlash_Dist = int(Prior_Z_Backlash_Dist_spinbox.get())
+        pr.set_z_backlash_dist(Prior_Z_Backlash_Dist)
+    print("Prior_Z_Backlash_Dist = ", Prior_Z_Backlash_Dist) #debug
+
+def Prior_update_Z_Backlash_Dist_text(*args):
+    global Prior_Z_Backlash_Dist, Prior_Z_Backlash_Dist_string
+    print("Prior_Z_Backlash_Dist string = " + Prior_Z_Backlash_Dist_string.get()) #debug
+    if (Prior_Z_Backlash_Dist_string.get() != ""):
+        Prior_Z_Backlash_Dist = int(Prior_Z_Backlash_Dist_string.get())
+        pr.set_z_backlash_dist(Prior_Z_Backlash_Dist)
+    print("Prior_Z_Backlash_Dist text = ", Prior_Z_Backlash_Dist) #debug
+
 def Prior_up_Z_pos(*args):
     global Prior_Z_pos, Prior_Z_Step_size, Prior_Z_coeff
     Prior_Z_pos += Prior_Z_Step_size * Prior_Z_coeff
     pr.go_to_z_pos(Prior_Z_pos)
     Prior_update_Z_pos_string()
+
 
 def Prior_x10_up_Z_pos(*args):
     global Prior_Z_pos, Prior_Z_Step_size, Prior_Z_coeff
@@ -1221,7 +1257,6 @@ def Prior_x10_down_Z_pos(*args):
 def Prior_hold_up_Z_pos(*args):
     global pr
     pr.start_forward_z_motor()
-    Prior_update_Z_pos_string()
 
 def Prior_release_Z_pos(*args):
     global pr
@@ -1231,7 +1266,6 @@ def Prior_release_Z_pos(*args):
 def Prior_hold_down_Z_pos(*args):
     global pr
     pr.start_backward_z_motor()
-    Prior_update_Z_pos_string()
 
 def Prior_Z_continuous_setup(*args):
     global Prior_Z_Up_button, Prior_Z_Down_button
@@ -1406,6 +1440,9 @@ Prior_XY_Speed_string.set(Prior_XY_Speed)
 Prior_XY_Acceleration_string = StringVar()
 Prior_XY_Acceleration_string.set(Prior_XY_Acceleration)
 
+Prior_XY_Backlash_Dist_string = StringVar()
+Prior_XY_Backlash_Dist_string.set(Prior_XY_Backlash_Dist)
+
 Prior_Z_pos_string = StringVar()
 Prior_Z_pos_string.set(Prior_Z_pos)
 
@@ -1420,6 +1457,9 @@ Prior_Z_Speed_string.set(Prior_Z_Speed)
 
 Prior_Z_Acceleration_string = StringVar()
 Prior_Z_Acceleration_string.set(Prior_Z_Acceleration)
+
+Prior_Z_Backlash_Dist_string = StringVar()
+Prior_Z_Backlash_Dist_string.set(Prior_Z_Backlash_Dist)
 
 # GUI Setting ###################################################
 root.title("PriorThorLab")
@@ -1502,7 +1542,7 @@ I_value_label = Label(TC_PID_frame, text="I", font=normal_font)
 I_value_spinbox = Spinbox(TC_PID_frame, textvariable=I_value_string, from_=Temperature_PID_Min, to=Temperature_PID_Max, command=update_I_value)
 I_value_string.trace_add("write", update_I_value_text)
 
-D_value_label = Label(TC_PID_frame, text="D",font=normal_font)
+D_value_label = Label(TC_PID_frame, text="Jog",font=normal_font)
 D_value_spinbox = Spinbox(TC_PID_frame, textvariable=D_value_string, from_=Temperature_PID_Min, to=Temperature_PID_Max, command=update_D_value)
 D_value_string.trace_add("write", update_D_value_text)
 
@@ -1522,7 +1562,7 @@ Y_pos_label = Label(root, text="Y Position", font=normal_font)
 Y_pos_textblock = Label(root, textvariable=Y_pos_string, borderwidth=1, relief="groove")
 
 XY_Setting_frame = Frame(root)
-XY_Step_size_label = Label(XY_Setting_frame, text="Step", font=normal_font)
+XY_Step_size_label = Label(XY_Setting_frame, text="Step (μm)", font=normal_font)
 XY_Step_size_spinbox = Spinbox(XY_Setting_frame, textvariable=XY_Step_size_string, from_=Step_size_min, to=Step_size_max, command=update_XY_Step_size, width=10)
 XY_Step_size_string.trace_add("write", update_XY_Step_size_text)
 Hide_button = Button(XY_Setting_frame, text="Speed Setting", command=XY_hide_show_Setting)
@@ -1554,8 +1594,8 @@ Right_x10_button = Button(KIM_button_frame, text="⏩", command=x10_right_X_pos)
 Up_x10_button = Button(KIM_button_frame, text="⏫", command=x10_up_Y_pos)
 Down_x10_button = Button(KIM_button_frame, text="⏬", command=x10_down_Y_pos)
 
-Con_button = Button(KIM_button_frame, text="C", width=2, command=update_XY_modetoCon)
-Dis_button = Button(KIM_button_frame, text="D", width=2, relief="sunken", command=update_XY_modetoDis)
+Con_button = Button(KIM_button_frame, text="Con", width=3, command=update_XY_modetoCon)
+Dis_button = Button(KIM_button_frame, text="Jog", width=3, relief="sunken", command=update_XY_modetoDis)
 
 XY_Z_seperator = ttk.Separator(root, orient="horizontal")
 
@@ -1574,12 +1614,12 @@ Z_Up_x10_button = Button(Z_button_frame, text="⏫", width=4, height=2, command=
 Z_Down_x10_button = Button(Z_button_frame, text="⏬", width=4, height=2, command=x10_down_Z_pos)
 
 Z_filler = Label(Z_button_frame ,text="")
-Z_Con_button = Button(Z_button_frame, text="C", width=2, command=update_Z_modetoCon)
-Z_Dis_button = Button(Z_button_frame, text="D", width=2, relief="sunken", command=update_Z_modetoDis)
+Z_Con_button = Button(Z_button_frame, text="Con", width=3, command=update_Z_modetoCon)
+Z_Dis_button = Button(Z_button_frame, text="Jog", width=3, relief="sunken", command=update_Z_modetoDis)
 
 Z_Setting_frame = Frame(root)
 
-Z_Step_size_label = Label(Z_Setting_frame, text="Step",font=normal_font)
+Z_Step_size_label = Label(Z_Setting_frame, text="Step (μm)",font=normal_font)
 Z_Step_size_spinbox = Spinbox(Z_Setting_frame, textvariable=Z_Step_size_string, from_=Step_size_min, to=Step_size_max, command=update_Z_Step_size, width=10)
 Z_Step_size_string.trace_add("write", update_Z_Step_size_text)
 
@@ -1612,12 +1652,12 @@ Angle_Down_button = Button(Angle_button_frame, text="↶", width=10, height=2)
 
 Angle_discreet_setup()
 
-Angle_Con_button = Button(Angle_button_frame, text="C", width=2, command=update_Angle_modetoCon)
-Angle_Dis_button = Button(Angle_button_frame, text="D", width=2, relief="sunken", command=update_Angle_modetoDis)
+Angle_Con_button = Button(Angle_button_frame, text="Con", width=3, command=update_Angle_modetoCon)
+Angle_Dis_button = Button(Angle_button_frame, text="Jog", width=3, relief="sunken", command=update_Angle_modetoDis)
 
 Angle_Setting_frame = Frame(root)
 
-Angle_Step_size_label = Label(Angle_Setting_frame, text="Step",font=normal_font)
+Angle_Step_size_label = Label(Angle_Setting_frame, text="Step (μm)",font=normal_font)
 Angle_Step_size_spinbox = Spinbox(Angle_Setting_frame, textvariable=Angle_Step_size_string, from_=Step_size_min, to=Step_size_max, command=update_Angle_Step_size, width=10)
 Angle_Step_size_string.trace_add("write", update_Angle_Step_size_text)
 
@@ -1654,7 +1694,7 @@ Prior_Y_pos_textblock = Label(root, borderwidth=1,textvariable=Prior_Y_pos_strin
 Prior_XY_Setting_frame = Frame(root)
 
 Prior_Setting_button = Button(Prior_XY_Setting_frame, text="Speed Setting", command=Prior_XY_hide_show_Setting)
-Prior_XY_Step_size_label = Label(Prior_XY_Setting_frame, text="Step",font=normal_font)
+Prior_XY_Step_size_label = Label(Prior_XY_Setting_frame, text="Step (μm)",font=normal_font)
 Prior_XY_Step_size_spinbox = Spinbox(Prior_XY_Setting_frame, textvariable=Prior_XY_Step_size_string, from_=Step_size_min, to=Step_size_max, command=Prior_update_XY_Step_size, width=10)
 Prior_XY_Step_size_string.trace_add("write", Prior_update_XY_Step_size_text)
 
@@ -1672,6 +1712,12 @@ Prior_XY_Acceleration_label = Label(Prior_XY_More_Setting_frame, text="Accel (μ
 Prior_XY_Acceleration_spinbox = Spinbox(Prior_XY_More_Setting_frame, textvariable=Prior_XY_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=Prior_update_XY_Acceleration)
 Prior_XY_Acceleration_string.trace_add("write", Prior_update_XY_Acceleration_text)
 
+Prior_XY_Backlash_EN_checkbox = Checkbutton(Prior_XY_More_Setting_frame, variable=Prior_XY_Backlash_EN, text="Backlash Enable", onvalue=1, offvalue=0, command=Prior_update_XY_Backlash_Enable)
+
+Prior_XY_Backlash_Dist_label = Label(Prior_XY_More_Setting_frame, text="Backlash Dist (μm)")
+Prior_XY_Backlash_Dist_spinbox = Spinbox(Prior_XY_More_Setting_frame, textvariable=Prior_XY_Backlash_Dist_string, from_=Backlash_Dist_min, to=Backlash_Dist_max, command=Prior_update_XY_Backlash_Dist)
+Prior_XY_Backlash_Dist_string.trace_add("write", Prior_update_XY_Backlash_Dist_text)
+
 Prior_button_frame = Frame(root)
 
 Prior_Left_button = Button(Prior_button_frame, text="◄", font=5, width=3, height=1)
@@ -1686,8 +1732,8 @@ Prior_Right_x10_button = Button(Prior_button_frame, text="⏩", command=Prior_x1
 Prior_Up_x10_button = Button(Prior_button_frame, text="⏫", command=Prior_x10_up_Y_pos)
 Prior_Down_x10_button = Button(Prior_button_frame, text="⏬", command=Prior_x10_down_Y_pos)
 
-Prior_Con_button = Button(Prior_button_frame, text="C", width=2, command=Prior_update_XY_modetoCon)
-Prior_Dis_button = Button(Prior_button_frame, text="D", width=2, relief="sunken",command=Prior_update_XY_modetoDis)
+Prior_Con_button = Button(Prior_button_frame, text="Con", width=3, command=Prior_update_XY_modetoCon)
+Prior_Dis_button = Button(Prior_button_frame, text="Jog", width=3, relief="sunken",command=Prior_update_XY_modetoDis)
 
 Prior_Z_Label_seperator = ttk.Separator(root, orient="horizontal")
 Prior_Z_control_label = Label(root, text="Z AXIS CONTROL",font=normal_font)
@@ -1707,12 +1753,12 @@ Prior_Z_Down_x10_button = Button(Prior_Z_button_frame, text="⏬",width=4, heigh
 
 Prior_Z_filler = Label(Prior_Z_button_frame, text="")
 
-Prior_Z_Con_button = Button(Prior_Z_button_frame, text="C", width=2, command=Prior_update_Z_modetoCon)
-Prior_Z_Dis_button = Button(Prior_Z_button_frame, text="D", width=2, relief="sunken", command=Prior_update_Z_modetoDis)
+Prior_Z_Con_button = Button(Prior_Z_button_frame, text="Con", width=3, command=Prior_update_Z_modetoCon)
+Prior_Z_Dis_button = Button(Prior_Z_button_frame, text="Jog", width=3, relief="sunken", command=Prior_update_Z_modetoDis)
 
 Prior_Z_Setting_frame = Frame(root)
 
-Prior_Z_Step_size_label = Label(Prior_Z_Setting_frame, text="Step",font=normal_font)
+Prior_Z_Step_size_label = Label(Prior_Z_Setting_frame, text="Step (μm)",font=normal_font)
 Prior_Z_Step_size_spinbox = Spinbox(Prior_Z_Setting_frame, textvariable=Prior_Z_Step_size_string, from_=Step_size_min, to=Step_size_max, command=Prior_update_Z_Step_size, width=10)
 Prior_Z_Step_size_string.trace_add("write", Prior_update_Z_Step_size_text)
 Prior_Z_Setting_button = Button(Prior_Z_Setting_frame, text="Speed Setting", command=Prior_Z_hide_show_Setting)
@@ -1730,6 +1776,12 @@ Prior_Z_Speed_string.trace_add("write", Prior_update_Z_Speed_text)
 Prior_Z_Acceleration_label = Label(Prior_Z_More_Setting_frame, text="Accel (μm/s²)")
 Prior_Z_Acceleration_spinbox = Spinbox(Prior_Z_More_Setting_frame, textvariable=Prior_Z_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=Prior_update_Z_Acceleration)
 Prior_Z_Acceleration_string.trace_add("write", Prior_update_Z_Acceleration_text)
+
+Prior_Z_Backlash_EN_checkbox = Checkbutton(Prior_Z_More_Setting_frame, variable=Prior_Z_Backlash_EN, text="Backlash Enable", onvalue=1, offvalue=0, command=Prior_update_Z_Backlash_Enable)
+
+Prior_Z_Backlash_Dist_label = Label(Prior_Z_More_Setting_frame, text="Backlash Dist (μm)")
+Prior_Z_Backlash_Dist_spinbox = Spinbox(Prior_Z_More_Setting_frame, textvariable=Prior_Z_Backlash_Dist_string, from_=Backlash_Dist_min, to=Backlash_Dist_max, command=Prior_update_Z_Backlash_Dist)
+Prior_Z_Backlash_Dist_string.trace_add("write", Prior_update_Z_Backlash_Dist_text)
 
 #GUI Placement ######################################################
 root.grid_propagate(True)
@@ -1934,6 +1986,11 @@ Prior_XY_Speed_spinbox.grid(column=1, row=1, sticky="nsew")
 Prior_XY_Acceleration_label.grid(column=0, row=2, sticky="nsew")
 Prior_XY_Acceleration_spinbox.grid(column=1, row=2, sticky="nsew")
 
+Prior_XY_Backlash_EN_checkbox.grid(column=0, columnspan=2, row=3, sticky="nsew")
+
+Prior_XY_Backlash_Dist_label.grid(column=0, row=4, sticky="nsew")
+Prior_XY_Backlash_Dist_spinbox.grid(column=1, row=4, sticky="nsew")
+
 Prior_Z_Label_seperator.grid(column=3, row=18-Prior_XY_More_Setting_displacement, columnspan=2, sticky="ew")
 Prior_Z_control_label.grid(column=3, row=19-Prior_XY_More_Setting_displacement, columnspan=2, sticky="nsew")
 
@@ -1967,6 +2024,11 @@ Prior_Z_Speed_spinbox.grid(column=1, row=1, sticky="nsew")
 
 Prior_Z_Acceleration_label.grid(column=0, row=2, sticky="nsew")
 Prior_Z_Acceleration_spinbox.grid(column=1, row=2, sticky="nsew")
+
+Prior_Z_Backlash_EN_checkbox.grid(column=0, row=3, columnspan=2, sticky="nsew")
+
+Prior_Z_Backlash_Dist_label.grid(column=0, row=4, sticky="nsew")
+Prior_Z_Backlash_Dist_spinbox.grid(column=1, row=4, sticky="nsew")
 
 
 #Variable update call
