@@ -14,9 +14,20 @@ import instruments as ik
 import instruments.units as u
 
 #Machine variable initialization (Change COM port here)
-tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
-pr = prior(5, r"C:\Users\zengl\Downloads\PriorThorLabGUI\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\examples\python\PriorScientificSDK.dll")
-kim_obj = kim("97251106")
+try:
+    tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
+except:
+    print("Cannot find TC200 Controller")
+
+try:
+    pr = prior(5, r"C:\Users\zengl\Downloads\PriorThorLabGUI\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\examples\python\PriorScientificSDK.dll")
+except:
+    print("Cannot find Prior Controller")
+
+try:
+    kim_obj = kim("97251106")
+except:
+    print("Cannot find KIM101 Controller")
 
 #Constant declaration
 Temperature_PID_Max = 500
@@ -1477,7 +1488,7 @@ T_current_textblock = Label(TC_frame, textvariable=T_current_string, borderwidth
 T_set_label = Label(TC_frame, text="T_Set", font=normal_font)
 T_set_text = Entry(TC_frame, textvariable=T_set_string, validate="focusout", validatecommand=update_T_set_text)
 T_set_string.trace_add("write", update_T_set_text)
-T_set_slider = Scale(TC_frame, from_=20, to=150, orient="horizontal", variable=T_set_scale, length=200)
+T_set_slider = Scale(TC_frame, from_=20, to=205, orient="horizontal", variable=T_set_scale, length=200)
 T_set_slider.bind("<ButtonRelease-1>", update_T_set)
 
 TC_PID_button = Button(TC_frame, text="PID Settings", command=hide_show_PID)
