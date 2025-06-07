@@ -14,9 +14,20 @@ import instruments as ik
 import instruments.units as u
 
 #Machine variable initialization (Change COM port here)
-tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
-pr = prior(5, r"C:\Users\zengl\Downloads\PriorThorLabGUI\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\examples\python\PriorScientificSDK.dll")
-kim_obj = kim("97251106")
+try:
+    tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
+except:
+    print("Cannot find TC200 Controller")
+
+try:
+    pr = prior(5, r"C:\Users\zengl\Downloads\PriorThorLabGUI\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\examples\python\PriorScientificSDK.dll")
+except:
+    print("Cannot find Prior Controller")
+
+try:
+    kim_obj = kim("97251106")
+except:
+    print("Cannot find KIM101 Controller")
 
 #Constant declaration
 Temperature_PID_Max = 500
