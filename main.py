@@ -139,8 +139,8 @@ Prior_Z_coeff = 1
 Prior_Z_More_Setting_displacement = 2
 Prior_Z_Speed = pr.z_velocity
 Prior_Z_Acceleration = pr.z_acceleration
-Prior_Z_Backlash_EN = IntVar(value=pr.z_backlash_en)
-Prior_Z_Backlash_Dist = pr.z_backlash_dist
+Prior_Z_Backlash_EN = IntVar(value=pr.backlash_en)
+Prior_Z_Backlash_Dist = pr.backlash_dist
 
 Prior_Z_pos = 0 #debug variable
 
@@ -961,7 +961,7 @@ def Prior_update_XY_Backlash_Dist():
     Prior_XY_Backlash_Dist_string.set(Prior_XY_Backlash_Dist_spinbox.get())
     if (Prior_XY_Backlash_Dist_spinbox.get() != ""):
         Prior_XY_Backlash_Dist = int(Prior_XY_Backlash_Dist_spinbox.get())
-        pr.set_Backlash_Dist(Prior_XY_Backlash_Dist)
+        pr.set_backlash_dist(Prior_XY_Backlash_Dist)
     print("Prior_XY_Backlash_Dist = ", Prior_XY_Backlash_Dist) #debug
 
 def Prior_update_XY_Backlash_Dist_text(*args):
@@ -969,7 +969,7 @@ def Prior_update_XY_Backlash_Dist_text(*args):
     print("Prior_XY_Backlash_Dist string = " + Prior_XY_Backlash_Dist_string.get()) #debug
     if (Prior_XY_Backlash_Dist_string.get() != ""):
         Prior_XY_Backlash_Dist = int(Prior_XY_Backlash_Dist_string.get())
-        pr.set_Backlash_Dist(Prior_XY_Backlash_Dist)
+        pr.set_backlash_dist(Prior_XY_Backlash_Dist)
     print("Prior_XY_Backlash_Dist text = ", Prior_XY_Backlash_Dist) #debug
 
 def Prior_up_Y_pos(*args):
@@ -1517,7 +1517,7 @@ T_current_textblock = Label(TC_frame, textvariable=T_current_string, borderwidth
 T_set_label = Label(TC_frame, text="T_Set", font=normal_font)
 T_set_text = Entry(TC_frame, textvariable=T_set_string, validate="focusout", validatecommand=update_T_set_text)
 T_set_string.trace_add("write", update_T_set_text)
-T_set_slider = Scale(TC_frame, from_=20, to=150, orient="horizontal", variable=T_set_scale, length=200)
+T_set_slider = Scale(TC_frame, from_=20, to=205, orient="horizontal", variable=T_set_scale, length=200)
 T_set_slider.bind("<ButtonRelease-1>", update_T_set)
 
 TC_PID_button = Button(TC_frame, text="PID Settings", command=hide_show_PID)
