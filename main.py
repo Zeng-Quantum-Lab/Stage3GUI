@@ -393,6 +393,7 @@ def hold_down_Y_pos(*args):
     update_Y_pos_string()
 
 def continuous_setup(*args):
+    #x1 Button Setup
     global Up_button, Down_button, Right_button, Left_button
     Up_button.unbind("<ButtonRelease-1>")
     Up_button.bind("<Button-1>", hold_up_Y_pos)
@@ -410,9 +411,28 @@ def continuous_setup(*args):
     Left_button.bind("<Button-1>", hold_left_X_pos)
     Left_button.bind("<ButtonRelease-1>", release_X_pos)
 
+    #x10 Button Setup
+    global Up_x10_button, Down_x10_button, Right_x10_button, Left_x10_button
+    Up_x10_button.unbind("<ButtonRelease-1>")
+    Up_x10_button.bind("<Button-1>", hold_up_Y_pos)
+    Up_x10_button.bind("<ButtonRelease-1>", release_Y_pos)
+
+    Down_x10_button.unbind("<ButtonRelease-1>")
+    Down_x10_button.bind("<Button-1>", hold_down_Y_pos)
+    Down_x10_button.bind("<ButtonRelease-1>", release_Y_pos)
+
+    Right_x10_button.unbind("<ButtonRelease-1>")
+    Right_x10_button.bind("<Button-1>", hold_right_X_pos)
+    Right_x10_button.bind("<ButtonRelease-1>", release_X_pos)
+
+    Left_x10_button.unbind("<ButtonRelease-1>")
+    Left_x10_button.bind("<Button-1>", hold_left_X_pos)
+    Left_x10_button.bind("<ButtonRelease-1>", release_X_pos)
+
 
 def discreet_setup(*args):
-    global Up_button, Down_button, Right_button, Left_button
+    #x1 Button Setup
+    global Up_button, Down_button, Right_button, Left_button, Up_x10_button, Down_x10_button, Right_x10_button, Left_x10_button
     Up_button.unbind("<Button-1>")
     Up_button.unbind("<ButtonRelease-1>")
     Up_button.bind("<ButtonRelease-1>", up_Y_pos)
@@ -428,6 +448,23 @@ def discreet_setup(*args):
     Left_button.unbind("<Button-1>")
     Left_button.unbind("<ButtonRelease-1>")
     Left_button.bind("<ButtonRelease-1>", left_X_pos)
+    
+    #x10 Button setup
+    Up_x10_button.unbind("<Button-1>")
+    Up_x10_button.unbind("<ButtonRelease-1>")
+    Up_x10_button.bind("<ButtonRelease-1>", x10_up_Y_pos)
+
+    Down_x10_button.unbind("<Button-1>")
+    Down_x10_button.unbind("<ButtonRelease-1>")
+    Down_x10_button.bind("<ButtonRelease-1>", x10_down_Y_pos)
+
+    Right_x10_button.unbind("<Button-1>")
+    Right_x10_button.unbind("<ButtonRelease-1>")
+    Right_x10_button.bind("<ButtonRelease-1>", x10_right_X_pos)
+
+    Left_x10_button.unbind("<Button-1>")
+    Left_x10_button.unbind("<ButtonRelease-1>")
+    Left_x10_button.bind("<ButtonRelease-1>", x10_left_X_pos)
 
 def down_Y_pos(*args):
     global Y_pos, XY_Step_size, XY_coeff
@@ -540,25 +577,25 @@ def update_Z_Acceleration_text(*args):
 
 def up_Z_pos(*args):
     global Z_pos, Z_Step_size, Z_coeff
-    Z_pos += Z_Step_size * Z_coeff
+    Z_pos -= Z_Step_size * Z_coeff
     kim_obj.go_to_Zpos(Z_pos)
     update_Z_pos_string()
 
 def x10_up_Z_pos(*args):
     global Z_pos, Z_Step_size, Z_coeff
-    Z_pos += Z_Step_size * Z_coeff * 10
+    Z_pos -= Z_Step_size * Z_coeff * 10
     kim_obj.go_to_Zpos(Z_pos)
     update_Z_pos_string()
 
 def down_Z_pos(*args):
     global Z_pos, Z_Step_size, Z_coeff
-    Z_pos -= Z_Step_size * Z_coeff
+    Z_pos += Z_Step_size * Z_coeff
     kim_obj.go_to_Zpos(Z_pos)
     update_Z_pos_string()
 
 def x10_down_Z_pos(*args):
     global Z_pos, Z_Step_size, Z_coeff
-    Z_pos -= Z_Step_size * Z_coeff * 10
+    Z_pos += Z_Step_size * Z_coeff * 10
     kim_obj.go_to_Zpos(Z_pos)
     update_Z_pos_string()
 
@@ -584,6 +621,15 @@ def Z_continuous_setup(*args):
     Z_Down_button.bind("<Button-1>", hold_down_Z_pos)
     Z_Down_button.bind("<ButtonRelease-1>", release_Z_pos)
 
+    global Z_Up_x10_button, Z_Down_x10_button
+    Z_Up_x10_button.unbind("<ButtonRelease-1>")
+    Z_Up_x10_button.bind("<Button-1>", hold_up_Z_pos)
+    Z_Up_x10_button.bind("<ButtonRelease-1>", release_Z_pos)
+
+    Z_Down_x10_button.unbind("<ButtonRelease-1>")
+    Z_Down_x10_button.bind("<Button-1>", hold_down_Z_pos)
+    Z_Down_x10_button.bind("<ButtonRelease-1>", release_Z_pos)
+
 def Z_discreet_setup(*args):
     global Z_Up_button, Z_Down_button
     Z_Up_button.unbind("<Button-1>")
@@ -593,6 +639,16 @@ def Z_discreet_setup(*args):
     Z_Down_button.unbind("<Button-1>")
     Z_Down_button.unbind("<ButtonRelease-1>")
     Z_Down_button.bind("<ButtonRelease-1>", down_Z_pos)
+
+    global Z_Up_x10_button, Z_Down_x10_button
+    Z_Up_x10_button.unbind("<Button-1>")
+    Z_Up_x10_button.unbind("<ButtonRelease-1>")
+    Z_Up_x10_button.bind("<ButtonRelease-1>", x10_up_Z_pos)
+
+    Z_Down_x10_button.unbind("<Button-1>")
+    Z_Down_x10_button.unbind("<ButtonRelease-1>")
+    Z_Down_x10_button.bind("<ButtonRelease-1>", x10_down_Z_pos)
+
 
 def update_Angle_string(*args): #Check with KIM101 API, not global variable (i.e unfinished)
     global Angle, kim_obj
@@ -1083,6 +1139,24 @@ def Prior_continuous_setup(*args):
     Prior_Left_button.bind("<Button-1>", Prior_hold_left_X_pos)
     Prior_Left_button.bind("<ButtonRelease-1>", Prior_release_X_pos)
 
+    global Prior_Up_x10_button, Prior_Down_x10_button, Prior_Right_x10_button, Prior_Left_x10_button
+    Prior_Up_x10_button.unbind("<ButtonRelease-1>")
+    Prior_Up_x10_button.bind("<Button-1>", Prior_hold_up_Y_pos)
+    Prior_Up_x10_button.bind("<ButtonRelease-1>", Prior_release_Y_pos)
+
+    Prior_Down_x10_button.unbind("<ButtonRelease-1>")
+    Prior_Down_x10_button.bind("<Button-1>", Prior_hold_down_Y_pos)
+    Prior_Down_x10_button.bind("<ButtonRelease-1>", Prior_release_Y_pos)
+
+    Prior_Right_x10_button.unbind("<ButtonRelease-1>")
+    Prior_Right_x10_button.bind("<Button-1>", Prior_hold_right_X_pos)
+    Prior_Right_x10_button.bind("<ButtonRelease-1>", Prior_release_X_pos)
+
+    Prior_Left_x10_button.unbind("<ButtonRelease-1>")
+    Prior_Left_x10_button.bind("<Button-1>", Prior_hold_left_X_pos)
+    Prior_Left_x10_button.bind("<ButtonRelease-1>", Prior_release_X_pos)
+
+
 
 def Prior_discreet_setup(*args):
     global Prior_Up_button, Prior_Down_button, Prior_Right_button, Prior_Left_button
@@ -1101,6 +1175,23 @@ def Prior_discreet_setup(*args):
     Prior_Left_button.unbind("<Button-1>")
     Prior_Left_button.unbind("<ButtonRelease-1>")
     Prior_Left_button.bind("<ButtonRelease-1>", Prior_left_X_pos)
+
+    global Prior_Up_x10_button, Prior_Down_x10_button, Prior_Right_x10_button, Prior_Left_x10_button
+    Prior_Up_x10_button.unbind("<Button-1>")
+    Prior_Up_x10_button.unbind("<ButtonRelease-1>")
+    Prior_Up_x10_button.bind("<ButtonRelease-1>", Prior_x10_up_Y_pos)
+
+    Prior_Down_x10_button.unbind("<Button-1>")
+    Prior_Down_x10_button.unbind("<ButtonRelease-1>")
+    Prior_Down_x10_button.bind("<ButtonRelease-1>", Prior_x10_down_Y_pos)
+
+    Prior_Right_x10_button.unbind("<Button-1>")
+    Prior_Right_x10_button.unbind("<ButtonRelease-1>")
+    Prior_Right_x10_button.bind("<ButtonRelease-1>", Prior_x10_right_X_pos)
+
+    Prior_Left_x10_button.unbind("<Button-1>")
+    Prior_Left_x10_button.unbind("<ButtonRelease-1>")
+    Prior_Left_x10_button.bind("<ButtonRelease-1>", Prior_x10_left_X_pos)
 
 def Prior_update_XY_modetoCon(*args):
     global Prior_XY_is_Con, Prior_Con_button, Prior_Dis_button
@@ -1277,6 +1368,15 @@ def Prior_Z_continuous_setup(*args):
     Prior_Z_Down_button.bind("<Button-1>", Prior_hold_down_Z_pos)
     Prior_Z_Down_button.bind("<ButtonRelease-1>", Prior_release_Z_pos)
 
+    global Prior_Z_Up_x10_button, Prior_Z_Down_x10_button
+    Prior_Z_Up_x10_button.unbind("<ButtonRelease-1>")
+    Prior_Z_Up_x10_button.bind("<Button-1>", Prior_hold_up_Z_pos)
+    Prior_Z_Up_x10_button.bind("<ButtonRelease-1>", Prior_release_Z_pos)
+
+    Prior_Z_Down_x10_button.unbind("<ButtonRelease-1>")
+    Prior_Z_Down_x10_button.bind("<Button-1>", Prior_hold_down_Z_pos)
+    Prior_Z_Down_x10_button.bind("<ButtonRelease-1>", Prior_release_Z_pos)
+
 def Prior_Z_discreet_setup(*args):
     global Prior_Z_Up_button, Prior_Z_Down_button
     Prior_Z_Up_button.unbind("<Button-1>")
@@ -1286,6 +1386,16 @@ def Prior_Z_discreet_setup(*args):
     Prior_Z_Down_button.unbind("<Button-1>")
     Prior_Z_Down_button.unbind("<ButtonRelease-1>")
     Prior_Z_Down_button.bind("<ButtonRelease-1>", Prior_down_Z_pos)
+
+    global Prior_Z_Up_x10_button, Prior_Z_Down_x10_button
+    Prior_Z_Up_x10_button.unbind("<Button-1>")
+    Prior_Z_Up_x10_button.unbind("<ButtonRelease-1>")
+    Prior_Z_Up_x10_button.bind("<ButtonRelease-1>", Prior_x10_up_Z_pos)
+
+    Prior_Z_Down_x10_button.unbind("<Button-1>")
+    Prior_Z_Down_x10_button.unbind("<ButtonRelease-1>")
+    Prior_Z_Down_x10_button.bind("<ButtonRelease-1>", Prior_x10_down_Z_pos)
+
 
 # def Prior_update_Z_pos(*argss):
 #     global Prior_Z_pos
