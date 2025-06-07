@@ -188,6 +188,7 @@ def update_T_set_text(*args):
     print("T_set_string = " + T_set_string.get()) #debug
     if (T_set_string.get() != ""):
         T_set.set(int(T_set_string.get()))
+        T_set_scale.set(int(T_set.get()))
         tc.temperature_set = T_set.get()
 
 def update_P_value():
@@ -1420,7 +1421,6 @@ def Prior_XY_hide_Setting(*args):
     if (Prior_Z_More_Setting_displacement == 0):
         Prior_Z_More_Setting_frame.grid(column=3, row=24-Prior_XY_More_Setting_displacement, columnspan=2, rowspan=2, sticky="ns")
     
-
 def Prior_XY_show_Setting(*args):
     global Prior_XY_More_Setting_displacement, Prior_XY_More_Setting_frame
     Prior_XY_More_Setting_displacement = 0
@@ -1697,12 +1697,13 @@ Left_button = Button(KIM_button_frame, text="◄", font=5, width=3, height=1)
 Right_button = Button(KIM_button_frame, text="►", font=5, width=3, height=1)
 Up_button = Button(KIM_button_frame, text="▲", font=5, width=3, height=1)
 Down_button = Button(KIM_button_frame, text="▼", font=5, width=3, height=1)
-discreet_setup()
 
-Left_x10_button = Button(KIM_button_frame, text="⏪", command=x10_left_X_pos)
-Right_x10_button = Button(KIM_button_frame, text="⏩", command=x10_right_X_pos)
-Up_x10_button = Button(KIM_button_frame, text="⏫", command=x10_up_Y_pos)
-Down_x10_button = Button(KIM_button_frame, text="⏬", command=x10_down_Y_pos)
+Left_x10_button = Button(KIM_button_frame, text="⏪")
+Right_x10_button = Button(KIM_button_frame, text="⏩")
+Up_x10_button = Button(KIM_button_frame, text="⏫")
+Down_x10_button = Button(KIM_button_frame, text="⏬")
+
+discreet_setup()
 
 Con_button = Button(KIM_button_frame, text="Con", width=3, command=update_XY_modetoCon)
 Dis_button = Button(KIM_button_frame, text="Jog", width=3, relief="sunken", command=update_XY_modetoDis)
@@ -1718,10 +1719,10 @@ Z_button_frame = Frame(root)
 Z_Up_button = Button(Z_button_frame, text="▲", width=4, height=2)
 Z_Down_button = Button(Z_button_frame, text="▼", width=4, height=2)
 
-Z_discreet_setup()
+Z_Up_x10_button = Button(Z_button_frame, text="⏫", width=4, height=2)
+Z_Down_x10_button = Button(Z_button_frame, text="⏬", width=4, height=2)
 
-Z_Up_x10_button = Button(Z_button_frame, text="⏫", width=4, height=2, command=x10_up_Z_pos)
-Z_Down_x10_button = Button(Z_button_frame, text="⏬", width=4, height=2, command=x10_down_Z_pos)
+Z_discreet_setup()
 
 Z_filler = Label(Z_button_frame ,text="")
 Z_Con_button = Button(Z_button_frame, text="Con", width=3, command=update_Z_modetoCon)
@@ -1835,12 +1836,12 @@ Prior_Right_button = Button(Prior_button_frame, text="►", font=5, width=3, hei
 Prior_Up_button = Button(Prior_button_frame, text="▲", font=5, width=3, height=1)
 Prior_Down_button = Button(Prior_button_frame, text="▼", font=5, width=3, height=1)
 
-Prior_discreet_setup()
+Prior_Left_x10_button = Button(Prior_button_frame, text="⏪")
+Prior_Right_x10_button = Button(Prior_button_frame, text="⏩")
+Prior_Up_x10_button = Button(Prior_button_frame, text="⏫")
+Prior_Down_x10_button = Button(Prior_button_frame, text="⏬")
 
-Prior_Left_x10_button = Button(Prior_button_frame, text="⏪", command=Prior_x10_left_X_pos)
-Prior_Right_x10_button = Button(Prior_button_frame, text="⏩", command=Prior_x10_right_X_pos)
-Prior_Up_x10_button = Button(Prior_button_frame, text="⏫", command=Prior_x10_up_Y_pos)
-Prior_Down_x10_button = Button(Prior_button_frame, text="⏬", command=Prior_x10_down_Y_pos)
+Prior_discreet_setup()
 
 Prior_Con_button = Button(Prior_button_frame, text="Con", width=3, command=Prior_update_XY_modetoCon)
 Prior_Dis_button = Button(Prior_button_frame, text="Jog", width=3, relief="sunken",command=Prior_update_XY_modetoDis)
@@ -1856,10 +1857,10 @@ Prior_Z_button_frame = Frame(root)
 Prior_Z_Up_button = Button(Prior_Z_button_frame, text="▲", width=4, height=2)
 Prior_Z_Down_button = Button(Prior_Z_button_frame, text="▼", width=4, height=2)
 
-Prior_Z_discreet_setup()
+Prior_Z_Up_x10_button = Button(Prior_Z_button_frame, text="⏫",width=4, height=2)
+Prior_Z_Down_x10_button = Button(Prior_Z_button_frame, text="⏬",width=4, height=2)
 
-Prior_Z_Up_x10_button = Button(Prior_Z_button_frame, text="⏫",width=4, height=2, command=Prior_x10_up_Z_pos)
-Prior_Z_Down_x10_button = Button(Prior_Z_button_frame, text="⏬",width=4, height=2, command=Prior_x10_down_Z_pos)
+Prior_Z_discreet_setup()
 
 Prior_Z_filler = Label(Prior_Z_button_frame, text="")
 
