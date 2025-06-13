@@ -14,20 +14,9 @@ import instruments as ik
 import instruments.units as u
 
 #Machine variable initialization (Change COM port here)
-try:
-    tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
-except:
-    print("Cannot find TC200 Controller")
-
-try:
-    pr = prior(5, r"C:\Users\zengl\Downloads\PriorThorLabGUI\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\examples\python\PriorScientificSDK.dll")
-except:
-    print("Cannot find Prior Controller")
-
-try:
-    kim_obj = kim("97251106")
-except:
-    print("Cannot find KIM101 Controller")
+tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
+pr = prior(5, r"C:\Users\zengl\Downloads\PriorThorLabGUI\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\examples\python\PriorScientificSDK.dll")
+kim_obj = kim("97251106")
 
 #Constant declaration
 Temperature_PID_Max = 500
@@ -601,7 +590,7 @@ def x10_down_Z_pos(*args):
     update_Z_pos_string()
 
 def hold_up_Z_pos(*args):
-    kim_obj.start_forward_z_motor()
+    kim_obj.start_backward_z_motor()
     update_Z_pos_string()
 
 def release_Z_pos(*args):
@@ -609,7 +598,7 @@ def release_Z_pos(*args):
     update_Z_pos_string()
 
 def hold_down_Z_pos(*args):
-    kim_obj.start_backward_z_motor()
+    kim_obj.start_forward_z_motor()
     update_Z_pos_string()
 
 def Z_continuous_setup(*args):
