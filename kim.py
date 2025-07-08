@@ -3,9 +3,10 @@ import time
 import sys
 import clr
 
-clr.AddReference("C:\\Program Files\\Thorlabs\\Kinesis\\Thorlabs.MotionControl.DeviceManagerCLI.dll")
-clr.AddReference("C:\\Program Files\\Thorlabs\\Kinesis\\Thorlabs.MotionControl.GenericMotorCLI.dll")
-clr.AddReference("C:\\Program Files\\Thorlabs\\Kinesis\\ThorLabs.MotionControl.KCube.InertialMotorCLI.dll")
+homedir = os.getcwd()
+clr.AddReference(homedir + r"\DLLs\Kinesis\Thorlabs.MotionControl.DeviceManagerCLI.dll")
+clr.AddReference(homedir + r"\DLLs\Kinesis\Thorlabs.MotionControl.GenericMotorCLI.dll")
+clr.AddReference(homedir + r"\DLLs\Kinesis\Thorlabs.MotionControl.KCube.InertialMotorCLI.dll")
 from Thorlabs.MotionControl.DeviceManagerCLI import *
 from Thorlabs.MotionControl.GenericMotorCLI import *
 from Thorlabs.MotionControl.KCube.InertialMotorCLI import *

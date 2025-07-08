@@ -15,7 +15,7 @@ import instruments.units as u
 
 #Machine variable initialization (Change COM port here)
 tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
-pr = prior(6, r"C:\Users\zengl\Downloads\PriorThorLabGUI\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\examples\python\PriorScientificSDK.dll")
+pr = prior(6, os.getcwd() + r"\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\x64\PriorScientificSDK.dll")
 kim_obj = kim("97251106")
 
 #Constant declaration
