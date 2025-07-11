@@ -15,8 +15,8 @@ import instruments.units as u
 
 #Machine variable initialization (Change COM port here)
 tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
-pr = prior(6, os.getcwd() + r"\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\x64\PriorScientificSDK.dll")
-kim_obj = kim("97251106")
+pr = prior(4, os.getcwd() + r"\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\x64\PriorScientificSDK.dll")
+kim_obj = kim("97251438")
 
 #Constant declaration
 Temperature_PID_Max = 500
@@ -254,16 +254,14 @@ def show_PID(*args):
     global PID_displacement, TC_PID_frame, Start_plot_button, Stop_plot_button
     PID_displacement = 0
     TC_PID_frame.grid(column=0, row=5, columnspan=2, rowspan=3)
-    Start_plot_button.grid(column=0, row=8-PID_displacement, sticky="nsew")
-    Stop_plot_button.grid(column=1, row=8-PID_displacement, sticky="nsew")
+    Plot_button_frame.grid(column=0, row=8-PID_displacement, columnspan=2)
     canvas.get_tk_widget().grid(column=0, row=1, columnspan=4, rowspan=7, sticky="nsew")
 
 def hide_PID(*args):
     global PID_displacement, TC_PID_frame, Start_plot_button, Stop_plot_button
     PID_displacement = 3
     TC_PID_frame.grid_forget()
-    Start_plot_button.grid(column=0, row=8-PID_displacement, sticky="nsew")
-    Stop_plot_button.grid(column=1, row=8-PID_displacement, sticky="nsew")
+    Plot_button_frame.grid(column=0, row=8-PID_displacement, columnspan=2)
     canvas.get_tk_widget().grid(column=0, row=1, columnspan=4, rowspan=7, sticky="nsew")
 
 def hide_show_PID(*args):
@@ -271,6 +269,16 @@ def hide_show_PID(*args):
         show_PID()
     else:
         hide_PID()
+
+def TC_Function(*args):
+    if T_enable_string.get() == "Enable":
+        T_enable_string.set("Disable")
+        tc.enable = True
+        print("Heater Enable")
+    else:
+        T_enable_string.set("Enable")
+        tc.enable = False
+        print("Heater Disable")
 
 ## KIM101
 def update_X_pos_string(*args): #Check with KIM101 API, not global variable (i.e unfinished)
@@ -1468,6 +1476,9 @@ T_current_string.set(T_current)
 T_set_string = StringVar()
 T_set_string.set(T_set.get())
 
+T_enable_string = StringVar()
+T_enable_string.set("Enable")
+
 P_value_string = StringVar()
 P_value_string.set(P_value)
 I_value_string = StringVar()
@@ -1631,7 +1642,9 @@ T_set_string.trace_add("write", update_T_set_text)
 T_set_slider = Scale(TC_frame, from_=20, to=205, orient="horizontal", variable=T_set_scale, length=200)
 T_set_slider.bind("<ButtonRelease-1>", update_T_set)
 
-TC_PID_button = Button(TC_frame, text="PID Settings", command=hide_show_PID)
+TC_Properties_Frame = Frame(TC_frame)
+TC_PID_button = Button(TC_Properties_Frame, text="PID Settings", command=hide_show_PID)
+TC_Enable_button = Button(TC_Properties_Frame, textvariable=T_enable_string, command=TC_Function)
 
 TC_PID_frame = Frame(TC_frame)
 P_value_label = Label(TC_PID_frame, text="P", font=normal_font)
@@ -1642,13 +1655,15 @@ I_value_label = Label(TC_PID_frame, text="I", font=normal_font)
 I_value_spinbox = Spinbox(TC_PID_frame, textvariable=I_value_string, from_=Temperature_PID_Min, to=Temperature_PID_Max, command=update_I_value)
 I_value_string.trace_add("write", update_I_value_text)
 
-D_value_label = Label(TC_PID_frame, text="Jog",font=normal_font)
+D_value_label = Label(TC_PID_frame, text="D",font=normal_font)
 D_value_spinbox = Spinbox(TC_PID_frame, textvariable=D_value_string, from_=Temperature_PID_Min, to=Temperature_PID_Max, command=update_D_value)
 D_value_string.trace_add("write", update_D_value_text)
 
-Start_plot_button = Button(TC_frame, text="Start Plot", command=start_temp)
-Stop_plot_button = Button(TC_frame, text="Stop Plot", command=stop_temp)
-# Reset_plot_button = Button(root, text="Reset Plot", command=reset_plot)
+Plot_button_frame = Frame(TC_frame)
+
+Start_plot_button = Button(Plot_button_frame, text="Start Plot", command=start_temp)
+Stop_plot_button = Button(Plot_button_frame, text="Stop Plot", command=stop_temp)
+Reset_plot_button = Button(Plot_button_frame, text="Reset Plot", command=reset_plot)
 
 temp_KIM_seperator = ttk.Separator(root, orient="vertical")
 
@@ -1911,7 +1926,9 @@ T_set_label.grid(column=0, row=2, sticky="nsew")
 T_set_text.grid(column=1, row=2, sticky="nsew")
 T_set_slider.grid(columnspan=2, column=0, row=3)
 
-TC_PID_button.grid(column=0, row=4, columnspan=2)
+TC_Properties_Frame.grid(column=0, row=4, columnspan=2)
+TC_PID_button.grid(column=0, row=0)
+TC_Enable_button.grid(column=1, row=0)
 
 # TC_PID_frame.grid(column=0, row=5, columnspan=2, rowspan=3)
 
@@ -1924,9 +1941,11 @@ I_value_spinbox.grid(column=1, row=1, sticky="nsew")
 D_value_label.grid(column=0, row=2)
 D_value_spinbox.grid(column=1, row=2, sticky="nsew")
 
-Start_plot_button.grid(column=0, row=8-PID_displacement, sticky="nsew")
-Stop_plot_button.grid(column=1, row=8-PID_displacement, sticky="nsew")
-# Reset_plot_button.grid(column=0, columnspan=2, row=9, sticky="nsew")
+Plot_button_frame.grid(row=8-PID_displacement, column=0, columnspan=2)
+
+Start_plot_button.grid(column=0, row=0)
+Stop_plot_button.grid(column=1, row=0)
+Reset_plot_button.grid(column=2, row=0)
 
 # temp_KIM_seperator.grid(column=2, row=0, padx=5, rowspan=30, sticky="ns")
 
