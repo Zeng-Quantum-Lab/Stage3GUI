@@ -58,7 +58,7 @@ except:
 
 kim_off = False
 try:    
-    kim_obj = kim(sys.argv[2])
+    kim_obj = kim(sys.argv[3])
 
     X_pos = kim_obj.x
     Y_pos = kim_obj.y
@@ -95,7 +95,7 @@ except:
 
 pr_off = False
 try:
-    pr = prior(sys.argv[3], os.getcwd() + r"\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\x64\PriorScientificSDK.dll")
+    pr = prior(sys.argv[2], os.getcwd() + r"\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\x64\PriorScientificSDK.dll")
 
     Prior_X_pos = pr.x
     Prior_Y_pos = pr.y

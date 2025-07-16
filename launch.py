@@ -2,6 +2,8 @@ import os
 from tkinter import *
 from tkinter import ttk
 
+homedir = os.getcwd()
+
 def on_close():
     file = open("port.config", "w")
     
@@ -15,7 +17,7 @@ def on_close():
     file.close()
 
     root.destroy()
-    os.system(f"python Sources\main.py {tc_args_final} {pr_args_final} {kim_args_final}")
+    os.system(f"{homedir}\.venv\Scripts\python.exe Sources\main.py {tc_args_final} {pr_args_final} {kim_args_final}")
 
 file = open("port.config", "r")
 
