@@ -41,6 +41,7 @@ fig = Figure(figsize=(3,2), dpi = 85)
 
 
 #Machine variable initialization (Change COM port here)
+tc_off = False
 try:
     tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
 
@@ -48,7 +49,13 @@ try:
     I_value = tc.i
     D_value = tc.d
 except:
+    tc_off = True
+    print("TC200 is not connected")
+    P_value = 0
+    I_value = 0
+    D_value = 0
 
+kim_off = False
 try:    
     kim_obj = kim("97251438")
 
@@ -68,7 +75,24 @@ try:
     Angle_Speed = kim_obj.angle_velocity
     Angle_Acceleration = kim_obj.angle_acceleration
 except:
+    kim_off = True
+    print("KIM101 is not connected")
+    X_pos = 0
+    Y_pos = 0
+    XY_Speed = 0
+    XY_Acceleration = 0
 
+    Z_Speed = 0
+    Z_Acceleration = 0
+
+    Z_pos =0
+
+    Angle = 0
+
+    Angle_Speed = 0
+    Angle_Acceleration = 0
+
+pr_off = False
 try:
     pr = prior(4, os.getcwd() + r"\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\x64\PriorScientificSDK.dll")
 
@@ -86,18 +110,19 @@ try:
     Prior_Z_Backlash_Dist = pr.backlash_dist
 
 except:
-    Prior_X_pos = pr.x
-    Prior_Y_pos = pr.y
-    Prior_XY_Speed = pr.velocity
-    Prior_XY_Acceleration = pr.acceleration
-    Prior_XY_Backlash_EN = IntVar(value=pr.backlash_en)
-    Prior_XY_Backlash_Dist = pr.backlash_dist
+    pr_off = True
+    print("Prior Controller is not connected")
+    Prior_X_pos = 0
+    Prior_Y_pos = 0
+    Prior_XY_Speed = 0
+    Prior_XY_Acceleration = 0
+    Prior_XY_Backlash_EN = IntVar(value=0)
+    Prior_XY_Backlash_Dist = 0
 
-    Prior_Z_More_Setting_displacement = 2
-    Prior_Z_Speed = pr.z_velocity
-    Prior_Z_Acceleration = pr.z_acceleration
-    Prior_Z_Backlash_EN = IntVar(value=pr.backlash_en)
-    Prior_Z_Backlash_Dist = pr.backlash_dist
+    Prior_Z_Speed = 0
+    Prior_Z_Acceleration = 0
+    Prior_Z_Backlash_EN = IntVar(value=0)
+    Prior_Z_Backlash_Dist = 0
 
 #Variable declaration ##################################
 ##TC200
@@ -161,6 +186,8 @@ Prior_right_X_isHold = False
 Prior_up_X_isHold = False
 Prior_down_X_isHold = False
 
+Prior_Z_More_Setting_displacement = 2
+
 Prior_Z_Step_size = 1
 Prior_Z_coeff = 1
 
@@ -170,7 +197,7 @@ Prior_Z_pos = 0 #debug variable
 ## TC200
 def update_T_current(*args):
     global T_current, T_set, time_list, plot1, T_current_list, canvas, curr_time, start_plot,tc
-    temp = f"{tc.temperature}"
+    temp = "20.0000000" if tc_off else f"{tc.temperature}"
     T_current = float(temp[:-5])
     T_current_string.set(T_current)
     if start_plot:
@@ -306,14 +333,14 @@ def update_X_pos_string(*args): #Check with KIM101 API, not global variable (i.e
     global X_pos
     if (XY_is_Con):
         time.sleep(0.25)
-    X_pos = kim_obj.get_x_pos()
+    X_pos = 0 if kim_off else kim_obj.get_x_pos()
     X_pos_string.set(X_pos)
 
 def update_Y_pos_string(*args): #Check with KIM101 API, not global variable (i.e unfinished)
     global Y_pos, Y_pos_string
     if (XY_is_Con):
         time.sleep(0.25)
-    Y_pos = kim_obj.get_y_pos()
+    Y_pos = 0 if kim_off else kim_obj.get_y_pos()
     Y_pos_string.set(Y_pos)
 
 def update_XY_Step_size():
@@ -532,7 +559,7 @@ def update_Z_pos_string(*args): #Check with KIM101 API, not global variable (i.e
     global Z_pos, kim_obj
     if Z_is_Con:
         time.sleep(0.25)
-    Z_pos = kim_obj.get_z_pos()
+    Z_pos = 0 if kim_off else kim_obj.get_z_pos()
     Z_pos_string.set(Z_pos)
 
 def update_Z_Step_size():
@@ -674,7 +701,7 @@ def update_Angle_string(*args): #Check with KIM101 API, not global variable (i.e
     global Angle, kim_obj
     if Angle_is_Con:
         time.sleep(0.25)
-    Angle = kim_obj.get_angle_pos()
+    Angle = 0 if kim_off else kim_obj.get_angle_pos()
     Angle_string.set(Angle)
 
 def update_Angle_Step_size():
@@ -967,16 +994,24 @@ def update_Angle_modetoDis(*args):
 ##Prior
 def Prior_update_X_pos_string(*args): #Check with Prior API, not global variable (i.e unfinished)
     global Prior_X_pos, pr, Prior_X_pos
-    pr.get_curr_pos()
-    Prior_X_pos = pr.x
-    Prior_X_pos_string.set(pr.x)
+    if pr_off:
+        Prior_X_pos = 0
+        Prior_X_pos_string.set(0)  
+    else:
+        pr.get_curr_pos()
+        Prior_X_pos = pr.x
+        Prior_X_pos_string.set(pr.x)
     # root.after(250, Prior_update_X_pos_string)
 
 def Prior_update_Y_pos_string(*args): #Check with Prior API, not global variable (i.e unfinished)
     global Prior_Y_pos, pr, Prior_Y_pos
-    pr.get_curr_pos()
-    Prior_Y_pos = pr.y
-    Prior_Y_pos_string.set(pr.y)
+    if pr_off:
+        Prior_Y_pos = 0
+        Prior_Y_pos_string.set(0)
+    else:
+        pr.get_curr_pos()
+        Prior_Y_pos = pr.y
+        Prior_Y_pos_string.set(pr.y)
     # root.after(250, Prior_update_Y_pos_string)
 
 def Prior_update_XY_Step_size():
@@ -1652,7 +1687,7 @@ TC_frame.rowconfigure(7, weight=1)
 
 normal_font = "Helvetica 11"
 
-T_title = Label(TC_frame, text="TC200 CONTROLLER", font="Helvetica 13")
+T_title = Label(TC_frame, text="TC200 Disconnected" if tc_off else "TC200 CONTROLLER", font="Helvetica 13")
 
 T_current_label = Label(TC_frame, text="T_Current", font=normal_font)
 T_current_textblock = Label(TC_frame, textvariable=T_current_string, borderwidth=1, relief="groove")
@@ -1689,7 +1724,7 @@ Reset_plot_button = Button(Plot_button_frame, text="Reset Plot", command=reset_p
 temp_KIM_seperator = ttk.Separator(root, orient="vertical")
 
 ##KIM 101
-KIM_title = Label(root, text="KIM101 CONTROLLER", font="Helvetica 13")
+KIM_title = Label(root, text="KIM101 Disconnected" if kim_off else "KIM101 CONTROLLER", font="Helvetica 13")
 XY_control_label = Label(root, text="XY AXIS CONTROL", height=2, font=normal_font)
 X_pos_label = Label(root, text="X Position", font=normal_font)
 X_pos_textblock = Label(root, textvariable=X_pos_string, borderwidth=1, relief="groove")
@@ -1819,7 +1854,7 @@ Filler2 = Label(root, text="")
 
 KIM_Prior_seperator = ttk.Separator(root, orient="vertical")
 ##Prior
-Prior_title = Label(root, text="ProScan III CONTROLLER", font="Helvetica 13")
+Prior_title = Label(root, text="ProScan Disconnected" if pr_off else "ProScan CONTROLLER", font="Helvetica 13")
 
 Prior_XY_control_label = Label(root, text="XY AXIS CONTROL",font=normal_font)
 Prior_X_pos_label = Label(root, text="X Position",font=normal_font)
