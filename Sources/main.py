@@ -12,6 +12,8 @@ from prior import prior
 from kim import kim
 import instruments as ik
 import instruments.units as u
+import sys
+
 
 #Constant declaration
 TEM_PID_MAX = 500
@@ -39,11 +41,10 @@ BACKLASH_DIST_MAX = 1000000000
 root = Tk() 
 fig = Figure(figsize=(3,2), dpi = 85)
 
-
 #Machine variable initialization (Change COM port here)
 tc_off = False
 try:
-    tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
+    tc = ik.thorlabs.TC200.open_serial(f"COM{sys.argv[1]}", 115200)
 
     P_value = tc.p
     I_value = tc.i
@@ -57,7 +58,7 @@ except:
 
 kim_off = False
 try:    
-    kim_obj = kim("97251438")
+    kim_obj = kim(sys.argv[2])
 
     X_pos = kim_obj.x
     Y_pos = kim_obj.y
@@ -94,7 +95,7 @@ except:
 
 pr_off = False
 try:
-    pr = prior(4, os.getcwd() + r"\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\x64\PriorScientificSDK.dll")
+    pr = prior(sys.argv[3], os.getcwd() + r"\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\x64\PriorScientificSDK.dll")
 
     Prior_X_pos = pr.x
     Prior_Y_pos = pr.y
