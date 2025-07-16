@@ -13,37 +13,91 @@ from kim import kim
 import instruments as ik
 import instruments.units as u
 
-#Machine variable initialization (Change COM port here)
-tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
-pr = prior(4, os.getcwd() + r"\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\x64\PriorScientificSDK.dll")
-kim_obj = kim("97251438")
-
 #Constant declaration
-Temperature_PID_Max = 500
-Temperature_PID_Min = -500
+TEM_PID_MAX = 500
+TEM_PID_MIN = -500
 
-Pos_max = 1000000000
-Pos_min = -1000000000
+POS_MAX = 1000000000
+POS_MIN = -1000000000
 
-Step_size_max = 10000000
+STEP_SIZE_MAX = 10000000
+STEP_SIZE_MIN = -10000000
 
-Step_size_min = -10000000
+ACCEL_MAX = 10000000
+ACCEL_MIN = -10000000
 
-Acceleration_max = 10000000
-Acceleration_min = -10000000
+SPEED_MAX = 10000000
+SPEED_MIN = -10000000
 
-Speed_max = 10000000
-Speed_min = -10000000
+COEFF_SIZE_MAX = 1000000000
+COEFF_SIZE_MIN = 0
 
-Coeff_size_max = 1000000000
-Coeff_size_min = 0
-
-Backlash_Dist_min = -1000000000
-Backlash_Dist_max = 1000000000
+BACKLASH_DIST_MIN = -1000000000
+BACKLASH_DIST_MAX = 1000000000
 
 # Window declaration
 root = Tk() 
 fig = Figure(figsize=(3,2), dpi = 85)
+
+
+#Machine variable initialization (Change COM port here)
+try:
+    tc = ik.thorlabs.TC200.open_serial("COM3", 115200)
+
+    P_value = tc.p
+    I_value = tc.i
+    D_value = tc.d
+except:
+
+try:    
+    kim_obj = kim("97251438")
+
+    X_pos = kim_obj.x
+    Y_pos = kim_obj.y
+
+    XY_Speed = kim_obj.xy_velocity
+    XY_Acceleration = kim_obj.xy_acceleration
+
+    Z_Speed = kim_obj.z_velocity
+    Z_Acceleration = kim_obj.z_acceleration
+
+    Z_pos = kim_obj.z
+
+    Angle = kim_obj.angle
+
+    Angle_Speed = kim_obj.angle_velocity
+    Angle_Acceleration = kim_obj.angle_acceleration
+except:
+
+try:
+    pr = prior(4, os.getcwd() + r"\PriorSDK1.9.2\PriorSDK 1.9.2\PriorSDK 1.9.2\x64\PriorScientificSDK.dll")
+
+    Prior_X_pos = pr.x
+    Prior_Y_pos = pr.y
+    Prior_XY_Speed = pr.velocity
+    Prior_XY_Acceleration = pr.acceleration
+    Prior_XY_Backlash_EN = IntVar(value=pr.backlash_en)
+    Prior_XY_Backlash_Dist = pr.backlash_dist
+
+    Prior_Z_More_Setting_displacement = 2
+    Prior_Z_Speed = pr.z_velocity
+    Prior_Z_Acceleration = pr.z_acceleration
+    Prior_Z_Backlash_EN = IntVar(value=pr.backlash_en)
+    Prior_Z_Backlash_Dist = pr.backlash_dist
+
+except:
+    Prior_X_pos = pr.x
+    Prior_Y_pos = pr.y
+    Prior_XY_Speed = pr.velocity
+    Prior_XY_Acceleration = pr.acceleration
+    Prior_XY_Backlash_EN = IntVar(value=pr.backlash_en)
+    Prior_XY_Backlash_Dist = pr.backlash_dist
+
+    Prior_Z_More_Setting_displacement = 2
+    Prior_Z_Speed = pr.z_velocity
+    Prior_Z_Acceleration = pr.z_acceleration
+    Prior_Z_Backlash_EN = IntVar(value=pr.backlash_en)
+    Prior_Z_Backlash_Dist = pr.backlash_dist
 
 #Variable declaration ##################################
 ##TC200
@@ -65,50 +119,30 @@ T_set_List = [T_set.get()]
 
 PID_displacement = 3
 
-P_value = tc.p
-I_value = tc.i
-D_value = tc.d
-
 ##KIM101
 XY_is_Con = False
 Z_is_Con = False
 Angle_is_Con = False
 
-X_pos = kim_obj.x
-Y_pos = kim_obj.y
-
 XY_Step_size = 1
 XY_coeff = 1
 XY_More_Setting_displacement = 2
-
-XY_Speed = kim_obj.xy_velocity
-XY_Acceleration = kim_obj.xy_acceleration
 
 left_X_isHold = False
 right_X_isHold = False
 up_Y_isHold = False
 down_Y_isHold = False
 
-Z_pos = kim_obj.z
-
 Z_Step_size = 1
 Z_coeff = 1
 Z_More_Setting_displacement = 2
 
-Z_Speed = kim_obj.z_velocity
-Z_Acceleration = kim_obj.z_acceleration
-
 up_Z_isHold = False
 down_Z_isHold = False
-
-Angle = kim_obj.angle
 
 Angle_Step_size = 1
 Angle_coeff = 1
 Angle_More_Setting_displacement = 2
-
-Angle_Speed = kim_obj.angle_velocity
-Angle_Acceleration = kim_obj.angle_acceleration
 
 up_Angle_isHold = False
 down_Angle_isHold = False
@@ -121,14 +155,6 @@ Prior_XY_Step_size = 1
 Prior_XY_coeff = 1
 Prior_XY_More_Setting_displacement = 2
 
-Prior_X_pos = pr.x
-Prior_Y_pos = pr.y
-Prior_XY_Speed = pr.velocity
-Prior_XY_Acceleration = pr.acceleration
-Prior_XY_Backlash_EN = IntVar(value=pr.backlash_en)
-print("Prior_XY_Backlash_EN = ", Prior_XY_Backlash_EN)
-Prior_XY_Backlash_Dist = pr.backlash_dist
-
 
 Prior_left_X_isHold = False
 Prior_right_X_isHold = False
@@ -137,11 +163,6 @@ Prior_down_X_isHold = False
 
 Prior_Z_Step_size = 1
 Prior_Z_coeff = 1
-Prior_Z_More_Setting_displacement = 2
-Prior_Z_Speed = pr.z_velocity
-Prior_Z_Acceleration = pr.z_acceleration
-Prior_Z_Backlash_EN = IntVar(value=pr.backlash_en)
-Prior_Z_Backlash_Dist = pr.backlash_dist
 
 Prior_Z_pos = 0 #debug variable
 
@@ -1648,15 +1669,15 @@ TC_Enable_button = Button(TC_Properties_Frame, textvariable=T_enable_string, com
 
 TC_PID_frame = Frame(TC_frame)
 P_value_label = Label(TC_PID_frame, text="P", font=normal_font)
-P_value_spinbox = Spinbox(TC_PID_frame, textvariable=P_value_string, from_=Temperature_PID_Min, to=Temperature_PID_Max, command=update_P_value)
+P_value_spinbox = Spinbox(TC_PID_frame, textvariable=P_value_string, from_=TEM_PID_MIN, to=TEM_PID_MAX, command=update_P_value)
 P_value_string.trace_add("write", update_P_value_text)
 
 I_value_label = Label(TC_PID_frame, text="I", font=normal_font)
-I_value_spinbox = Spinbox(TC_PID_frame, textvariable=I_value_string, from_=Temperature_PID_Min, to=Temperature_PID_Max, command=update_I_value)
+I_value_spinbox = Spinbox(TC_PID_frame, textvariable=I_value_string, from_=TEM_PID_MIN, to=TEM_PID_MAX, command=update_I_value)
 I_value_string.trace_add("write", update_I_value_text)
 
 D_value_label = Label(TC_PID_frame, text="D",font=normal_font)
-D_value_spinbox = Spinbox(TC_PID_frame, textvariable=D_value_string, from_=Temperature_PID_Min, to=Temperature_PID_Max, command=update_D_value)
+D_value_spinbox = Spinbox(TC_PID_frame, textvariable=D_value_string, from_=TEM_PID_MIN, to=TEM_PID_MAX, command=update_D_value)
 D_value_string.trace_add("write", update_D_value_text)
 
 Plot_button_frame = Frame(TC_frame)
@@ -1678,22 +1699,22 @@ Y_pos_textblock = Label(root, textvariable=Y_pos_string, borderwidth=1, relief="
 
 XY_Setting_frame = Frame(root)
 XY_Step_size_label = Label(XY_Setting_frame, text="Step (μm)", font=normal_font)
-XY_Step_size_spinbox = Spinbox(XY_Setting_frame, textvariable=XY_Step_size_string, from_=Step_size_min, to=Step_size_max, command=update_XY_Step_size, width=10)
+XY_Step_size_spinbox = Spinbox(XY_Setting_frame, textvariable=XY_Step_size_string, from_=STEP_SIZE_MIN, to=STEP_SIZE_MAX, command=update_XY_Step_size, width=10)
 XY_Step_size_string.trace_add("write", update_XY_Step_size_text)
 Hide_button = Button(XY_Setting_frame, text="Speed Setting", command=XY_hide_show_Setting)
 
 XY_More_Setting_frame = Frame(root)
 
 XY_coeff_label = Label(XY_More_Setting_frame, text="Multiplier")
-XY_coeff_spinbox = Spinbox(XY_More_Setting_frame, textvariable=XY_coeff_string, from_=Coeff_size_min, to=Coeff_size_max, width=10, command=update_XY_coeff)
+XY_coeff_spinbox = Spinbox(XY_More_Setting_frame, textvariable=XY_coeff_string, from_=COEFF_SIZE_MIN, to=COEFF_SIZE_MAX, width=10, command=update_XY_coeff)
 XY_coeff_string.trace_add("write", update_XY_coeff_text)
 
 XY_Speed_label = Label(XY_More_Setting_frame, text="Speed (μm/s)")
-XY_Speed_spinbox = Spinbox(XY_More_Setting_frame, textvariable=XY_Speed_string, from_=Speed_min, to=Speed_max, command=update_XY_Speed)
+XY_Speed_spinbox = Spinbox(XY_More_Setting_frame, textvariable=XY_Speed_string, from_=SPEED_MIN, to=SPEED_MAX, command=update_XY_Speed)
 XY_Speed_string.trace_add("write", update_XY_Speed_text)
 
 XY_Acceleration_label = Label(XY_More_Setting_frame, text="Accel (μm/s²)")
-XY_Acceleration_spinbox = Spinbox(XY_More_Setting_frame, textvariable=XY_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=update_XY_Acceleration)
+XY_Acceleration_spinbox = Spinbox(XY_More_Setting_frame, textvariable=XY_Acceleration_string, from_=ACCEL_MIN, to=ACCEL_MAX, command=update_XY_Acceleration)
 XY_Acceleration_string.trace_add("write", update_XY_Acceleration_text)
 
 KIM_button_frame = Frame(root)
@@ -1736,7 +1757,7 @@ Z_Dis_button = Button(Z_button_frame, text="Jog", width=3, relief="sunken", comm
 Z_Setting_frame = Frame(root)
 
 Z_Step_size_label = Label(Z_Setting_frame, text="Step (μm)",font=normal_font)
-Z_Step_size_spinbox = Spinbox(Z_Setting_frame, textvariable=Z_Step_size_string, from_=Step_size_min, to=Step_size_max, command=update_Z_Step_size, width=10)
+Z_Step_size_spinbox = Spinbox(Z_Setting_frame, textvariable=Z_Step_size_string, from_=STEP_SIZE_MIN, to=STEP_SIZE_MAX, command=update_Z_Step_size, width=10)
 Z_Step_size_string.trace_add("write", update_Z_Step_size_text)
 
 Z_Setting_button = Button(Z_Setting_frame, text="Speed Setting", command=Z_hide_show_Setting)
@@ -1744,15 +1765,15 @@ Z_Setting_button = Button(Z_Setting_frame, text="Speed Setting", command=Z_hide_
 Z_More_Setting_frame = Frame(root)
 
 Z_coeff_label = Label(Z_More_Setting_frame, text="Multiplier")
-Z_coeff_spinbox = Spinbox(Z_More_Setting_frame, textvariable=Z_coeff_string, from_=Coeff_size_min, to=Coeff_size_max, width=10, command=update_Z_coeff)
+Z_coeff_spinbox = Spinbox(Z_More_Setting_frame, textvariable=Z_coeff_string, from_=COEFF_SIZE_MIN, to=COEFF_SIZE_MAX, width=10, command=update_Z_coeff)
 Z_coeff_string.trace_add("write", update_Z_coeff_text)
 
 Z_Speed_label = Label(Z_More_Setting_frame, text="Speed (μm/s)")
-Z_Speed_spinbox = Spinbox(Z_More_Setting_frame, textvariable=Z_Speed_string, from_=Speed_min, to=Speed_max, command=update_Z_Speed)
+Z_Speed_spinbox = Spinbox(Z_More_Setting_frame, textvariable=Z_Speed_string, from_=SPEED_MIN, to=SPEED_MAX, command=update_Z_Speed)
 Z_Speed_string.trace_add("write", update_Z_Speed_text)
 
 Z_Acceleration_label = Label(Z_More_Setting_frame, text="Accel (μm/s²)")
-Z_Acceleration_spinbox = Spinbox(Z_More_Setting_frame, textvariable=Z_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=update_Z_Acceleration)
+Z_Acceleration_spinbox = Spinbox(Z_More_Setting_frame, textvariable=Z_Acceleration_string, from_=ACCEL_MIN, to=ACCEL_MAX, command=update_Z_Acceleration)
 Z_Acceleration_string.trace_add("write", update_Z_Acceleration_text)
 
 Angle_seperator = ttk.Separator(root)
@@ -1774,7 +1795,7 @@ Angle_Dis_button = Button(Angle_button_frame, text="Jog", width=3, relief="sunke
 Angle_Setting_frame = Frame(root)
 
 Angle_Step_size_label = Label(Angle_Setting_frame, text="Step (μm)",font=normal_font)
-Angle_Step_size_spinbox = Spinbox(Angle_Setting_frame, textvariable=Angle_Step_size_string, from_=Step_size_min, to=Step_size_max, command=update_Angle_Step_size, width=10)
+Angle_Step_size_spinbox = Spinbox(Angle_Setting_frame, textvariable=Angle_Step_size_string, from_=STEP_SIZE_MIN, to=STEP_SIZE_MAX, command=update_Angle_Step_size, width=10)
 Angle_Step_size_string.trace_add("write", update_Angle_Step_size_text)
 
 Angle_Setting_button = Button(Angle_Setting_frame, text="Speed Setting", command=Angle_hide_show_Setting)
@@ -1782,15 +1803,15 @@ Angle_Setting_button = Button(Angle_Setting_frame, text="Speed Setting", command
 Angle_More_Setting_frame = Frame(root)
 
 Angle_coeff_label = Label(Angle_More_Setting_frame, text="Multiplier")
-Angle_coeff_spinbox = Spinbox(Angle_More_Setting_frame, textvariable=Angle_coeff_string, from_=Coeff_size_min, to=Coeff_size_max, width=10, command=update_Angle_coeff)
+Angle_coeff_spinbox = Spinbox(Angle_More_Setting_frame, textvariable=Angle_coeff_string, from_=COEFF_SIZE_MIN, to=COEFF_SIZE_MAX, width=10, command=update_Angle_coeff)
 Angle_coeff_string.trace_add("write", update_Angle_coeff_text)
 
 Angle_Speed_label = Label(Angle_More_Setting_frame, text="Speed (μm/s)")
-Angle_Speed_spinbox = Spinbox(Angle_More_Setting_frame, textvariable=Angle_Speed_string, from_=Speed_min, to=Speed_max, command=update_Angle_Speed)
+Angle_Speed_spinbox = Spinbox(Angle_More_Setting_frame, textvariable=Angle_Speed_string, from_=SPEED_MIN, to=SPEED_MAX, command=update_Angle_Speed)
 Angle_Speed_string.trace_add("write", update_Angle_Speed_text)
 
 Angle_Acceleration_label = Label(Angle_More_Setting_frame, text="Accel (μm/s²)")
-Angle_Acceleration_spinbox = Spinbox(Angle_More_Setting_frame, textvariable=Angle_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=update_Angle_Acceleration)
+Angle_Acceleration_spinbox = Spinbox(Angle_More_Setting_frame, textvariable=Angle_Acceleration_string, from_=ACCEL_MIN, to=ACCEL_MAX, command=update_Angle_Acceleration)
 Angle_Acceleration_string.trace_add("write", update_Angle_Acceleration_text)
 
 Filler1 = Label(root, text="")
@@ -1811,27 +1832,27 @@ Prior_XY_Setting_frame = Frame(root)
 
 Prior_Setting_button = Button(Prior_XY_Setting_frame, text="Speed Setting", command=Prior_XY_hide_show_Setting)
 Prior_XY_Step_size_label = Label(Prior_XY_Setting_frame, text="Step (μm)",font=normal_font)
-Prior_XY_Step_size_spinbox = Spinbox(Prior_XY_Setting_frame, textvariable=Prior_XY_Step_size_string, from_=Step_size_min, to=Step_size_max, command=Prior_update_XY_Step_size, width=10)
+Prior_XY_Step_size_spinbox = Spinbox(Prior_XY_Setting_frame, textvariable=Prior_XY_Step_size_string, from_=STEP_SIZE_MIN, to=STEP_SIZE_MAX, command=Prior_update_XY_Step_size, width=10)
 Prior_XY_Step_size_string.trace_add("write", Prior_update_XY_Step_size_text)
 
 Prior_XY_More_Setting_frame = Frame(root)
 
 Prior_XY_coeff_label = Label(Prior_XY_More_Setting_frame, text="Multiplier")
-Prior_XY_coeff_spinbox = Spinbox(Prior_XY_More_Setting_frame, textvariable=Prior_XY_coeff_string, from_=Coeff_size_min, to=Coeff_size_max, width=10, command=Prior_update_XY_coeff)
+Prior_XY_coeff_spinbox = Spinbox(Prior_XY_More_Setting_frame, textvariable=Prior_XY_coeff_string, from_=COEFF_SIZE_MIN, to=COEFF_SIZE_MAX, width=10, command=Prior_update_XY_coeff)
 Prior_XY_coeff_string.trace_add("write", Prior_update_XY_coeff_text)
 
 Prior_XY_Speed_label = Label(Prior_XY_More_Setting_frame, text="Speed (μm/s)")
-Prior_XY_Speed_spinbox = Spinbox(Prior_XY_More_Setting_frame, textvariable=Prior_XY_Speed_string, from_=Speed_min, to=Speed_max, command=Prior_update_XY_Speed)
+Prior_XY_Speed_spinbox = Spinbox(Prior_XY_More_Setting_frame, textvariable=Prior_XY_Speed_string, from_=SPEED_MIN, to=SPEED_MAX, command=Prior_update_XY_Speed)
 Prior_XY_Speed_string.trace_add("write", Prior_update_XY_Speed_text)
 
 Prior_XY_Acceleration_label = Label(Prior_XY_More_Setting_frame, text="Accel (μm/s²)")
-Prior_XY_Acceleration_spinbox = Spinbox(Prior_XY_More_Setting_frame, textvariable=Prior_XY_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=Prior_update_XY_Acceleration)
+Prior_XY_Acceleration_spinbox = Spinbox(Prior_XY_More_Setting_frame, textvariable=Prior_XY_Acceleration_string, from_=ACCEL_MIN, to=ACCEL_MAX, command=Prior_update_XY_Acceleration)
 Prior_XY_Acceleration_string.trace_add("write", Prior_update_XY_Acceleration_text)
 
 Prior_XY_Backlash_EN_checkbox = Checkbutton(Prior_XY_More_Setting_frame, variable=Prior_XY_Backlash_EN, text="Backlash Enable", onvalue=1, offvalue=0, command=Prior_update_XY_Backlash_Enable)
 
 Prior_XY_Backlash_Dist_label = Label(Prior_XY_More_Setting_frame, text="Backlash Dist (μm)")
-Prior_XY_Backlash_Dist_spinbox = Spinbox(Prior_XY_More_Setting_frame, textvariable=Prior_XY_Backlash_Dist_string, from_=Backlash_Dist_min, to=Backlash_Dist_max, command=Prior_update_XY_Backlash_Dist)
+Prior_XY_Backlash_Dist_spinbox = Spinbox(Prior_XY_More_Setting_frame, textvariable=Prior_XY_Backlash_Dist_string, from_=BACKLASH_DIST_MIN, to=BACKLASH_DIST_MAX, command=Prior_update_XY_Backlash_Dist)
 Prior_XY_Backlash_Dist_string.trace_add("write", Prior_update_XY_Backlash_Dist_text)
 
 Prior_button_frame = Frame(root)
@@ -1875,28 +1896,28 @@ Prior_Z_Dis_button = Button(Prior_Z_button_frame, text="Jog", width=3, relief="s
 Prior_Z_Setting_frame = Frame(root)
 
 Prior_Z_Step_size_label = Label(Prior_Z_Setting_frame, text="Step (μm)",font=normal_font)
-Prior_Z_Step_size_spinbox = Spinbox(Prior_Z_Setting_frame, textvariable=Prior_Z_Step_size_string, from_=Step_size_min, to=Step_size_max, command=Prior_update_Z_Step_size, width=10)
+Prior_Z_Step_size_spinbox = Spinbox(Prior_Z_Setting_frame, textvariable=Prior_Z_Step_size_string, from_=STEP_SIZE_MIN, to=STEP_SIZE_MAX, command=Prior_update_Z_Step_size, width=10)
 Prior_Z_Step_size_string.trace_add("write", Prior_update_Z_Step_size_text)
 Prior_Z_Setting_button = Button(Prior_Z_Setting_frame, text="Speed Setting", command=Prior_Z_hide_show_Setting)
 
 Prior_Z_More_Setting_frame = Frame(root)
 
 Prior_Z_coeff_label = Label(Prior_Z_More_Setting_frame, text="Multiplier")
-Prior_Z_coeff_spinbox = Spinbox(Prior_Z_More_Setting_frame, textvariable=Prior_Z_coeff_string, from_=Coeff_size_min, to=Coeff_size_max, width=10, command=Prior_update_Z_coeff)
+Prior_Z_coeff_spinbox = Spinbox(Prior_Z_More_Setting_frame, textvariable=Prior_Z_coeff_string, from_=COEFF_SIZE_MIN, to=COEFF_SIZE_MAX, width=10, command=Prior_update_Z_coeff)
 Prior_Z_coeff_string.trace_add("write", Prior_update_Z_coeff_text)
 
 Prior_Z_Speed_label = Label(Prior_Z_More_Setting_frame, text="Speed (μm/s)")
-Prior_Z_Speed_spinbox = Spinbox(Prior_Z_More_Setting_frame, textvariable=Prior_Z_Speed_string, from_=Speed_min, to=Speed_max, command=Prior_update_Z_Speed)
+Prior_Z_Speed_spinbox = Spinbox(Prior_Z_More_Setting_frame, textvariable=Prior_Z_Speed_string, from_=SPEED_MIN, to=SPEED_MAX, command=Prior_update_Z_Speed)
 Prior_Z_Speed_string.trace_add("write", Prior_update_Z_Speed_text)
 
 Prior_Z_Acceleration_label = Label(Prior_Z_More_Setting_frame, text="Accel (μm/s²)")
-Prior_Z_Acceleration_spinbox = Spinbox(Prior_Z_More_Setting_frame, textvariable=Prior_Z_Acceleration_string, from_=Acceleration_min, to=Acceleration_max, command=Prior_update_Z_Acceleration)
+Prior_Z_Acceleration_spinbox = Spinbox(Prior_Z_More_Setting_frame, textvariable=Prior_Z_Acceleration_string, from_=ACCEL_MIN, to=ACCEL_MAX, command=Prior_update_Z_Acceleration)
 Prior_Z_Acceleration_string.trace_add("write", Prior_update_Z_Acceleration_text)
 
 Prior_Z_Backlash_EN_checkbox = Checkbutton(Prior_Z_More_Setting_frame, variable=Prior_Z_Backlash_EN, text="Backlash Enable", onvalue=1, offvalue=0, command=Prior_update_Z_Backlash_Enable)
 
 Prior_Z_Backlash_Dist_label = Label(Prior_Z_More_Setting_frame, text="Backlash Dist (μm)")
-Prior_Z_Backlash_Dist_spinbox = Spinbox(Prior_Z_More_Setting_frame, textvariable=Prior_Z_Backlash_Dist_string, from_=Backlash_Dist_min, to=Backlash_Dist_max, command=Prior_update_Z_Backlash_Dist)
+Prior_Z_Backlash_Dist_spinbox = Spinbox(Prior_Z_More_Setting_frame, textvariable=Prior_Z_Backlash_Dist_string, from_=BACKLASH_DIST_MIN, to=BACKLASH_DIST_MAX, command=Prior_update_Z_Backlash_Dist)
 Prior_Z_Backlash_Dist_string.trace_add("write", Prior_update_Z_Backlash_Dist_text)
 
 #GUI Placement ######################################################
