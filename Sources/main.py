@@ -1,5 +1,4 @@
 from ctypes import WinDLL, create_string_buffer
-import clr
 import os
 import sys
 import time
@@ -7,7 +6,6 @@ from tkinter import *
 from tkinter import ttk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-import random #debug
 from prior import prior
 from kim import kim
 import instruments as ik
@@ -1733,6 +1731,8 @@ X_pos_textblock = Label(root, textvariable=X_pos_string, borderwidth=1, relief="
 Y_pos_label = Label(root, text="Y Position", font=normal_font)
 Y_pos_textblock = Label(root, textvariable=Y_pos_string, borderwidth=1, relief="groove")
 
+Tied_button = Button(root, text="Tied")
+
 XY_Setting_frame = Frame(root)
 XY_Step_size_label = Label(XY_Setting_frame, text="Step (μm)", font=normal_font)
 XY_Step_size_spinbox = Spinbox(XY_Setting_frame, textvariable=XY_Step_size_string, from_=STEP_SIZE_MIN, to=STEP_SIZE_MAX, command=update_XY_Step_size, width=10)
@@ -1850,10 +1850,8 @@ Angle_Acceleration_label = Label(Angle_More_Setting_frame, text="Accel (μm/s²)
 Angle_Acceleration_spinbox = Spinbox(Angle_More_Setting_frame, textvariable=Angle_Acceleration_string, from_=ACCEL_MIN, to=ACCEL_MAX, command=update_Angle_Acceleration)
 Angle_Acceleration_string.trace_add("write", update_Angle_Acceleration_text)
 
-Filler1 = Label(root, text="")
-Filler2 = Label(root, text="")
-
-KIM_Prior_seperator = ttk.Separator(root, orient="vertical")
+KIM_Prior_seperator1 = ttk.Separator(root, orient="vertical")
+KIM_Prior_seperator2 = ttk.Separator(root, orient="vertical")
 ##Prior
 Prior_title = Label(root, text="ProScan Disconnected" if pr_off else "ProScan CONTROLLER", font="Helvetica 13")
 
@@ -2115,10 +2113,9 @@ Angle_Speed_spinbox.grid(column=1, row=1, sticky="nsew")
 Angle_Acceleration_label.grid(column=0, row=2, sticky="nsew")
 Angle_Acceleration_spinbox.grid(column=1, row=2, sticky="nsew")
 
-# Filler1.grid(column=0, row=31, sticky="nsew")
-# Filler2.grid(column=1, row=32, sticky="nsew")
-
-KIM_Prior_seperator.grid(column=2, row=9, padx=5, rowspan=31, sticky="ns")
+KIM_Prior_seperator1.grid(column=2, row=9, padx=5, rowspan=8, sticky="ns")
+Tied_button.grid(column=2, row=17)
+KIM_Prior_seperator2.grid(column=2, row=18, padx=5, rowspan=30, sticky="ns")
 
 ##Prior
 Prior_title.grid(column=3, row=9, columnspan=2, sticky="nsew")
