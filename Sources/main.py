@@ -196,8 +196,10 @@ Prior_Z_pos = 0 #debug variable
 Tied_control_Ind = False
 hook_key = False
 
-w_hook_id = None
-s_hook_id = None
+is_Up_hold = True
+is_Down_hold = True
+
+Active_dectection = True
 
 #Update functions ################################
 ## TC200
@@ -670,19 +672,23 @@ def hold_down_Z_pos(*args):
 def Z_continuous_setup(*args):
     global Z_Up_button, Z_Down_button
     Z_Up_button.unbind("<ButtonRelease-1>")
+    Z_Up_button.unbind("<Button-1>")
     Z_Up_button.bind("<Button-1>", hold_up_Z_pos)
     Z_Up_button.bind("<ButtonRelease-1>", release_Z_pos)
 
     Z_Down_button.unbind("<ButtonRelease-1>")
+    Z_Down_button.unbind("<Button-1>")
     Z_Down_button.bind("<Button-1>", hold_down_Z_pos)
     Z_Down_button.bind("<ButtonRelease-1>", release_Z_pos)
 
     global Z_Up_x10_button, Z_Down_x10_button
     Z_Up_x10_button.unbind("<ButtonRelease-1>")
+    Z_Up_x10_button.unbind("<Button-1>")
     Z_Up_x10_button.bind("<Button-1>", hold_up_Z_pos)
     Z_Up_x10_button.bind("<ButtonRelease-1>", release_Z_pos)
 
     Z_Down_x10_button.unbind("<ButtonRelease-1>")
+    Z_Down_x10_button.unbind("<Button-1>")
     Z_Down_x10_button.bind("<Button-1>", hold_down_Z_pos)
     Z_Down_x10_button.bind("<ButtonRelease-1>", release_Z_pos)
 
@@ -690,19 +696,33 @@ def tied_continuous_setup(*args):
     update_Z_modetoCon()
     Prior_update_Z_modetoCon()
     global Z_Up_button, Z_Down_button
-    Z_Up_button.bind("<Button-1>", (hold_up_Z_pos, Prior_hold_up_Z_pos))
-    Z_Up_button.bind("<ButtonRelease-1>", (release_Z_pos, Prior_release_Z_pos))
+    Z_Up_button.bind("<Button-1>", combined_Up_hold)
+    Z_Up_button.bind("<ButtonRelease-1>", combined_release)
 
-    Z_Down_button.bind("<Button-1>", (hold_down_Z_pos, Prior_hold_down_Z_pos))
-    Z_Down_button.bind("<ButtonRelease-1>", (release_Z_pos, Prior_release_Z_pos))
+
+    Z_Down_button.bind("<Button-1>", combined_Down_hold)
+    Z_Down_button.bind("<ButtonRelease-1>", combined_release)
+
 
     global Prior_Z_Up_button, Prior_Z_Down_button
-    Prior_Z_Up_button.bind("<Button-1>", (hold_up_Z_pos, Prior_hold_up_Z_pos))
-    Prior_Z_Up_button.bind("<ButtonRelease-1>", (release_Z_pos, Prior_release_Z_pos))
+    Prior_Z_Up_button.bind("<Button-1>", combined_Up_hold)
+    Prior_Z_Up_button.bind("<ButtonRelease-1>", combined_release)
 
-    Prior_Z_Down_button.bind("<Button-1>", (hold_down_Z_pos, Prior_hold_down_Z_pos))
-    Prior_Z_Down_button.bind("<ButtonRelease-1>", (release_Z_pos, Prior_release_Z_pos))
 
+    Prior_Z_Down_button.bind("<Button-1>", combined_Down_hold)
+    Prior_Z_Down_button.bind("<ButtonRelease-1>", combined_release)
+
+def combined_release(*args):
+    release_Z_pos()
+    Prior_release_Z_pos()
+
+def combined_Up_hold(*args):
+    hold_up_Z_pos()
+    Prior_hold_up_Z_pos()
+
+def combined_Down_hold(*args):
+    hold_down_Z_pos()
+    Prior_hold_down_Z_pos()
 
 def Z_discreet_setup(*args):
     global Z_Up_button, Z_Down_button
@@ -1443,19 +1463,23 @@ def Prior_hold_down_Z_pos(*args):
 def Prior_Z_continuous_setup(*args):
     global Prior_Z_Up_button, Prior_Z_Down_button
     Prior_Z_Up_button.unbind("<ButtonRelease-1>")
+    Prior_Z_Up_button.unbind("<Button-1>")
     Prior_Z_Up_button.bind("<Button-1>", Prior_hold_up_Z_pos)
     Prior_Z_Up_button.bind("<ButtonRelease-1>", Prior_release_Z_pos)
 
     Prior_Z_Down_button.unbind("<ButtonRelease-1>")
+    Prior_Z_Down_button.unbind("<Button-1>")
     Prior_Z_Down_button.bind("<Button-1>", Prior_hold_down_Z_pos)
     Prior_Z_Down_button.bind("<ButtonRelease-1>", Prior_release_Z_pos)
 
     global Prior_Z_Up_x10_button, Prior_Z_Down_x10_button
     Prior_Z_Up_x10_button.unbind("<ButtonRelease-1>")
+    Prior_Z_Up_x10_button.unbind("<Button-1>")
     Prior_Z_Up_x10_button.bind("<Button-1>", Prior_hold_up_Z_pos)
     Prior_Z_Up_x10_button.bind("<ButtonRelease-1>", Prior_release_Z_pos)
 
     Prior_Z_Down_x10_button.unbind("<ButtonRelease-1>")
+    Prior_Z_Down_x10_button.unbind("<Button-1>")
     Prior_Z_Down_x10_button.bind("<Button-1>", Prior_hold_down_Z_pos)
     Prior_Z_Down_x10_button.bind("<ButtonRelease-1>", Prior_release_Z_pos)
 
@@ -1558,30 +1582,51 @@ def Tied_control():
         Tied_control_string.set("Tied")
 
 def CombineUpControl(*args):
+    global is_Up_hold
     print("Up")
-    Prior_up_Z_pos()
-    up_Z_pos()
+    if root.focus_displayof() != None:
+        if is_Up_hold == False:
+            hold_up_Z_pos()
+            Prior_hold_up_Z_pos()
+            is_Up_hold = True
 
 def CombineDownControl(*args):
+    global is_Down_hold
     print("Down")
-    Prior_down_Z_pos()
-    down_Z_pos()
+    if root.focus_displayof() != None:
+        if is_Down_hold == False:
+            hold_down_Z_pos()
+            Prior_hold_down_Z_pos()
+            is_Down_hold = True
+
+def CombineTurnOff(*args):
+    global is_Up_hold, is_Down_hold
+    print("Stop")
+    release_Z_pos()
+    Prior_release_Z_pos()
+    is_Up_hold = False
+    is_Down_hold = False
 
 def CheckKeyStrobe():
     global Tied_control_Ind, hook_key, w_hook_id, s_hook_id
     # print(f'Tied_control_Ind = {Tied_control_Ind}')
     # print(f'hook_key = {hook_key}')
-    if Tied_control_Ind == True:
+    if (Tied_control_Ind == True) & (hook_key == False):
         tied_continuous_setup()
-        w_hook_id = keyboard.on_press_key("w",CombineUpControl)
-        s_hook_id = keyboard.on_press_key("s", CombineDownControl)
+        keyboard.on_press_key("w",CombineUpControl)
+        keyboard.on_press_key("s", CombineDownControl)
+        keyboard.on_release_key("w", CombineTurnOff)
+        keyboard.on_release_key("s", CombineTurnOff)
         hook_key = True
-    elif hook_key == True:
+    elif (Tied_control_Ind == False) & (hook_key == True):
         keyboard.unhook_all()
+        update_Z_modetoDis()
+        Prior_update_Z_modetoDis()
         hook_key = False
     root.after(1000, CheckKeyStrobe)
     
 def unfocus_all(event):
+    global Active_dectection
     if not isinstance(event.widget, (Entry, Text, Spinbox)):
         root.focus_set()
 
