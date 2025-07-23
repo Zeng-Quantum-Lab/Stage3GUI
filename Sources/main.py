@@ -11,6 +11,7 @@ from kim import kim
 import instruments as ik
 import instruments.units as u
 import sys
+import keyboard
 
 
 #Constant declaration
@@ -191,6 +192,12 @@ Prior_Z_Step_size = 1
 Prior_Z_coeff = 1
 
 Prior_Z_pos = 0 #debug variable
+
+Tied_control_Ind = False
+hook_key = False
+
+w_hook_id = None
+s_hook_id = None
 
 #Update functions ################################
 ## TC200
@@ -475,7 +482,6 @@ def continuous_setup(*args):
     Left_x10_button.bind("<Button-1>", hold_left_X_pos)
     Left_x10_button.bind("<ButtonRelease-1>", release_X_pos)
 
-
 def discreet_setup(*args):
     #x1 Button Setup
     global Up_button, Down_button, Right_button, Left_button, Up_x10_button, Down_x10_button, Right_x10_button, Left_x10_button
@@ -511,6 +517,10 @@ def discreet_setup(*args):
     Left_x10_button.unbind("<Button-1>")
     Left_x10_button.unbind("<ButtonRelease-1>")
     Left_x10_button.bind("<ButtonRelease-1>", x10_left_X_pos)
+
+def tied_discreet_setup(*args):
+    Z_discreet_setup()
+    Prior_Z_discreet_setup()
 
 def down_Y_pos(*args):
     global Y_pos, XY_Step_size, XY_coeff
@@ -675,6 +685,24 @@ def Z_continuous_setup(*args):
     Z_Down_x10_button.unbind("<ButtonRelease-1>")
     Z_Down_x10_button.bind("<Button-1>", hold_down_Z_pos)
     Z_Down_x10_button.bind("<ButtonRelease-1>", release_Z_pos)
+
+def tied_continuous_setup(*args):
+    update_Z_modetoCon()
+    Prior_update_Z_modetoCon()
+    global Z_Up_button, Z_Down_button
+    Z_Up_button.bind("<Button-1>", (hold_up_Z_pos, Prior_hold_up_Z_pos))
+    Z_Up_button.bind("<ButtonRelease-1>", (release_Z_pos, Prior_release_Z_pos))
+
+    Z_Down_button.bind("<Button-1>", (hold_down_Z_pos, Prior_hold_down_Z_pos))
+    Z_Down_button.bind("<ButtonRelease-1>", (release_Z_pos, Prior_release_Z_pos))
+
+    global Prior_Z_Up_button, Prior_Z_Down_button
+    Prior_Z_Up_button.bind("<Button-1>", (hold_up_Z_pos, Prior_hold_up_Z_pos))
+    Prior_Z_Up_button.bind("<ButtonRelease-1>", (release_Z_pos, Prior_release_Z_pos))
+
+    Prior_Z_Down_button.bind("<Button-1>", (hold_down_Z_pos, Prior_hold_down_Z_pos))
+    Prior_Z_Down_button.bind("<ButtonRelease-1>", (release_Z_pos, Prior_release_Z_pos))
+
 
 def Z_discreet_setup(*args):
     global Z_Up_button, Z_Down_button
@@ -1520,6 +1548,43 @@ def on_close():
     pr.disconnect()
     root.destroy()
 
+def Tied_control():
+    global Tied_control_Ind, Tied_control_string
+    if Tied_control_Ind == False:
+        Tied_control_Ind = True
+        Tied_control_string.set("Untied")
+    else:
+        Tied_control_Ind = False
+        Tied_control_string.set("Tied")
+
+def CombineUpControl(*args):
+    print("Up")
+    Prior_up_Z_pos()
+    up_Z_pos()
+
+def CombineDownControl(*args):
+    print("Down")
+    Prior_down_Z_pos()
+    down_Z_pos()
+
+def CheckKeyStrobe():
+    global Tied_control_Ind, hook_key, w_hook_id, s_hook_id
+    # print(f'Tied_control_Ind = {Tied_control_Ind}')
+    # print(f'hook_key = {hook_key}')
+    if Tied_control_Ind == True:
+        tied_continuous_setup()
+        w_hook_id = keyboard.on_press_key("w",CombineUpControl)
+        s_hook_id = keyboard.on_press_key("s", CombineDownControl)
+        hook_key = True
+    elif hook_key == True:
+        keyboard.unhook_all()
+        hook_key = False
+    root.after(1000, CheckKeyStrobe)
+    
+def unfocus_all(event):
+    if not isinstance(event.widget, (Entry, Text, Spinbox)):
+        root.focus_set()
+
 # GUI Variable ################################
 ##TC200
 canvas = FigureCanvasTkAgg(fig, master=root)
@@ -1627,6 +1692,9 @@ Prior_Z_Acceleration_string.set(Prior_Z_Acceleration)
 Prior_Z_Backlash_Dist_string = StringVar()
 Prior_Z_Backlash_Dist_string.set(Prior_Z_Backlash_Dist)
 
+Tied_control_string = StringVar()
+Tied_control_string.set("Tied")
+
 # GUI Setting ###################################################
 root.title("PriorThorLab")
 root.columnconfigure(0, weight=2)
@@ -1731,7 +1799,7 @@ X_pos_textblock = Label(root, textvariable=X_pos_string, borderwidth=1, relief="
 Y_pos_label = Label(root, text="Y Position", font=normal_font)
 Y_pos_textblock = Label(root, textvariable=Y_pos_string, borderwidth=1, relief="groove")
 
-Tied_button = Button(root, text="Tied")
+Tied_button = Button(root, textvariable=Tied_control_string, command=Tied_control)
 
 XY_Setting_frame = Frame(root)
 XY_Step_size_label = Label(XY_Setting_frame, text="Step (μm)", font=normal_font)
@@ -2219,5 +2287,6 @@ Prior_update_Z_pos_string()
 
 #Calling Tk mainloop
 root.protocol("WM_DELETE_WINDOW", on_close)
-
+root.bind("<Button-1>", unfocus_all)
+root.after(1000, CheckKeyStrobe)
 root.mainloop()
