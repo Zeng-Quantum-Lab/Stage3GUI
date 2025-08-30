@@ -2,7 +2,8 @@ import os
 from tkinter import *
 from tkinter import ttk
 
-homedir = os.getcwd()
+homedir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(homedir)
 
 def on_close():
     file = open("port.config", "w")

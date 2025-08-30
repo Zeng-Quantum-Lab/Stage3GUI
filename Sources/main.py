@@ -12,7 +12,7 @@ import instruments as ik
 import instruments.units as u
 import sys
 import keyboard
-
+from turret_api import TurretController as tr
 
 #Constant declaration
 TEM_PID_MAX = 500
@@ -123,6 +123,21 @@ except:
     Prior_Z_Acceleration = 0
     Prior_Z_Backlash_EN = IntVar(value=0)
     Prior_Z_Backlash_Dist = 0
+
+turret_off = False
+try:
+    turret = tr("COM5")
+    timeout = 0
+    while (timeout != 5):
+        if (turret.check_if_log_in() == False):
+            timeout += 1
+        else:
+            break
+    if (timeout == 5):
+        turret_off = True
+except:
+    turret_off = True
+
 
 #Variable declaration ##################################
 ##TC200
@@ -1462,6 +1477,12 @@ def Prior_hold_down_Z_pos(*args):
 
 def Prior_Z_continuous_setup(*args):
     global Prior_Z_Up_button, Prior_Z_Down_button
+
+    keyboard.on_press_key("q", CombineUpControl)
+    keyboard.on_press_key("e", CombineDownControl)
+    keyboard.on_release_key("q", CombineTurnOff)
+    keyboard.on_release_key("e", CombineTurnOff)
+
     Prior_Z_Up_button.unbind("<ButtonRelease-1>")
     Prior_Z_Up_button.unbind("<Button-1>")
     Prior_Z_Up_button.bind("<Button-1>", Prior_hold_up_Z_pos)
@@ -1586,7 +1607,7 @@ def CombineUpControl(*args):
     print("Up")
     if root.focus_displayof() != None:
         if is_Up_hold == False:
-            hold_up_Z_pos()
+            # hold_up_Z_pos()
             Prior_hold_up_Z_pos()
             is_Up_hold = True
 
@@ -1595,35 +1616,32 @@ def CombineDownControl(*args):
     print("Down")
     if root.focus_displayof() != None:
         if is_Down_hold == False:
-            hold_down_Z_pos()
+            # hold_down_Z_pos()
             Prior_hold_down_Z_pos()
             is_Down_hold = True
 
 def CombineTurnOff(*args):
     global is_Up_hold, is_Down_hold
     print("Stop")
-    release_Z_pos()
+    # release_Z_pos()
     Prior_release_Z_pos()
     is_Up_hold = False
     is_Down_hold = False
 
-def CheckKeyStrobe():
-    global Tied_control_Ind, hook_key, w_hook_id, s_hook_id
-    # print(f'Tied_control_Ind = {Tied_control_Ind}')
-    # print(f'hook_key = {hook_key}')
-    if (Tied_control_Ind == True) & (hook_key == False):
-        tied_continuous_setup()
-        keyboard.on_press_key("w",CombineUpControl)
-        keyboard.on_press_key("s", CombineDownControl)
-        keyboard.on_release_key("w", CombineTurnOff)
-        keyboard.on_release_key("s", CombineTurnOff)
-        hook_key = True
-    elif (Tied_control_Ind == False) & (hook_key == True):
-        keyboard.unhook_all()
-        update_Z_modetoDis()
-        Prior_update_Z_modetoDis()
-        hook_key = False
-    root.after(1000, CheckKeyStrobe)
+# def CheckKeyStrobe():
+#     global Tied_control_Ind, hook_key, w_hook_id, s_hook_id
+#     # print(f'Tied_control_Ind = {Tied_control_Ind}')
+#     # print(f'hook_key = {hook_key}')
+#     if (Tied_control_Ind == True) & (hook_key == False):
+#         # tied_continuous_setup()
+        
+#         hook_key = True
+#     elif (Tied_control_Ind == False) & (hook_key == True):
+#         keyboard.unhook_all()
+#         update_Z_modetoDis()
+#         Prior_update_Z_modetoDis()
+#         hook_key = False
+#     root.after(1, CheckKeyStrobe)
     
 def unfocus_all(event):
     global Active_dectection
@@ -2027,11 +2045,13 @@ Prior_Z_pos_textblock = Label(root, borderwidth=1, textvariable=Prior_Z_pos_stri
 
 Prior_Z_button_frame = Frame(root)
 
-Prior_Z_Up_button = Button(Prior_Z_button_frame, text="▲", width=4, height=2)
-Prior_Z_Down_button = Button(Prior_Z_button_frame, text="▼", width=4, height=2)
+Prior_Z_Up_button = Button(Prior_Z_button_frame, text="Q - ▲ ", width=4, height=2)
+Prior_Z_Down_button = Button(Prior_Z_button_frame, text="E - ▼ ", width=4, height=2)
 
 Prior_Z_Up_x10_button = Button(Prior_Z_button_frame, text="⏫",width=4, height=2)
 Prior_Z_Down_x10_button = Button(Prior_Z_button_frame, text="⏬",width=4, height=2)
+
+#Prior_Z_pos_label = Label(root, text="Z Position",font=normal_font)
 
 Prior_Z_discreet_setup()
 
@@ -2227,7 +2247,7 @@ Angle_Acceleration_label.grid(column=0, row=2, sticky="nsew")
 Angle_Acceleration_spinbox.grid(column=1, row=2, sticky="nsew")
 
 KIM_Prior_seperator1.grid(column=2, row=9, padx=5, rowspan=8, sticky="ns")
-Tied_button.grid(column=2, row=17)
+# Tied_button.grid(column=2, row=17)
 KIM_Prior_seperator2.grid(column=2, row=18, padx=5, rowspan=30, sticky="ns")
 
 ##Prior
@@ -2333,5 +2353,5 @@ Prior_update_Z_pos_string()
 #Calling Tk mainloop
 root.protocol("WM_DELETE_WINDOW", on_close)
 root.bind("<Button-1>", unfocus_all)
-root.after(1000, CheckKeyStrobe)
+# root.after(1, CheckKeyStrobe)
 root.mainloop()

@@ -1,0 +1,3 @@
+[submodule "Olympus-Controller"]
+	path = Olympus-Controller
+	url = https://github.com/SwiftGapple/Olympus-Controller
