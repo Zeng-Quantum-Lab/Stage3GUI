@@ -126,7 +126,7 @@ except:
 
 turret_off = False
 try:
-    turret = tr("COM5")
+    turret = tr(f"COM{sys.argv[4]}")
     timeout = 0
     while (timeout != 5):
         if (turret.check_if_log_in() == False):
@@ -1546,6 +1546,13 @@ def Prior_XY_hide_Setting(*args):
 
     if (Prior_Z_More_Setting_displacement == 0):
         Prior_Z_More_Setting_frame.grid(column=3, row=24-Prior_XY_More_Setting_displacement, columnspan=2, rowspan=2, sticky="ns")
+        turret_seperator.grid(column=3, columnspan=2, row=26-Prior_XY_More_Setting_displacement, sticky="ew")
+        turret_Title_label.grid(column=3, columnspan=2, row=27-Prior_XY_More_Setting_displacement)
+        turret_Buttons_frame.grid(column=3, columnspan=2, row=28-Prior_XY_More_Setting_displacement, rowspan=5)
+    else:
+        turret_seperator.grid(column=3, columnspan=2, row=24-Prior_XY_More_Setting_displacement, sticky="ew")
+        turret_Title_label.grid(column=3, columnspan=2, row=25-Prior_XY_More_Setting_displacement)
+        turret_Buttons_frame.grid(column=3, columnspan=2, row=26-Prior_XY_More_Setting_displacement, rowspan=5)
     
 def Prior_XY_show_Setting(*args):
     global Prior_XY_More_Setting_displacement, Prior_XY_More_Setting_frame
@@ -1563,6 +1570,14 @@ def Prior_XY_show_Setting(*args):
 
     if (Prior_Z_More_Setting_displacement == 0):
         Prior_Z_More_Setting_frame.grid(column=3, row=24-Prior_XY_More_Setting_displacement, columnspan=2, rowspan=2, sticky="ns")
+        turret_seperator.grid(column=3, columnspan=2, row=26-Prior_XY_More_Setting_displacement, sticky="ew")
+        turret_Title_label.grid(column=3, columnspan=2, row=27-Prior_XY_More_Setting_displacement)
+        turret_Buttons_frame.grid(column=3, columnspan=2, row=28-Prior_XY_More_Setting_displacement, rowspan=5)
+    else:
+        turret_seperator.grid(column=3, columnspan=2, row=24-Prior_XY_More_Setting_displacement, sticky="ew")
+        turret_Title_label.grid(column=3, columnspan=2, row=25-Prior_XY_More_Setting_displacement)
+        turret_Buttons_frame.grid(column=3, columnspan=2, row=26-Prior_XY_More_Setting_displacement, rowspan=5)
+
   
 def Prior_XY_hide_show_Setting(*args):
     global Prior_XY_More_Setting_displacement
@@ -1575,11 +1590,17 @@ def Prior_Z_hide_Setting(*args):
     global Prior_Z_More_Setting_displacement, Prior_Z_More_Setting_frame
     Prior_Z_More_Setting_displacement = 2
     Prior_Z_More_Setting_frame.grid_forget()
+    turret_seperator.grid(column=3, columnspan=2, row=24-Prior_XY_More_Setting_displacement, sticky="ew")
+    turret_Title_label.grid(column=3, columnspan=2, row=25-Prior_XY_More_Setting_displacement)
+    turret_Buttons_frame.grid(column=3, columnspan=2, row=26-Prior_XY_More_Setting_displacement, rowspan=5)
 
 def Prior_Z_show_Setting(*args):
     global Prior_Z_More_Setting_displacement, Prior_Z_More_Setting_frame
     Prior_Z_More_Setting_displacement = 0
     Prior_Z_More_Setting_frame.grid(column=3, row=24-Prior_XY_More_Setting_displacement, columnspan=2, rowspan=2, sticky="ns")
+    turret_seperator.grid(column=3, columnspan=2, row=26-Prior_XY_More_Setting_displacement, sticky="ew")
+    turret_Title_label.grid(column=3, columnspan=2, row=27-Prior_XY_More_Setting_displacement)
+    turret_Buttons_frame.grid(column=3, columnspan=2, row=28-Prior_XY_More_Setting_displacement, rowspan=5)
 
 def Prior_Z_hide_show_Setting(*args):
     global Prior_Z_More_Setting_displacement
@@ -1591,7 +1612,9 @@ def Prior_Z_hide_show_Setting(*args):
 def on_close():
     kim_obj.disconnect()
     pr.disconnect()
+    turret.close()
     root.destroy()
+    
 
 def Tied_control():
     global Tied_control_Ind, Tied_control_string
@@ -1628,6 +1651,89 @@ def CombineTurnOff(*args):
     is_Up_hold = False
     is_Down_hold = False
 
+def turret_go_to_1(*args):
+    global turret
+    global turret_1st_button, turret_2nd_button, turret_3rd_button, turret_4th_button, turret_5th_button, turret_6th_button
+    turret.turn_to_position(1)
+    turret_1st_button.config(relief="sunken")
+    turret_2nd_button.config(relief="raised")
+    turret_3rd_button.config(relief="raised")
+    turret_4th_button.config(relief="raised")
+    turret_5th_button.config(relief="raised")
+    turret_6th_button.config(relief="raised")
+
+def turret_go_to_2(*args):
+    global turret
+    global turret_1st_button, turret_2nd_button, turret_3rd_button, turret_4th_button, turret_5th_button, turret_6th_button
+    turret.turn_to_position(2)
+    turret_1st_button.config(relief="raised")
+    turret_2nd_button.config(relief="sunken")
+    turret_3rd_button.config(relief="raised")
+    turret_4th_button.config(relief="raised")
+    turret_5th_button.config(relief="raised")
+    turret_6th_button.config(relief="raised")
+
+def turret_go_to_3(*args):
+    global turret
+    global turret_1st_button, turret_2nd_button, turret_3rd_button, turret_4th_button, turret_5th_button, turret_6th_button
+    turret.turn_to_position(3)
+    turret_1st_button.config(relief="raised")
+    turret_2nd_button.config(relief="raised")
+    turret_3rd_button.config(relief="sunken")
+    turret_4th_button.config(relief="raised")
+    turret_5th_button.config(relief="raised")
+    turret_6th_button.config(relief="raised")
+
+def turret_go_to_4(*args):
+    global turret
+    global turret_1st_button, turret_2nd_button, turret_3rd_button, turret_4th_button, turret_5th_button, turret_6th_button
+    turret.turn_to_position(4)
+    turret_1st_button.config(relief="raised")
+    turret_2nd_button.config(relief="raised")
+    turret_3rd_button.config(relief="raised")
+    turret_4th_button.config(relief="sunken")
+    turret_5th_button.config(relief="raised")
+    turret_6th_button.config(relief="raised")
+
+def turret_go_to_5(*args):
+    global turret
+    global turret_1st_button, turret_2nd_button, turret_3rd_button, turret_4th_button, turret_5th_button, turret_6th_button
+    turret.turn_to_position(5)
+    turret_1st_button.config(relief="raised")
+    turret_2nd_button.config(relief="raised")
+    turret_3rd_button.config(relief="raised")
+    turret_4th_button.config(relief="raised")
+    turret_5th_button.config(relief="sunken")
+    turret_6th_button.config(relief="raised")
+
+def turret_go_to_6(*args):
+    global turret
+    global turret_1st_button, turret_2nd_button, turret_3rd_button, turret_4th_button, turret_5th_button, turret_6th_button
+    turret.turn_to_position(6)
+    turret_1st_button.config(relief="raised")
+    turret_2nd_button.config(relief="raised")
+    turret_3rd_button.config(relief="raised")
+    turret_4th_button.config(relief="raised")
+    turret_5th_button.config(relief="raised")
+    turret_6th_button.config(relief="sunken")
+
+def update_turret_button(*args):
+    global turret
+    curr_pos = turret.check_position()
+    match (curr_pos):
+        case 1:
+            turret_1st_button.config(relief="sunken")
+        case 2:
+            turret_2nd_button.config(relief="sunken")
+        case 3:
+            turret_3rd_button.config(relief="sunken")
+        case 4:
+            turret_4th_button.config(relief="sunken")
+        case 5:
+            turret_5th_button.config(relief="sunken")
+        case 6:
+            turret_6th_button.config(relief="sunken")
+    
 # def CheckKeyStrobe():
 #     global Tied_control_Ind, hook_key, w_hook_id, s_hook_id
 #     # print(f'Tied_control_Ind = {Tied_control_Ind}')
@@ -2087,6 +2193,17 @@ Prior_Z_Backlash_Dist_label = Label(Prior_Z_More_Setting_frame, text="Backlash D
 Prior_Z_Backlash_Dist_spinbox = Spinbox(Prior_Z_More_Setting_frame, textvariable=Prior_Z_Backlash_Dist_string, from_=BACKLASH_DIST_MIN, to=BACKLASH_DIST_MAX, command=Prior_update_Z_Backlash_Dist)
 Prior_Z_Backlash_Dist_string.trace_add("write", Prior_update_Z_Backlash_Dist_text)
 
+turret_seperator = ttk.Separator(root, orient="horizontal")
+turret_Title_label = Label(root, text="OLYMPUS TURRET CONTROLLER" if turret_off == False else "OLYMPUS TURRET OFF", font="Helvetica 13")
+turret_Buttons_frame = Frame(root)
+turret_config_label = Label(turret_Buttons_frame, text="Microscope Configuration")
+turret_1st_button = Button(turret_Buttons_frame, text="1", font="Helvetica 13", padx=15, pady=10, command=turret_go_to_1)
+turret_2nd_button = Button(turret_Buttons_frame, text="2", font="Helvetica 13", padx=15, pady=10, command=turret_go_to_2)
+turret_3rd_button = Button(turret_Buttons_frame, text="3", font="Helvetica 13", padx=15, pady=10, command=turret_go_to_3)
+turret_4th_button = Button(turret_Buttons_frame, text="4", font="Helvetica 13", padx=15, pady=10, command=turret_go_to_4)
+turret_5th_button = Button(turret_Buttons_frame, text="5", font="Helvetica 13", padx=15, pady=10, command=turret_go_to_5)
+turret_6th_button = Button(turret_Buttons_frame, text="6", font="Helvetica 13", padx=15, pady=10, command=turret_go_to_6)
+
 #GUI Placement ######################################################
 root.grid_propagate(True)
 
@@ -2336,7 +2453,27 @@ Prior_Z_Backlash_EN_checkbox.grid(column=0, row=3, columnspan=2, sticky="nsew")
 
 Prior_Z_Backlash_Dist_label.grid(column=0, row=4, sticky="nsew")
 Prior_Z_Backlash_Dist_spinbox.grid(column=1, row=4, sticky="nsew")
+turret_Buttons_frame.columnconfigure(0, weight=1)
+turret_Buttons_frame.columnconfigure(1, weight=1)
+turret_Buttons_frame.columnconfigure(2, weight=1)
+turret_Buttons_frame.columnconfigure(3, weight=1)
+turret_Buttons_frame.columnconfigure(4, weight=1)
+turret_Buttons_frame.columnconfigure(5, weight=1)
 
+turret_Buttons_frame.rowconfigure(0, weight=1)
+turret_Buttons_frame.rowconfigure(1, weight=1)
+
+turret_seperator.grid(column=3, columnspan=2, row=22, sticky="ew")
+turret_Title_label.grid(column=3, columnspan=2, row=23)
+turret_Buttons_frame.grid(column=3, columnspan=2, row=24, rowspan=5)
+
+turret_config_label.grid(column= 0, row=0, columnspan=6)
+turret_1st_button.grid(column=0, row=1)
+turret_2nd_button.grid(column=1, row=1)
+turret_3rd_button.grid(column=2, row=1)
+turret_4th_button.grid(column=3, row=1)
+turret_5th_button.grid(column=4, row=1)
+turret_6th_button.grid(column=5, row=1)
 
 #Variable update call
 update_T_current()
@@ -2351,6 +2488,7 @@ Prior_update_Y_pos_string()
 Prior_update_Z_pos_string()
 
 #Calling Tk mainloop
+root.after(100, update_turret_button)
 root.protocol("WM_DELETE_WINDOW", on_close)
 root.bind("<Button-1>", unfocus_all)
 # root.after(1, CheckKeyStrobe)
