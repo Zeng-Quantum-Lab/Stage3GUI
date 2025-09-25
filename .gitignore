@@ -2,3 +2,6 @@ src/instrumentkit
 WaveformComparator
 dist/
 build/
+Motion_Control_Examples/
+Olympus-Controller/
+TC200/
