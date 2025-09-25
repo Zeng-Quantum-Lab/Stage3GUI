@@ -6,7 +6,7 @@ homedir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(homedir)
 
 def on_close():
-    file = open("port.config", "w")
+    file = open(f"{homedir}\port.config", "w")
     
     tc_args_final = 0 if tc_args.get() == "" else tc_args.get()
     pr_args_final = 0 if pr_args.get() == "" else pr_args.get()
@@ -22,7 +22,7 @@ def on_close():
     root.destroy()
     os.system(f"{homedir}\.venv\Scripts\python.exe Sources\main.py {tc_args_final} {pr_args_final} {kim_args_final} {turr_args_final}")
 
-file = open("port.config", "r")
+file = open(f"{homedir}\port.config", "r")
 
 root = Tk()
 root.title("Setup")
